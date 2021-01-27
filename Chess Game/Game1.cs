@@ -10,11 +10,9 @@ namespace Chess_Game
     public class Game1 : Game
     {
         Board DrawBoard = new Board();
-        Piece DrawPiece = new Piece();
-        public Rectangle[] Pos = new Rectangle[8];
-        private int[] piecePlays = new int[8];
+        Piece[,] DrawPiece = new Piece[8, 8];
         public static Game1 Instance;
-        public Vector2 boardPosition;
+        public static Vector2 boardPosition;
         public Texture2D pawn;
 
         private GraphicsDeviceManager _graphics;
@@ -27,8 +25,7 @@ namespace Chess_Game
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Instance = this;
-
-    }
+        }
 
         protected override void Initialize()
         {
@@ -43,17 +40,38 @@ namespace Chess_Game
 
             // TODO: use this.Content to load your game content here
 
-            for (int i = 0; i < 8; i++)
-            {
-                Pos[i] = new Rectangle(i * 40 + GraphicsDevice.Viewport.Bounds.Width / 2 - 200, GraphicsDevice.Viewport.Bounds.Height / 2 - 120, 40, 40);
-                piecePlays[i] = 0;
-            }
-            boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - 200, GraphicsDevice.Viewport.Bounds.Height / 2 - 120);
+            boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - 200, GraphicsDevice.Viewport.Bounds.Height / 2 - 160);
             pawn = Content.Load<Texture2D>("Pawn");
 
 
-
-            int width = GraphicsDevice.Viewport.Bounds.Width;
+            // Easier or better way to do this?
+            for (int i = 0; i < 8; i++)
+            {
+                DrawPiece[i, 1] = new Piece()
+                {
+                    type = PieceType.pawn,
+                };
+                DrawPiece[i, 6] = new Piece()
+                {
+                    type = PieceType.pawn,
+                };
+            }
+            DrawPiece[0, 0] = new Piece()
+            {
+                type = PieceType.rook,
+            };
+            DrawPiece[7, 0] = new Piece()
+            {
+                type = PieceType.rook,
+            };
+            DrawPiece[0, 7] = new Piece()
+            {
+                type = PieceType.rook,
+            };
+            DrawPiece[7, 7] = new Piece()
+            {
+                type = PieceType.rook,
+            };
         }
 
         protected override void Update(GameTime gameTime)
@@ -73,13 +91,13 @@ namespace Chess_Game
             // TODO: Add your drawing code here
 
             _spriteBatch.Begin();
-            DrawBoard.boardDraw(_spriteBatch, GraphicsDevice.Viewport.Bounds.Width / 2 - 200, GraphicsDevice.Viewport.Bounds.Height / 2 - 160);
+            DrawBoard.BoardDraw(_spriteBatch, GraphicsDevice.Viewport.Bounds.Width / 2 - 200, GraphicsDevice.Viewport.Bounds.Height / 2 - 160);
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    if (j < 1)
-                        DrawPiece.pieceDraw(_spriteBatch, i, j, boardPosition, pawn);
+                    if (DrawPiece[i, j] != null)
+                        DrawPiece[i, j].PieceDraw(_spriteBatch, i, j);
                 }
             }
             _spriteBatch.End();

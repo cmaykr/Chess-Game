@@ -10,7 +10,7 @@ namespace Chess_Game
     class Board
     {
         public Piece[,] pieces = new Piece[8, 8];
-        public void boardDraw(SpriteBatch spriteBatch, int Width, int Height)
+        public void BoardDraw(SpriteBatch spriteBatch, int Width, int Height)
         {
             for (int i = 0; i < 8; i += 1)
             {
@@ -28,6 +28,29 @@ namespace Chess_Game
             }
         }
     }
+    class Piece
+    {
+        public PieceType type;
+        public Color pieceColor;
+
+        public void PieceDraw(SpriteBatch spriteBatch, int i, int j)
+        {
+            if (j <= 1)
+                pieceColor = Color.Black;
+            else if (j >= 5)
+                pieceColor = Color.Red;
+
+            switch (type)
+            {
+                case PieceType.pawn:
+                    spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("pawn"), new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
+                    break;
+                case PieceType.rook:
+                    spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("rook"), new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
+                    break;
+            }
+        }
+    }
 }
 
 enum PieceType
@@ -38,34 +61,4 @@ enum PieceType
     queen,
     bishop,
     knight
-}
-class Piece
-{
-    public PieceType type;
-
-    public void pieceDraw(SpriteBatch spriteBatch, int i, int j, Vector2 boardPosition, Texture2D pawn)
-    {
-        bool isWhite = false;
-        if (j < 2)
-            isWhite = false;
-        else if (j > 6)
-            isWhite = true;
-
-        if (isWhite == false)
-        {
-            switch (type)
-            {
-                case PieceType.pawn:
-                    spriteBatch.Draw(pawn, new Vector2(i*40+boardPosition.X, j * 40 + boardPosition.Y), Color.Black);
-                    break;
-                case PieceType.rook:
-                        
-                    break;
-            }
-        }
-        else if (isWhite == true)
-        {
-
-        }
-    }
 }
