@@ -14,6 +14,8 @@ namespace Chess_Game
         public static Game1 Instance;
         public static Vector2 boardPosition;
         public Texture2D pawn;
+        public Texture2D rook;
+        MouseState mouse, prev, curr;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -42,6 +44,7 @@ namespace Chess_Game
 
             boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - 200, GraphicsDevice.Viewport.Bounds.Height / 2 - 160);
             pawn = Content.Load<Texture2D>("Pawn");
+            rook = Content.Load<Texture2D>("rook");
 
 
             // Easier or better way to do this?
@@ -50,27 +53,33 @@ namespace Chess_Game
                 DrawPiece[i, 1] = new Piece()
                 {
                     type = PieceType.pawn,
+                    pieceColor = Color.Black,
                 };
                 DrawPiece[i, 6] = new Piece()
                 {
                     type = PieceType.pawn,
+                    pieceColor = Color.Red,
                 };
             }
             DrawPiece[0, 0] = new Piece()
             {
                 type = PieceType.rook,
+                pieceColor = Color.Black,
             };
             DrawPiece[7, 0] = new Piece()
             {
                 type = PieceType.rook,
+                pieceColor = Color.Black,
             };
             DrawPiece[0, 7] = new Piece()
             {
                 type = PieceType.rook,
+                pieceColor = Color.Red,
             };
             DrawPiece[7, 7] = new Piece()
             {
                 type = PieceType.rook,
+                pieceColor = Color.Red,
             };
         }
 
@@ -81,6 +90,18 @@ namespace Chess_Game
 
             // TODO: Add your update logic here
 
+            mouse = Mouse.GetState();
+            int xIndex;
+            int yIndex;
+
+            if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
+            {
+                Vector2 idxVector = new Vector2((mouse.X - (boardPosition.X)) / 40, (mouse.Y - (boardPosition.Y)) / 40);
+                xIndex = (int)idxVector.X;
+                yIndex = (int)idxVector.Y;
+            }
+
+            prev = mouse;
             base.Update(gameTime);
         }
 

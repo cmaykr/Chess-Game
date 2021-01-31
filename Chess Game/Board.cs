@@ -28,37 +28,4 @@ namespace Chess_Game
             }
         }
     }
-    class Piece
-    {
-        public PieceType type;
-        public Color pieceColor;
-
-        public void PieceDraw(SpriteBatch spriteBatch, int i, int j)
-        {
-            if (j <= 1)
-                pieceColor = Color.Black;
-            else if (j >= 5)
-                pieceColor = Color.Red;
-
-            switch (type)
-            {
-                case PieceType.pawn:
-                    spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("pawn"), new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
-                    break;
-                case PieceType.rook:
-                    spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("rook"), new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
-                    break;
-            }
-        }
-    }
-}
-
-enum PieceType
-{
-    pawn,
-    rook,
-    king,
-    queen,
-    bishop,
-    knight
 }
