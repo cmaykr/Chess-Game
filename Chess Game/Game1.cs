@@ -15,7 +15,9 @@ namespace Chess_Game
         public static Vector2 boardPosition;
         public Texture2D pawn;
         public Texture2D rook;
-        MouseState mouse, prev, curr;
+        MouseState mouse, prev;
+        int xIndex, yIndex = -1;
+        bool pieceChosen = false;
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -91,15 +93,34 @@ namespace Chess_Game
             // TODO: Add your update logic here
 
             mouse = Mouse.GetState();
-            int xIndex;
-            int yIndex;
 
-            if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
+
+            //Lol, find better way to do this, or make it look better.
+            try
             {
-                Vector2 idxVector = new Vector2((mouse.X - (boardPosition.X)) / 40, (mouse.Y - (boardPosition.Y)) / 40);
-                xIndex = (int)idxVector.X;
-                yIndex = (int)idxVector.Y;
+                if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
+                {
+                    Vector2 idxVector = new Vector2((mouse.X - (boardPosition.X)) / 40, (mouse.Y - (boardPosition.Y)) / 40);
+                    xIndex = (int)idxVector.X;
+                    yIndex = (int)idxVector.Y;
+                    pieceChosen = true;
+                    System.Diagnostics.Debug.WriteLine("x: " + xIndex + " y: " + yIndex);
+                }
+                else if (pieceChosen == true && mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
+                {
+                    int xTemp = (int)(mouse.X - (boardPosition.X)) / 40;
+                    int yTemp = (int)(mouse.Y - (boardPosition.Y)) / 40;
+                    DrawPiece[xTemp, yTemp] = DrawPiece[xIndex, yIndex];
+                    DrawPiece[xIndex, yIndex] = null;
+                    System.Diagnostics.Debug.WriteLine("xTemp: " + xTemp + " yTemp: " + yTemp);
+                    pieceChosen = false;
+                }
             }
+            catch 
+            {
+                pieceChosen = false;
+            }
+
 
             prev = mouse;
             base.Update(gameTime);
