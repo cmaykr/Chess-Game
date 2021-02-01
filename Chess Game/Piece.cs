@@ -23,12 +23,16 @@ namespace Chess_Game
                     spriteBatch.Draw(Game1.Instance.rook, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
                 case PieceType.king:
+                    spriteBatch.Draw(Game1.Instance.king, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
                 case PieceType.bishop:
+                    spriteBatch.Draw(Game1.Instance.bishop, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
                 case PieceType.knight:
+                    spriteBatch.Draw(Game1.Instance.knight, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
                 case PieceType.queen:
+                    spriteBatch.Draw(Game1.Instance.queen, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
 
             }

@@ -13,8 +13,7 @@ namespace Chess_Game
         Piece[,] DrawPiece = new Piece[8, 8];
         public static Game1 Instance;
         public static Vector2 boardPosition;
-        public Texture2D pawn;
-        public Texture2D rook;
+        public Texture2D pawn, rook, knight, king, bishop, queen;
         MouseState mouse, prev;
         int xIndex, yIndex = -1;
         bool pieceChosen = false;
@@ -47,6 +46,10 @@ namespace Chess_Game
             boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - 200, GraphicsDevice.Viewport.Bounds.Height / 2 - 160);
             pawn = Content.Load<Texture2D>("Pawn");
             rook = Content.Load<Texture2D>("rook");
+            knight = Content.Load<Texture2D>("knight");
+            king = Content.Load<Texture2D>("king");
+            queen = Content.Load<Texture2D>("queen");
+            bishop = Content.Load<Texture2D>("bishop");
 
 
             // Easier or better way to do this?
@@ -60,7 +63,7 @@ namespace Chess_Game
                 DrawPiece[i, 6] = new Piece()
                 {
                     type = PieceType.pawn,
-                    pieceColor = Color.Red,
+                    pieceColor = Color.White,
                 };
             }
             DrawPiece[0, 0] = new Piece()
@@ -76,12 +79,72 @@ namespace Chess_Game
             DrawPiece[0, 7] = new Piece()
             {
                 type = PieceType.rook,
-                pieceColor = Color.Red,
+                pieceColor = Color.White,
             };
             DrawPiece[7, 7] = new Piece()
             {
                 type = PieceType.rook,
-                pieceColor = Color.Red,
+                pieceColor = Color.White,
+            };
+            DrawPiece[1, 0] = new Piece()
+            {
+                type = PieceType.knight,
+                pieceColor = Color.Black,
+            };
+            DrawPiece[6, 0] = new Piece()
+            {
+                type = PieceType.knight,
+                pieceColor = Color.Black,
+            };
+            DrawPiece[1, 7] = new Piece()
+            {
+                type = PieceType.knight,
+                pieceColor = Color.White,
+            };
+            DrawPiece[6, 7] = new Piece()
+            {
+                type = PieceType.knight,
+                pieceColor = Color.White,
+            };
+            DrawPiece[2, 0] = new Piece()
+            {
+                type = PieceType.bishop,
+                pieceColor = Color.Black,
+            };
+            DrawPiece[5, 0] = new Piece()
+            {
+                type = PieceType.bishop,
+                pieceColor = Color.Black,
+            };
+            DrawPiece[2, 7] = new Piece()
+            {
+                type = PieceType.bishop,
+                pieceColor = Color.White,
+            };
+            DrawPiece[5, 7] = new Piece()
+            {
+                type = PieceType.bishop,
+                pieceColor = Color.White,
+            };
+            DrawPiece[3, 0] = new Piece()
+            {
+                type = PieceType.king,
+                pieceColor = Color.Black,
+            };
+            DrawPiece[3, 7] = new Piece()
+            {
+                type = PieceType.king,
+                pieceColor = Color.White,
+            };
+            DrawPiece[4, 0] = new Piece()
+            {
+                type = PieceType.queen,
+                pieceColor = Color.Black,
+            };
+            DrawPiece[4, 7] = new Piece()
+            {
+                type = PieceType.queen,
+                pieceColor = Color.White,
             };
         }
 
@@ -96,28 +159,23 @@ namespace Chess_Game
 
 
             //Lol, find better way to do this, or make it look better.
-            try
+            if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
             {
-                if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
-                {
-                    Vector2 idxVector = new Vector2((mouse.X - (boardPosition.X)) / 40, (mouse.Y - (boardPosition.Y)) / 40);
-                    xIndex = (int)idxVector.X;
-                    yIndex = (int)idxVector.Y;
-                    pieceChosen = true;
-                    System.Diagnostics.Debug.WriteLine("x: " + xIndex + " y: " + yIndex);
-                }
-                else if (pieceChosen == true && mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
-                {
-                    int xTemp = (int)(mouse.X - (boardPosition.X)) / 40;
-                    int yTemp = (int)(mouse.Y - (boardPosition.Y)) / 40;
-                    DrawPiece[xTemp, yTemp] = DrawPiece[xIndex, yIndex];
-                    DrawPiece[xIndex, yIndex] = null;
-                    System.Diagnostics.Debug.WriteLine("xTemp: " + xTemp + " yTemp: " + yTemp);
-                    pieceChosen = false;
-                }
+                Vector2 idxVector = new Vector2((mouse.X - boardPosition.X) / 40, (mouse.Y - boardPosition.Y) / 40);
+                xIndex = (int)idxVector.X;
+                yIndex = (int)idxVector.Y;
+                pieceChosen = true;
+                System.Diagnostics.Debug.WriteLine("x: " + xIndex + " y: " + yIndex);
             }
-            catch 
+            else if (pieceChosen == true && mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
+                int xTemp = (int)(mouse.X - boardPosition.X) / 40;
+                int yTemp = (int)(mouse.Y - boardPosition.Y) / 40;
+
+                DrawPiece[xTemp, yTemp] = DrawPiece[xIndex, yIndex];
+                DrawPiece[xIndex, yIndex] = null;
+
+                System.Diagnostics.Debug.WriteLine("xTemp: " + xTemp + " yTemp: " + yTemp);
                 pieceChosen = false;
             }
 

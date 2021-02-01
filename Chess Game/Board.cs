@@ -18,11 +18,11 @@ namespace Chess_Game
                 {
                     if (i % 2 == j % 2)
                     {
-                        spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("Square"), new Rectangle(i * 40 + Width, j * 40 + Height, 40, 40), Color.White);
+                        spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("Square"), new Rectangle(i * 40 + Width, j * 40 + Height, 40, 40), new Color(244,244,162));
                     }
                     else
                     {
-                        spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("greenSquare"), new Rectangle(i * 40 + Width, j * 40 + Height, 40, 40), Color.White);
+                        spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("Square"), new Rectangle(i * 40 + Width, j * 40 + Height, 40, 40), Color.DarkKhaki);
                     }
                 }
             }
