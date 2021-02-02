@@ -17,28 +17,38 @@ namespace Chess_Game
             switch (type)
             {
                 case PieceType.pawn:
-                    spriteBatch.Draw(Game1.Instance.pawn, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
+                    spriteBatch.Draw(Board.Instance.pawn, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
                 case PieceType.rook:
-                    spriteBatch.Draw(Game1.Instance.rook, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
+                    spriteBatch.Draw(Board.Instance.rook, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
                 case PieceType.king:
-                    spriteBatch.Draw(Game1.Instance.king, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
+                    spriteBatch.Draw(Board.Instance.king, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
                 case PieceType.bishop:
-                    spriteBatch.Draw(Game1.Instance.bishop, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
+                    spriteBatch.Draw(Board.Instance.bishop, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
                 case PieceType.knight:
-                    spriteBatch.Draw(Game1.Instance.knight, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
+                    spriteBatch.Draw(Board.Instance.knight, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
                 case PieceType.queen:
-                    spriteBatch.Draw(Game1.Instance.queen, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
+                    spriteBatch.Draw(Board.Instance.queen, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
 
             }
         }
-    }
+        public void PawnRule(int xIndex, int yIndex, int xTemp, int yTemp, Piece[,] DrawPiece)
+        {
+            if (xTemp == xIndex && yTemp == yIndex + 2 && DrawPiece[xIndex, yIndex] == DrawPiece[xIndex, 1] || (yTemp ==  yIndex + 1 && xTemp == xIndex))
+            {
+                DrawPiece[xTemp, yTemp] = DrawPiece[xIndex, yIndex];
+                DrawPiece[xIndex, yIndex] = null;
 
+                System.Diagnostics.Debug.WriteLine("Pawn moved");
+                System.Diagnostics.Debug.WriteLine("temp: "+ yTemp + " y: "+ yIndex);
+            }
+        }
+    }
     enum PieceType
     {
         pawn,

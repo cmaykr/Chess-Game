@@ -9,16 +9,12 @@ namespace Chess_Game
 {
     public class Game1 : Game
     {
-        Board DrawBoard = new Board();
-        Piece[,] DrawPiece = new Piece[8, 8];
+        readonly Board DrawBoard = new Board();
+        readonly Piece[,] DrawPiece = new Piece[8, 8];
         public static Game1 Instance;
         public static Vector2 boardPosition;
-        public Texture2D pawn, rook, knight, king, bishop, queen;
-        MouseState mouse, prev;
-        int xIndex, yIndex = -1;
-        bool pieceChosen = false;
 
-        private GraphicsDeviceManager _graphics;
+        private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
 
@@ -44,108 +40,9 @@ namespace Chess_Game
             // TODO: use this.Content to load your game content here
 
             boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - 200, GraphicsDevice.Viewport.Bounds.Height / 2 - 160);
-            pawn = Content.Load<Texture2D>("Pawn");
-            rook = Content.Load<Texture2D>("rook");
-            knight = Content.Load<Texture2D>("knight");
-            king = Content.Load<Texture2D>("king");
-            queen = Content.Load<Texture2D>("queen");
-            bishop = Content.Load<Texture2D>("bishop");
+            
 
-
-            // Easier or better way to do this?
-            for (int i = 0; i < 8; i++)
-            {
-                DrawPiece[i, 1] = new Piece()
-                {
-                    type = PieceType.pawn,
-                    pieceColor = Color.Black,
-                };
-                DrawPiece[i, 6] = new Piece()
-                {
-                    type = PieceType.pawn,
-                    pieceColor = Color.White,
-                };
-            }
-            DrawPiece[0, 0] = new Piece()
-            {
-                type = PieceType.rook,
-                pieceColor = Color.Black,
-            };
-            DrawPiece[7, 0] = new Piece()
-            {
-                type = PieceType.rook,
-                pieceColor = Color.Black,
-            };
-            DrawPiece[0, 7] = new Piece()
-            {
-                type = PieceType.rook,
-                pieceColor = Color.White,
-            };
-            DrawPiece[7, 7] = new Piece()
-            {
-                type = PieceType.rook,
-                pieceColor = Color.White,
-            };
-            DrawPiece[1, 0] = new Piece()
-            {
-                type = PieceType.knight,
-                pieceColor = Color.Black,
-            };
-            DrawPiece[6, 0] = new Piece()
-            {
-                type = PieceType.knight,
-                pieceColor = Color.Black,
-            };
-            DrawPiece[1, 7] = new Piece()
-            {
-                type = PieceType.knight,
-                pieceColor = Color.White,
-            };
-            DrawPiece[6, 7] = new Piece()
-            {
-                type = PieceType.knight,
-                pieceColor = Color.White,
-            };
-            DrawPiece[2, 0] = new Piece()
-            {
-                type = PieceType.bishop,
-                pieceColor = Color.Black,
-            };
-            DrawPiece[5, 0] = new Piece()
-            {
-                type = PieceType.bishop,
-                pieceColor = Color.Black,
-            };
-            DrawPiece[2, 7] = new Piece()
-            {
-                type = PieceType.bishop,
-                pieceColor = Color.White,
-            };
-            DrawPiece[5, 7] = new Piece()
-            {
-                type = PieceType.bishop,
-                pieceColor = Color.White,
-            };
-            DrawPiece[3, 0] = new Piece()
-            {
-                type = PieceType.king,
-                pieceColor = Color.Black,
-            };
-            DrawPiece[3, 7] = new Piece()
-            {
-                type = PieceType.king,
-                pieceColor = Color.White,
-            };
-            DrawPiece[4, 0] = new Piece()
-            {
-                type = PieceType.queen,
-                pieceColor = Color.Black,
-            };
-            DrawPiece[4, 7] = new Piece()
-            {
-                type = PieceType.queen,
-                pieceColor = Color.White,
-            };
+            DrawBoard.PieceContent(DrawPiece);
         }
 
         protected override void Update(GameTime gameTime)
@@ -155,32 +52,8 @@ namespace Chess_Game
 
             // TODO: Add your update logic here
 
-            mouse = Mouse.GetState();
+            DrawBoard.PieceMove(DrawPiece, boardPosition);
 
-
-            //Lol, find better way to do this, or make it look better.
-            if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
-            {
-                Vector2 idxVector = new Vector2((mouse.X - boardPosition.X) / 40, (mouse.Y - boardPosition.Y) / 40);
-                xIndex = (int)idxVector.X;
-                yIndex = (int)idxVector.Y;
-                pieceChosen = true;
-                System.Diagnostics.Debug.WriteLine("x: " + xIndex + " y: " + yIndex);
-            }
-            else if (pieceChosen == true && mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
-            {
-                int xTemp = (int)(mouse.X - boardPosition.X) / 40;
-                int yTemp = (int)(mouse.Y - boardPosition.Y) / 40;
-
-                DrawPiece[xTemp, yTemp] = DrawPiece[xIndex, yIndex];
-                DrawPiece[xIndex, yIndex] = null;
-
-                System.Diagnostics.Debug.WriteLine("xTemp: " + xTemp + " yTemp: " + yTemp);
-                pieceChosen = false;
-            }
-
-
-            prev = mouse;
             base.Update(gameTime);
         }
 
