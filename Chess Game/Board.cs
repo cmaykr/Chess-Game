@@ -13,7 +13,6 @@ namespace Chess_Game
         int xIndex, yIndex = -1;
         bool pieceChosen = false;
         public Texture2D pawn, rook, knight, king, bishop, queen;
-        Piece rules = new Piece();
 
         public static Board Instance;
 
@@ -56,93 +55,93 @@ namespace Chess_Game
                 DrawPiece[i, 1] = new Piece()
                 {
                     type = PieceType.pawn,
-                    pieceColor = Color.Black,
+                    isBlack = true,
                 };
                 DrawPiece[i, 6] = new Piece()
                 {
                     type = PieceType.pawn,
-                    pieceColor = Color.White,
+                    isBlack = false,
                 };
             }
             DrawPiece[0, 0] = new Piece()
             {
                 type = PieceType.rook,
-                pieceColor = Color.Black,
+                isBlack = true,
             };
             DrawPiece[7, 0] = new Piece()
             {
                 type = PieceType.rook,
-                pieceColor = Color.Black,
+                isBlack = true,
             };
             DrawPiece[0, 7] = new Piece()
             {
                 type = PieceType.rook,
-                pieceColor = Color.White,
+                isBlack = false,
             };
             DrawPiece[7, 7] = new Piece()
             {
                 type = PieceType.rook,
-                pieceColor = Color.White,
+                isBlack = false,
             };
             DrawPiece[1, 0] = new Piece()
             {
                 type = PieceType.knight,
-                pieceColor = Color.Black,
+                isBlack = true,
             };
             DrawPiece[6, 0] = new Piece()
             {
                 type = PieceType.knight,
-                pieceColor = Color.Black,
+                isBlack = true,
             };
             DrawPiece[1, 7] = new Piece()
             {
                 type = PieceType.knight,
-                pieceColor = Color.White,
+                isBlack = false,
             };
             DrawPiece[6, 7] = new Piece()
             {
                 type = PieceType.knight,
-                pieceColor = Color.White,
+                isBlack = false,
             };
             DrawPiece[2, 0] = new Piece()
             {
                 type = PieceType.bishop,
-                pieceColor = Color.Black,
+                isBlack = true,
             };
             DrawPiece[5, 0] = new Piece()
             {
                 type = PieceType.bishop,
-                pieceColor = Color.Black,
+                isBlack = true,
             };
             DrawPiece[2, 7] = new Piece()
             {
                 type = PieceType.bishop,
-                pieceColor = Color.White,
+                isBlack = false,
             };
             DrawPiece[5, 7] = new Piece()
             {
                 type = PieceType.bishop,
-                pieceColor = Color.White,
+                isBlack = false,
             };
             DrawPiece[3, 0] = new Piece()
             {
                 type = PieceType.king,
-                pieceColor = Color.Black,
+                isBlack = true,
             };
             DrawPiece[3, 7] = new Piece()
             {
                 type = PieceType.king,
-                pieceColor = Color.White,
+                isBlack = false,
             };
             DrawPiece[4, 0] = new Piece()
             {
                 type = PieceType.queen,
-                pieceColor = Color.Black,
+                isBlack = true,
             };
             DrawPiece[4, 7] = new Piece()
             {
                 type = PieceType.queen,
-                pieceColor = Color.White,
+                isBlack = false,
             };
         }
 
@@ -150,7 +149,6 @@ namespace Chess_Game
         {
             mouse = Mouse.GetState();
 
-            //Lol, find better way to do this, or make it look better.
             if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
             {
                 Vector2 idxVector = new Vector2((mouse.X - boardPosition.X) / 40, (mouse.Y - boardPosition.Y) / 40);
@@ -164,29 +162,25 @@ namespace Chess_Game
             }
             else if (pieceChosen == true && mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
-                int xTemp = (int)(mouse.X - boardPosition.X) / 40;
-                int yTemp = (int)(mouse.Y - boardPosition.Y) / 40;
+                int xTarget = (int)(mouse.X - boardPosition.X) / 40;
+                int yTarget = (int)(mouse.Y - boardPosition.Y) / 40;
 
-                if (xTemp == xIndex && yTemp == yIndex)
+                if (xTarget == xIndex && yTarget == yIndex)
                 {
                     pieceChosen = false;
                     System.Diagnostics.Debug.WriteLine(pieceChosen);
                 }
-                else if (DrawPiece[xIndex, yIndex] != null)
+                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget))
                 {
-                    if (DrawPiece[xIndex, yIndex].type == PieceType.pawn)
-                    {
-                        rules.PawnRule(xIndex, yIndex, xTemp, yTemp, DrawPiece);
-                        System.Diagnostics.Debug.WriteLine("Pawn Chosen");
-                    }
-                    else
-                    {
-                        DrawPiece[xTemp, yTemp] = DrawPiece[xIndex, yIndex];
-                        DrawPiece[xIndex, yIndex] = null;
-                    }
-                }
+                    DrawPiece[xTarget, yTarget] = DrawPiece[xIndex, yIndex];
+                    DrawPiece[xIndex, yIndex] = null;
 
-                System.Diagnostics.Debug.WriteLine("xTemp: " + xTemp + " yTemp: " + yTemp);
+                    System.Diagnostics.Debug.WriteLine("Pawn moved");
+                    System.Diagnostics.Debug.WriteLine("temp: " + yTarget + " y: " + yIndex);
+                    
+                }
+                System.Diagnostics.Debug.WriteLine("x-y: " + Math.Abs(xTarget - xIndex));
+                System.Diagnostics.Debug.WriteLine("xTemp: " + xTarget + " yTemp: " + yTarget);
                 pieceChosen = false;
             }
             prev = mouse;

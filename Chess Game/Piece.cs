@@ -10,10 +10,21 @@ namespace Chess_Game
     class Piece
     {
         public PieceType type;
-        public Color pieceColor;
+        public bool isBlack;
 
         public void PieceDraw(SpriteBatch spriteBatch, int i, int j)
         {
+            Color pieceColor;
+
+            if (isBlack)
+            {
+                pieceColor = Color.Black;
+            }
+            else
+            {
+                pieceColor = Color.White;
+            }
+
             switch (type)
             {
                 case PieceType.pawn:
@@ -34,19 +45,20 @@ namespace Chess_Game
                 case PieceType.queen:
                     spriteBatch.Draw(Board.Instance.queen, new Vector2(i * 40 + Game1.boardPosition.X, j * 40 + Game1.boardPosition.Y), pieceColor);
                     break;
-
             }
         }
-        public void PawnRule(int xIndex, int yIndex, int xTemp, int yTemp, Piece[,] DrawPiece)
+        public bool CanMove(int xIndex, int yIndex, int xTarget, int yTarget)
         {
-            if (xTemp == xIndex && yTemp == yIndex + 2 && DrawPiece[xIndex, yIndex] == DrawPiece[xIndex, 1] || (yTemp ==  yIndex + 1 && xTemp == xIndex))
+            return type switch
             {
-                DrawPiece[xTemp, yTemp] = DrawPiece[xIndex, yIndex];
-                DrawPiece[xIndex, yIndex] = null;
-
-                System.Diagnostics.Debug.WriteLine("Pawn moved");
-                System.Diagnostics.Debug.WriteLine("temp: "+ yTemp + " y: "+ yIndex);
-            }
+                PieceType.pawn => xTarget == xIndex && yTarget == yIndex + 2 && yIndex == 1 || (yTarget == yIndex + 1 && xTarget == xIndex),
+                PieceType.rook => xTarget == xIndex || yTarget == yIndex,
+                PieceType.king => Math.Abs(xTarget - xIndex) == 1,
+                PieceType.bishop => Math.Abs(xIndex - xTarget) == Math.Abs(yIndex - yTarget),
+                PieceType.knight => (Math.Abs(xTarget - xIndex) == 2 && Math.Abs(yTarget - yIndex) == 1 || (Math.Abs(yTarget - yIndex) == 2 && Math.Abs(xTarget - xIndex) == 1)),
+                PieceType.queen => xTarget == xIndex || yTarget == yIndex || Math.Abs(xIndex - xTarget) == Math.Abs(yIndex - yTarget),
+                _ => false,
+            };
         }
     }
     enum PieceType
