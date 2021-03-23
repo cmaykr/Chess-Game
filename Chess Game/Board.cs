@@ -10,7 +10,8 @@ namespace Chess_Game
     class Board
     {
         MouseState mouse, prev;
-        int xIndex, yIndex = -1;
+        int xIndex, yIndex;
+        public int tileSize = 40;
         bool pieceChosen = false;
         public Texture2D pawn, rook, knight, king, bishop, queen;
 
@@ -29,11 +30,11 @@ namespace Chess_Game
                 {
                     if (i % 2 == j % 2)
                     {
-                        spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("Square"), new Rectangle(i * 40 + Width, j * 40 + Height, 40, 40), new Color(244,244,162));
+                        spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("Square"), new Rectangle(i * tileSize + Width, j * tileSize + Height, tileSize, tileSize), new Color(244,244,162));
                     }
                     else
                     {
-                        spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("Square"), new Rectangle(i * 40 + Width, j * 40 + Height, 40, 40), Color.DarkKhaki);
+                        spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("Square"), new Rectangle(i * tileSize + Width, j * tileSize + Height, tileSize, tileSize), Color.DarkKhaki);
                     }
                 }
             }
@@ -151,7 +152,7 @@ namespace Chess_Game
 
             if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
             {
-                Vector2 idxVector = new Vector2((mouse.X - boardPosition.X) / 40, (mouse.Y - boardPosition.Y) / 40);
+                Vector2 idxVector = new Vector2((mouse.X - boardPosition.X) / tileSize, (mouse.Y - boardPosition.Y) / tileSize);
                 xIndex = (int)idxVector.X;
                 yIndex = (int)idxVector.Y;
 
@@ -162,25 +163,19 @@ namespace Chess_Game
             }
             else if (pieceChosen == true && mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
-                int xTarget = (int)(mouse.X - boardPosition.X) / 40;
-                int yTarget = (int)(mouse.Y - boardPosition.Y) / 40;
+                int xTarget = (int)(mouse.X - boardPosition.X) / tileSize;
+                int yTarget = (int)(mouse.Y - boardPosition.Y) / tileSize;
 
                 if (xTarget == xIndex && yTarget == yIndex)
                 {
                     pieceChosen = false;
-                    System.Diagnostics.Debug.WriteLine(pieceChosen);
                 }
                 else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget))
                 {
+                    DrawPiece[xIndex, yIndex].hasMoved = true;
                     DrawPiece[xTarget, yTarget] = DrawPiece[xIndex, yIndex];
                     DrawPiece[xIndex, yIndex] = null;
-
-                    System.Diagnostics.Debug.WriteLine("Pawn moved");
-                    System.Diagnostics.Debug.WriteLine("temp: " + yTarget + " y: " + yIndex);
-                    
                 }
-                System.Diagnostics.Debug.WriteLine("x-y: " + Math.Abs(xTarget - xIndex));
-                System.Diagnostics.Debug.WriteLine("xTemp: " + xTarget + " yTemp: " + yTarget);
                 pieceChosen = false;
             }
             prev = mouse;
