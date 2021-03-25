@@ -1,16 +1,16 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Text;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Chess_Game
 {
     public class Game1 : Game
     {
-        readonly Board DrawBoard = new Board();
-        readonly Piece[,] DrawPiece = new Piece[8, 8];
+        readonly Board DrawBoard = new();
+        public readonly Piece[,] DrawPiece = new Piece[8, 8];
         public static Game1 Instance;
         public static Vector2 boardPosition;
 

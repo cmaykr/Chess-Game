@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Chess_Game
 {
@@ -12,8 +12,10 @@ namespace Chess_Game
         MouseState mouse, prev;
         int xIndex, yIndex;
         public int tileSize = 40;
+        public Texture2D Tile;
+        Texture2D validMoveIndicator;
         bool pieceChosen = false;
-        public Texture2D pawn, rook, knight, king, bishop, queen;
+        public Texture2D Pawn, Rook, Knight, King, Bishop, Queen;
 
         public static Board Instance;
 
@@ -22,20 +24,26 @@ namespace Chess_Game
             Instance = this;
         }
 
-        public void BoardDraw(SpriteBatch spriteBatch, int Width, int Height)
+        public void BoardDraw(SpriteBatch spriteBatch, int x, int y)
         {
             for (int i = 0; i < 8; i += 1)
             {
                 for (int j = 0; j < 8; j += 1)
                 {
+                    bool canMove = pieceChosen && Game1.Instance.DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, i, j);
+                    Rectangle tilePos = new(i * tileSize + x, j * tileSize + y, tileSize, tileSize);
+
                     if (i % 2 == j % 2)
                     {
-                        spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("Square"), new Rectangle(i * tileSize + Width, j * tileSize + Height, tileSize, tileSize), new Color(244,244,162));
+                        spriteBatch.Draw(Tile, tilePos, new(0xF4, 0xF4, 0xA2));
                     }
                     else
                     {
-                        spriteBatch.Draw(Game1.Instance.Content.Load<Texture2D>("Square"), new Rectangle(i * tileSize + Width, j * tileSize + Height, tileSize, tileSize), Color.DarkKhaki);
+                        spriteBatch.Draw(Tile, tilePos, Color.DarkKhaki);
                     }
+
+                    if (canMove)
+                        spriteBatch.Draw(validMoveIndicator, tilePos, Color.DarkGreen);
                 }
             }
         }
@@ -43,12 +51,14 @@ namespace Chess_Game
         public void PieceContent(Piece[,] DrawPiece)
         {
 
-            pawn = Game1.Instance.Content.Load<Texture2D>("Pawn");
-            rook = Game1.Instance.Content.Load<Texture2D>("rook");
-            knight = Game1.Instance.Content.Load<Texture2D>("knight");
-            king = Game1.Instance.Content.Load<Texture2D>("king");
-            queen = Game1.Instance.Content.Load<Texture2D>("queen");
-            bishop = Game1.Instance.Content.Load<Texture2D>("bishop");
+            Pawn = Game1.Instance.Content.Load<Texture2D>("Pawn");
+            Rook = Game1.Instance.Content.Load<Texture2D>("rook");
+            Knight = Game1.Instance.Content.Load<Texture2D>("knight");
+            King = Game1.Instance.Content.Load<Texture2D>("king");
+            Queen = Game1.Instance.Content.Load<Texture2D>("queen");
+            Bishop = Game1.Instance.Content.Load<Texture2D>("bishop");
+            Tile = Game1.Instance.Content.Load<Texture2D>("Square");
+            validMoveIndicator = Game1.Instance.Content.Load<Texture2D>("Small_Dot");
 
             // Easier or better way to do this?
             for (int i = 0; i < 8; i++)
@@ -152,7 +162,7 @@ namespace Chess_Game
 
             if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
             {
-                Vector2 idxVector = new Vector2((mouse.X - boardPosition.X) / tileSize, (mouse.Y - boardPosition.Y) / tileSize);
+                Vector2 idxVector = new((mouse.X - boardPosition.X) / tileSize, (mouse.Y - boardPosition.Y) / tileSize);
                 xIndex = (int)idxVector.X;
                 yIndex = (int)idxVector.Y;
 

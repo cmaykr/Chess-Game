@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Chess_Game
 {
-    class Piece
+    public class Piece
     {
         public PieceType type;
         public bool isBlack;
@@ -26,16 +26,14 @@ namespace Chess_Game
                 pieceColor = Color.White;
             }
 
-
-
             var type1 = type switch
             {
-                PieceType.pawn => Board.Instance.pawn,
-                PieceType.rook => Board.Instance.rook,
-                PieceType.king => Board.Instance.king,
-                PieceType.bishop => Board.Instance.bishop,
-                PieceType.knight => Board.Instance.knight,
-                PieceType.queen => Board.Instance.queen,
+                PieceType.pawn => Board.Instance.Pawn,
+                PieceType.rook => Board.Instance.Rook,
+                PieceType.king => Board.Instance.King,
+                PieceType.bishop => Board.Instance.Bishop,
+                PieceType.knight => Board.Instance.Knight,
+                PieceType.queen => Board.Instance.Queen,
                 _ => null,
             };
 
@@ -43,19 +41,22 @@ namespace Chess_Game
         }
         public bool CanMove(int xIndex, int yIndex, int xTarget, int yTarget)
         {
+            int xDist = Math.Abs(xTarget - xIndex);
+            int yDist = Math.Abs(yIndex - yTarget);
+
             return type switch
             {
                 PieceType.pawn => xTarget == xIndex && (yTarget == yIndex + 1 || (hasMoved == false && yTarget == yIndex + 2)),
                 PieceType.rook => xTarget == xIndex || yTarget == yIndex, 
-                PieceType.king => Math.Abs(xTarget - xIndex) == 1 || Math.Abs(yTarget - yIndex) == 1,
-                PieceType.bishop => Math.Abs(xIndex - xTarget) == Math.Abs(yIndex - yTarget),
-                PieceType.knight => (Math.Abs(xTarget - xIndex) == 2 && Math.Abs(yTarget - yIndex) == 1 || (Math.Abs(yTarget - yIndex) == 2 && Math.Abs(xTarget - xIndex) == 1)),
-                PieceType.queen => xTarget == xIndex || yTarget == yIndex || Math.Abs(xIndex - xTarget) == Math.Abs(yIndex - yTarget),
+                PieceType.king => (xDist == 1 && yDist == 0) || (yDist == 1 && xDist == 0) || (xDist == yDist && (xDist == 1 || yDist == 1)),
+                PieceType.bishop => xDist == yDist,
+                PieceType.knight => (xDist == 2 && yDist == 1 || (yDist == 2 && xDist == 1)),
+                PieceType.queen => xTarget == xIndex || yTarget == yIndex || xDist == yDist,
                 _ => false,
             };
         }
     }
-    enum PieceType
+    public enum PieceType
     {
         pawn,
         rook,
