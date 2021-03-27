@@ -64,7 +64,7 @@ namespace Chess_Game
             // TODO: Add your drawing code here
 
             _spriteBatch.Begin();
-            DrawBoard.BoardDraw(_spriteBatch, GraphicsDevice.Viewport.Bounds.Width / 2 - 200, GraphicsDevice.Viewport.Bounds.Height / 2 - 160);
+            DrawBoard.BoardDraw(_spriteBatch, (int)boardPosition.X, (int)boardPosition.Y);
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)

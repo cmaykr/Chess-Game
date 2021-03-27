@@ -37,7 +37,13 @@ namespace Chess_Game
                 _ => null,
             };
 
-            spriteBatch.Draw(type1, new Vector2(i * Board.Instance.tileSize + Game1.boardPosition.X, j * Board.Instance.tileSize + Game1.boardPosition.Y), pieceColor);
+            Rectangle piecePos = new(
+                i * Board.Instance.tileSize + (int)Game1.boardPosition.X,
+                j * Board.Instance.tileSize + (int)Game1.boardPosition.Y,
+                Board.Instance.tileSize,
+                Board.Instance.tileSize
+            );
+            spriteBatch.Draw(type1, piecePos, pieceColor);
         }
         public bool CanMove(int xIndex, int yIndex, int xTarget, int yTarget)
         {

@@ -14,8 +14,8 @@ namespace Chess_Game
         public int tileSize = 40;
         public Texture2D Tile;
         Texture2D validMoveIndicator;
-        bool pieceChosen = false;
         public Texture2D Pawn, Rook, Knight, King, Bishop, Queen;
+        bool pieceChosen = false;
 
         public static Board Instance;
 
@@ -50,17 +50,16 @@ namespace Chess_Game
 
         public void PieceContent(Piece[,] DrawPiece)
         {
-
             Pawn = Game1.Instance.Content.Load<Texture2D>("Pawn");
             Rook = Game1.Instance.Content.Load<Texture2D>("rook");
             Knight = Game1.Instance.Content.Load<Texture2D>("knight");
             King = Game1.Instance.Content.Load<Texture2D>("king");
             Queen = Game1.Instance.Content.Load<Texture2D>("queen");
             Bishop = Game1.Instance.Content.Load<Texture2D>("bishop");
+
             Tile = Game1.Instance.Content.Load<Texture2D>("Square");
             validMoveIndicator = Game1.Instance.Content.Load<Texture2D>("Small_Dot");
 
-            // Easier or better way to do this?
             for (int i = 0; i < 8; i++)
             {
                 DrawPiece[i, 1] = new Piece()
