@@ -178,7 +178,7 @@ namespace Chess_Game
                 {
                     pieceChosen = false;
                 }
-                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget) && (DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack))
+                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget) && (DrawPiece[xTarget, yTarget] == null))
                 {
                     DrawPiece[xIndex, yIndex].hasMoved = true;
                     DrawPiece[xTarget, yTarget] = DrawPiece[xIndex, yIndex];

@@ -59,7 +59,7 @@ namespace Chess_Game
 
             return type switch
             {
-                PieceType.pawn => xTarget == xIndex && (yTarget == yIndex + 1 || (hasMoved == false && yTarget == yIndex + 2) || (xDist == 1 && yDist == -1 && Game1.Instance.DrawPiece[xTarget, yTarget] != null)),
+                PieceType.pawn => xTarget == xIndex && (yTarget == yIndex + 1 || (hasMoved == false && yTarget == yIndex + 2)),
                 PieceType.rook => xTarget == xIndex || yTarget == yIndex, 
                 PieceType.king => (xDist == 1 && yDist == 0) || (yDist == 1 && xDist == 0) || (xDist == yDist && (xDist == 1 || yDist == 1)),
                 PieceType.bishop => xDist == yDist,
