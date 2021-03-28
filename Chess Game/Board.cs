@@ -168,7 +168,6 @@ namespace Chess_Game
                 if (DrawPiece[xIndex, yIndex] != null)
                     pieceChosen = true;
 
-                System.Diagnostics.Debug.WriteLine("x: " + xIndex + " y: " + yIndex);
             }
             else if (pieceChosen == true && mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
@@ -179,7 +178,7 @@ namespace Chess_Game
                 {
                     pieceChosen = false;
                 }
-                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget))
+                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget) && (DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack))
                 {
                     DrawPiece[xIndex, yIndex].hasMoved = true;
                     DrawPiece[xTarget, yTarget] = DrawPiece[xIndex, yIndex];

@@ -47,16 +47,23 @@ namespace Chess_Game
         }
         public bool CanMove(int xIndex, int yIndex, int xTarget, int yTarget)
         {
+            if (!isBlack)
+            {
+                yIndex = 7 - yIndex;
+                yTarget = 7 - yTarget;
+                xIndex = 7 - xIndex;
+                xTarget = 7 - xTarget;
+            }
             int xDist = Math.Abs(xTarget - xIndex);
             int yDist = Math.Abs(yIndex - yTarget);
 
             return type switch
             {
-                PieceType.pawn => xTarget == xIndex && (yTarget == yIndex + 1 || (hasMoved == false && yTarget == yIndex + 2)),
+                PieceType.pawn => xTarget == xIndex && (yTarget == yIndex + 1 || (hasMoved == false && yTarget == yIndex + 2) || (xDist == 1 && yDist == -1 && Game1.Instance.DrawPiece[xTarget, yTarget] != null)),
                 PieceType.rook => xTarget == xIndex || yTarget == yIndex, 
                 PieceType.king => (xDist == 1 && yDist == 0) || (yDist == 1 && xDist == 0) || (xDist == yDist && (xDist == 1 || yDist == 1)),
                 PieceType.bishop => xDist == yDist,
-                PieceType.knight => (xDist == 2 && yDist == 1 || (yDist == 2 && xDist == 1)),
+                PieceType.knight => xDist == 2 && yDist == 1 || (yDist == 2 && xDist == 1),
                 PieceType.queen => xTarget == xIndex || yTarget == yIndex || xDist == yDist,
                 _ => false,
             };
