@@ -15,7 +15,7 @@ namespace Chess_Game
         public static Vector2 boardPosition;
 
         private readonly GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        public SpriteBatch _spriteBatch;
 
 
         public Game1()
@@ -64,15 +64,7 @@ namespace Chess_Game
             // TODO: Add your drawing code here
 
             _spriteBatch.Begin();
-            DrawBoard.BoardDraw(_spriteBatch, (int)boardPosition.X, (int)boardPosition.Y);
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    if (DrawPiece[i, j] != null)
-                        DrawPiece[i, j].PieceDraw(_spriteBatch, i, j);
-                }
-            }
+            DrawBoard.BoardDraw(_spriteBatch, (int)boardPosition.X, (int)boardPosition.Y, DrawPiece);
             _spriteBatch.End();
 
             base.Draw(gameTime);

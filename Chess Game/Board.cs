@@ -15,6 +15,7 @@ namespace Chess_Game
         public Texture2D Tile;
         Texture2D validMoveIndicator;
         public Texture2D Pawn, Rook, Knight, King, Bishop, Queen;
+        Texture2D validMoveIndicatorSquare;
         bool pieceChosen = false;
 
         public static Board Instance;
@@ -24,13 +25,13 @@ namespace Chess_Game
             Instance = this;
         }
 
-        public void BoardDraw(SpriteBatch spriteBatch, int x, int y)
+        public void BoardDraw(SpriteBatch spriteBatch, int x, int y, Piece[,] DrawPiece)
         {
             for (int i = 0; i < 8; i += 1)
             {
                 for (int j = 0; j < 8; j += 1)
                 {
-                    bool canMove = pieceChosen && Game1.Instance.DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, i, j);
+                    bool canMove = pieceChosen && DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, i, j);
                     Rectangle tilePos = new(i * tileSize + x, j * tileSize + y, tileSize, tileSize);
 
                     if (i % 2 == j % 2)
@@ -42,8 +43,19 @@ namespace Chess_Game
                         spriteBatch.Draw(Tile, tilePos, Color.DarkKhaki);
                     }
 
-                    if (canMove)
+                    if (canMove && DrawPiece[i, j] == null)
                         spriteBatch.Draw(validMoveIndicator, tilePos, Color.DarkGreen);
+                    else if(canMove && DrawPiece[i, j].isBlack != DrawPiece[xIndex, yIndex].isBlack)
+                            spriteBatch.Draw(validMoveIndicatorSquare, tilePos, Color.DarkGreen);
+                }
+            }
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (Game1.Instance.DrawPiece[i, j] != null)
+                        Game1.Instance.DrawPiece[i, j].PieceDraw(Game1.Instance._spriteBatch, i, j);
                 }
             }
         }
@@ -59,6 +71,7 @@ namespace Chess_Game
 
             Tile = Game1.Instance.Content.Load<Texture2D>("Square");
             validMoveIndicator = Game1.Instance.Content.Load<Texture2D>("Small_Dot");
+            validMoveIndicatorSquare = Game1.Instance.Content.Load<Texture2D>("SquareDot");
 
             for (int i = 0; i < 8; i++)
             {
@@ -178,11 +191,14 @@ namespace Chess_Game
                 {
                     pieceChosen = false;
                 }
-                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget) && (DrawPiece[xTarget, yTarget] == null))
+                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget))
                 {
-                    DrawPiece[xIndex, yIndex].hasMoved = true;
-                    DrawPiece[xTarget, yTarget] = DrawPiece[xIndex, yIndex];
-                    DrawPiece[xIndex, yIndex] = null;
+                    if (DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack)
+                    {
+                        DrawPiece[xIndex, yIndex].hasMoved = true;
+                        DrawPiece[xTarget, yTarget] = DrawPiece[xIndex, yIndex];
+                        DrawPiece[xIndex, yIndex] = null;
+                    }
                 }
                 pieceChosen = false;
             }
