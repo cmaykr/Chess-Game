@@ -17,6 +17,7 @@ namespace Chess_Game
         public Texture2D Pawn, Rook, Knight, King, Bishop, Queen;
         Texture2D validMoveIndicatorSquare;
         bool pieceChosen = false;
+        Piece piece = new();
 
         public static Board Instance;
 
@@ -54,8 +55,8 @@ namespace Chess_Game
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    if (Game1.Instance.DrawPiece[i, j] != null)
-                        Game1.Instance.DrawPiece[i, j].PieceDraw(Game1.Instance._spriteBatch, i, j);
+                    if (DrawPiece[i, j] != null)
+                        DrawPiece[i, j].PieceDraw(spriteBatch, i, j);
                 }
             }
         }
@@ -191,9 +192,36 @@ namespace Chess_Game
                 {
                     pieceChosen = false;
                 }
-                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget))
+                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget) && xTarget < 8 && yTarget < 8 && xTarget > -1 && yTarget > -1)
                 {
-                    if (DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack)
+                    ///////////////////////////////////////
+                    // Temporary? Maybe better way?
+                    bool collision = false;
+                    int tempDist;
+
+                    if (xTarget == xIndex)
+                        tempDist = Math.Abs(yTarget - yIndex);
+                    else
+                        tempDist = Math.Abs(xTarget - xIndex);
+
+                    for (int i = 1; i < tempDist; i++)
+                    {
+                        if (DrawPiece[xIndex, yIndex].type == PieceType.knight)
+                            break;  
+
+                        if (xIndex == xTarget)
+                            collision = piece.CheckCollision(xIndex, (yTarget < yIndex) ? yIndex - i : yIndex + i);
+                        else if (yIndex == yTarget)
+                            collision = piece.CheckCollision((xTarget < xIndex) ? xIndex - i : xIndex + i, yIndex);
+                        else if (Math.Abs(xTarget - xIndex) == Math.Abs(yTarget - yIndex))
+                            collision = piece.CheckCollision((xTarget < xIndex) ? xIndex - i : xIndex + i, (yTarget < yIndex) ? yIndex - i : yIndex + i);
+
+                        if (collision == true)
+                            break;
+                    }
+                    ///////////////////////////////////////////
+
+                    if ((DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack) && collision != true)
                     {
                         DrawPiece[xIndex, yIndex].hasMoved = true;
                         DrawPiece[xTarget, yTarget] = DrawPiece[xIndex, yIndex];

@@ -15,7 +15,7 @@ namespace Chess_Game
         public static Vector2 boardPosition;
 
         private readonly GraphicsDeviceManager _graphics;
-        public SpriteBatch _spriteBatch;
+        private SpriteBatch _spriteBatch;
 
 
         public Game1()

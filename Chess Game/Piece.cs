@@ -68,6 +68,13 @@ namespace Chess_Game
                 _ => false,
             };
         }
+        public bool CheckCollision(int x, int y)
+        {
+            if (Game1.Instance.DrawPiece[x, y] == null)
+                return false;
+
+            return true;
+        }
     }
     public enum PieceType
     {
