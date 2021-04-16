@@ -13,19 +13,24 @@ namespace Chess_Game
         public bool isBlack;
         public bool hasMoved;
 
+        /// <summary>
+        /// Metod för att bestämma position, färg och bilden för pjäserna.
+        /// </summary>
         public void PieceDraw(SpriteBatch spriteBatch, int i, int j)
         {
             Color pieceColor;
 
+            // Säger vilken färg spelare 1 och 2 pjäserna ska ha.
             if (isBlack)
             {
-                pieceColor = Color.Black;
+                pieceColor = Color.DarkSlateGray;
             }
             else
             {
                 pieceColor = Color.White;
             }
 
+            //Bestämmer vilken bild som pjäserna ska använda.
             var type1 = type switch
             {
                 PieceType.pawn => Board.Instance.Pawn,
@@ -37,16 +42,22 @@ namespace Chess_Game
                 _ => null,
             };
 
+            //Bestämmer positionen alla pjäserna ska ha på spelbrädet.
             Rectangle piecePos = new(
-                i * Board.Instance.tileSize + (int)Game1.boardPosition.X,
-                j * Board.Instance.tileSize + (int)Game1.boardPosition.Y,
-                Board.Instance.tileSize,
-                Board.Instance.tileSize
+                i * Board.Instance.TileSize + (int)Game1.boardPosition.X,
+                j * Board.Instance.TileSize + (int)Game1.boardPosition.Y,
+                Board.Instance.TileSize,
+                Board.Instance.TileSize
             );
             spriteBatch.Draw(type1, piecePos, pieceColor);
         }
+        /// <summary>
+        /// Metod returnar om pjäsen får flytta till den positionen man valt.
+        /// </summary>
         public bool CanMove(int xIndex, int yIndex, int xTarget, int yTarget)
         {
+            int xTemp = xTarget;
+            int yTemp = yTarget;
             if (!isBlack)
             {
                 yIndex = 7 - yIndex;
@@ -59,21 +70,67 @@ namespace Chess_Game
 
             return type switch
             {
-                PieceType.pawn => xTarget == xIndex && (yTarget == yIndex + 1 || (hasMoved == false && yTarget == yIndex + 2)),
+                PieceType.pawn => (xTarget == xIndex && (yTarget == yIndex + 1 
+                    || (hasMoved == false && yTarget == yIndex + 2)) 
+                    && Game1.Instance.DrawPiece[xTemp, yTemp] == null) 
+                    || (xDist == 1 && yTarget == yIndex + 1 && PawnDiagonalAttack(xTemp, yTemp)),
                 PieceType.rook => xTarget == xIndex || yTarget == yIndex, 
-                PieceType.king => (xDist == 1 && yDist == 0) || (yDist == 1 && xDist == 0) || (xDist == yDist && (xDist == 1 || yDist == 1)),
+                PieceType.king => (xDist == 1 && yDist == 0) 
+                    || (yDist == 1 && xDist == 0) 
+                    || (xDist == yDist && (xDist == 1 || yDist == 1)),
                 PieceType.bishop => xDist == yDist,
                 PieceType.knight => xDist == 2 && yDist == 1 || (yDist == 2 && xDist == 1),
                 PieceType.queen => xTarget == xIndex || yTarget == yIndex || xDist == yDist,
                 _ => false,
             };
         }
-        public bool CheckCollision(int x, int y)
-        {
-            if (Game1.Instance.DrawPiece[x, y] == null)
-                return false;
 
-            return true;
+        /// <summary>
+        /// Metod som returnar om bondepjäsen
+        /// kan gå diagonalt för att ta ut en pjäs.
+        /// </summary>
+        static bool PawnDiagonalAttack(int xTarget, int yTarget)
+        {
+            if (Game1.Instance.DrawPiece[xTarget, yTarget] != null)
+                return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Returnerar om det är en pjäs mellan den valda pjäsen och den valda positionen.
+        /// </summary>
+        public bool Collision(int xIndex, int yIndex, int xTarget, int yTarget)
+        {
+            bool collision = false;
+            int tempDist;
+
+            if (xTarget == xIndex)
+                tempDist = Math.Abs(yTarget - yIndex);
+            else
+                tempDist = Math.Abs(xTarget - xIndex);
+            int i = 1;
+            while (i < tempDist && collision == false)
+            {
+                if (Game1.Instance.DrawPiece[xIndex, yIndex].type == PieceType.knight)
+                    break;
+
+                int x = (xTarget < xIndex)
+                    ? xIndex - i
+                    : xIndex + i;
+                int y = (yTarget < yIndex)
+                    ? yIndex - i
+                    : yIndex + i;
+
+                if (xIndex == xTarget)
+                    collision = Game1.Instance.DrawPiece[x, y] != null;
+                else if (yIndex == yTarget)
+                    collision = Game1.Instance.DrawPiece[x, y] != null;
+                else if (Math.Abs(xTarget - xIndex) == Math.Abs(yTarget - yIndex))
+                    collision = Game1.Instance.DrawPiece[x, y] != null;
+
+                i++;
+            }
+            return collision;
         }
     }
     public enum PieceType

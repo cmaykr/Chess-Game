@@ -7,17 +7,23 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Chess_Game
 {
+    /// <summary>
+    /// Board klassen är den som ritar spelbrädet och instanserar pjäserna,
+    /// Board används också för att flytta pjäserna.
+    /// </summary>
     class Board
     {
         MouseState mouse, prev;
         int xIndex, yIndex;
-        public int tileSize = 40;
-        public Texture2D Tile;
+        public int TileSize { get; init; } = 40;
+        private Texture2D tile;
+        public Texture2D Tile => tile;
         Texture2D validMoveIndicator;
         public Texture2D Pawn, Rook, Knight, King, Bishop, Queen;
         Texture2D validMoveIndicatorSquare;
         bool pieceChosen = false;
         Piece piece = new();
+        bool isPlayerOne;
 
         public static Board Instance;
 
@@ -26,14 +32,18 @@ namespace Chess_Game
             Instance = this;
         }
 
+        /// <summary>
+        /// Ritar spelbrädet, 
+        /// visar också var man kan flytta en pjäs.
+        /// </summary>
         public void BoardDraw(SpriteBatch spriteBatch, int x, int y, Piece[,] DrawPiece)
         {
             for (int i = 0; i < 8; i += 1)
             {
                 for (int j = 0; j < 8; j += 1)
                 {
-                    bool canMove = pieceChosen && DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, i, j);
-                    Rectangle tilePos = new(i * tileSize + x, j * tileSize + y, tileSize, tileSize);
+                    bool canMove = pieceChosen && DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, i, j) && !piece.Collision(xIndex, yIndex, i, j);
+                    Rectangle tilePos = new(i * TileSize + x, j * TileSize + y, TileSize, TileSize);
 
                     if (i % 2 == j % 2)
                     {
@@ -61,6 +71,10 @@ namespace Chess_Game
             }
         }
 
+        /// <summary>
+        /// Instanserar alla bilderna.
+        /// Bestämmer var pjäserna ska finnas i arrayen.
+        /// </summary>
         public void PieceContent(Piece[,] DrawPiece)
         {
             Pawn = Game1.Instance.Content.Load<Texture2D>("Pawn");
@@ -70,7 +84,7 @@ namespace Chess_Game
             Queen = Game1.Instance.Content.Load<Texture2D>("queen");
             Bishop = Game1.Instance.Content.Load<Texture2D>("bishop");
 
-            Tile = Game1.Instance.Content.Load<Texture2D>("Square");
+            tile = Game1.Instance.Content.Load<Texture2D>("Square");
             validMoveIndicator = Game1.Instance.Content.Load<Texture2D>("Small_Dot");
             validMoveIndicatorSquare = Game1.Instance.Content.Load<Texture2D>("SquareDot");
 
@@ -169,24 +183,27 @@ namespace Chess_Game
             };
         }
 
+        /// <summary>
+        /// Metod för att välja och flytta pjäserna.
+        /// </summary>
         public void PieceMove(Piece[,] DrawPiece, Vector2 boardPosition)
         {
             mouse = Mouse.GetState();
 
             if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
             {
-                Vector2 idxVector = new((mouse.X - boardPosition.X) / tileSize, (mouse.Y - boardPosition.Y) / tileSize);
+                Vector2 idxVector = new((mouse.X - boardPosition.X) / TileSize, (mouse.Y - boardPosition.Y) / TileSize);
                 xIndex = (int)idxVector.X;
                 yIndex = (int)idxVector.Y;
 
-                if (DrawPiece[xIndex, yIndex] != null)
+                if (DrawPiece[xIndex, yIndex] != null && DrawPiece[xIndex, yIndex].isBlack == isPlayerOne)
                     pieceChosen = true;
 
             }
             else if (pieceChosen == true && mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
-                int xTarget = (int)(mouse.X - boardPosition.X) / tileSize;
-                int yTarget = (int)(mouse.Y - boardPosition.Y) / tileSize;
+                int xTarget = (int)(mouse.X - boardPosition.X) / TileSize;
+                int yTarget = (int)(mouse.Y - boardPosition.Y) / TileSize;
 
                 if (xTarget == xIndex && yTarget == yIndex)
                 {
@@ -194,35 +211,9 @@ namespace Chess_Game
                 }
                 else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget) && xTarget < 8 && yTarget < 8 && xTarget > -1 && yTarget > -1)
                 {
-                    ///////////////////////////////////////
-                    // Temporary? Maybe better way?
-                    bool collision = false;
-                    int tempDist;
-
-                    if (xTarget == xIndex)
-                        tempDist = Math.Abs(yTarget - yIndex);
-                    else
-                        tempDist = Math.Abs(xTarget - xIndex);
-
-                    for (int i = 1; i < tempDist; i++)
+                    if ((DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack) && !piece.Collision(xIndex, yIndex, xTarget, yTarget))
                     {
-                        if (DrawPiece[xIndex, yIndex].type == PieceType.knight)
-                            break;  
-
-                        if (xIndex == xTarget)
-                            collision = piece.CheckCollision(xIndex, (yTarget < yIndex) ? yIndex - i : yIndex + i);
-                        else if (yIndex == yTarget)
-                            collision = piece.CheckCollision((xTarget < xIndex) ? xIndex - i : xIndex + i, yIndex);
-                        else if (Math.Abs(xTarget - xIndex) == Math.Abs(yTarget - yIndex))
-                            collision = piece.CheckCollision((xTarget < xIndex) ? xIndex - i : xIndex + i, (yTarget < yIndex) ? yIndex - i : yIndex + i);
-
-                        if (collision == true)
-                            break;
-                    }
-                    ///////////////////////////////////////////
-
-                    if ((DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack) && collision != true)
-                    {
+                        isPlayerOne = !isPlayerOne;
                         DrawPiece[xIndex, yIndex].hasMoved = true;
                         DrawPiece[xTarget, yTarget] = DrawPiece[xIndex, yIndex];
                         DrawPiece[xIndex, yIndex] = null;
