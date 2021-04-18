@@ -47,11 +47,11 @@ namespace Chess_Game
 
                     if (i % 2 == j % 2)
                     {
-                        spriteBatch.Draw(Tile, tilePos, new(0xF4, 0xF4, 0xA2));
+                        spriteBatch.Draw(Tile, tilePos, new(0x94, 0x6f, 0x51));
                     }
                     else
                     {
-                        spriteBatch.Draw(Tile, tilePos, Color.DarkKhaki);
+                        spriteBatch.Draw(Tile, tilePos, new(0xF0, 0xD9, 0xB5));
                     }
 
                     if (canMove && DrawPiece[i, j] == null)
@@ -88,99 +88,43 @@ namespace Chess_Game
             validMoveIndicator = Game1.Instance.Content.Load<Texture2D>("Small_Dot");
             validMoveIndicatorSquare = Game1.Instance.Content.Load<Texture2D>("SquareDot");
 
-            for (int i = 0; i < 8; i++)
+            string[] pieceCoord = new[]
             {
-                DrawPiece[i, 1] = new Piece()
+                "PPPPPPPP",
+                "RGBKQBGR"
+            };
+
+            for (int i = 0; i < pieceCoord.Length; i++)
+            {
+                for (int j = 0; j <= 7; j++)
                 {
-                    type = PieceType.pawn,
-                    isBlack = true,
-                };
-                DrawPiece[i, 6] = new Piece()
-                {
-                    type = PieceType.pawn,
-                    isBlack = false,
-                };
+                    char charPiece = pieceCoord[pieceCoord.Length - i - 1][j];
+
+                    var type = new Piece().type;
+
+                    type = charPiece switch
+                    {
+                        'P' => PieceType.pawn,
+                        'R' => PieceType.rook,
+                        'G' => PieceType.knight,
+                        'B' => PieceType.bishop,
+                        'K' => PieceType.king,
+                        'Q' => PieceType.queen,
+                        _ => throw new System.Exception("Unkown"),
+                    };
+
+                    DrawPiece[j, i] = new Piece()
+                    {
+                        type = type,
+                        isBlack = true,
+                    };
+                    DrawPiece[j, 7 - i] = new Piece()
+                    {
+                        type = type,
+                        isBlack = false,
+                    };
+                }
             }
-            DrawPiece[0, 0] = new Piece()
-            {
-                type = PieceType.rook,
-                isBlack = true,
-            };
-            DrawPiece[7, 0] = new Piece()
-            {
-                type = PieceType.rook,
-                isBlack = true,
-            };
-            DrawPiece[0, 7] = new Piece()
-            {
-                type = PieceType.rook,
-                isBlack = false,
-            };
-            DrawPiece[7, 7] = new Piece()
-            {
-                type = PieceType.rook,
-                isBlack = false,
-            };
-            DrawPiece[1, 0] = new Piece()
-            {
-                type = PieceType.knight,
-                isBlack = true,
-            };
-            DrawPiece[6, 0] = new Piece()
-            {
-                type = PieceType.knight,
-                isBlack = true,
-            };
-            DrawPiece[1, 7] = new Piece()
-            {
-                type = PieceType.knight,
-                isBlack = false,
-            };
-            DrawPiece[6, 7] = new Piece()
-            {
-                type = PieceType.knight,
-                isBlack = false,
-            };
-            DrawPiece[2, 0] = new Piece()
-            {
-                type = PieceType.bishop,
-                isBlack = true,
-            };
-            DrawPiece[5, 0] = new Piece()
-            {
-                type = PieceType.bishop,
-                isBlack = true,
-            };
-            DrawPiece[2, 7] = new Piece()
-            {
-                type = PieceType.bishop,
-                isBlack = false,
-            };
-            DrawPiece[5, 7] = new Piece()
-            {
-                type = PieceType.bishop,
-                isBlack = false,
-            };
-            DrawPiece[3, 0] = new Piece()
-            {
-                type = PieceType.king,
-                isBlack = true,
-            };
-            DrawPiece[3, 7] = new Piece()
-            {
-                type = PieceType.king,
-                isBlack = false,
-            };
-            DrawPiece[4, 0] = new Piece()
-            {
-                type = PieceType.queen,
-                isBlack = true,
-            };
-            DrawPiece[4, 7] = new Piece()
-            {
-                type = PieceType.queen,
-                isBlack = false,
-            };
         }
 
         /// <summary>
@@ -196,7 +140,7 @@ namespace Chess_Game
                 xIndex = (int)idxVector.X;
                 yIndex = (int)idxVector.Y;
 
-                if (DrawPiece[xIndex, yIndex] != null && DrawPiece[xIndex, yIndex].isBlack == isPlayerOne)
+                if (xIndex > -1 && xIndex < 8 && yIndex > -1 && yIndex < 8 && DrawPiece[xIndex, yIndex] != null && DrawPiece[xIndex, yIndex].isBlack == isPlayerOne)
                     pieceChosen = true;
 
             }
@@ -209,7 +153,9 @@ namespace Chess_Game
                 {
                     pieceChosen = false;
                 }
-                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget) && xTarget < 8 && yTarget < 8 && xTarget > -1 && yTarget > -1)
+                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget) 
+                    && xTarget < 8 && yTarget < 8 
+                    && xTarget > -1 && yTarget > -1)
                 {
                     if ((DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack) && !piece.Collision(xIndex, yIndex, xTarget, yTarget))
                     {

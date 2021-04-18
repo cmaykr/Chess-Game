@@ -16,14 +16,16 @@ namespace Chess_Game
         /// <summary>
         /// Metod för att bestämma position, färg och bilden för pjäserna.
         /// </summary>
-        public void PieceDraw(SpriteBatch spriteBatch, int i, int j)
+        /// <param name="spriteBatch"></param>
+        /// <param name="xCoord">Positionen på spelbrädet i X-led</param>
+        /// <param name="yCoord">Positionen på spelbrädet i Y-led</param>
+        public void PieceDraw(SpriteBatch spriteBatch, int xCoord, int yCoord)
         {
             Color pieceColor;
 
-            // Säger vilken färg spelare 1 och 2 pjäserna ska ha.
             if (isBlack)
             {
-                pieceColor = Color.DarkSlateGray;
+                pieceColor = new(16, 19, 20);
             }
             else
             {
@@ -44,8 +46,8 @@ namespace Chess_Game
 
             //Bestämmer positionen alla pjäserna ska ha på spelbrädet.
             Rectangle piecePos = new(
-                i * Board.Instance.TileSize + (int)Game1.boardPosition.X,
-                j * Board.Instance.TileSize + (int)Game1.boardPosition.Y,
+                xCoord * Board.Instance.TileSize + (int)Game1.boardPosition.X,
+                yCoord * Board.Instance.TileSize + (int)Game1.boardPosition.Y,
                 Board.Instance.TileSize,
                 Board.Instance.TileSize
             );
@@ -68,6 +70,7 @@ namespace Chess_Game
             int xDist = Math.Abs(xTarget - xIndex);
             int yDist = Math.Abs(yIndex - yTarget);
 
+            // returnerar hur den valda pjäsen kan flyttas.
             return type switch
             {
                 PieceType.pawn => (xTarget == xIndex && (yTarget == yIndex + 1 
@@ -121,10 +124,11 @@ namespace Chess_Game
                     ? yIndex - i
                     : yIndex + i;
 
+                // Kollar om pjäsen flyttas diagonalt, horisontalt eller vertikalt.
                 if (xIndex == xTarget)
-                    collision = Game1.Instance.DrawPiece[x, y] != null;
+                    collision = Game1.Instance.DrawPiece[xIndex, y] != null;
                 else if (yIndex == yTarget)
-                    collision = Game1.Instance.DrawPiece[x, y] != null;
+                    collision = Game1.Instance.DrawPiece[x, yIndex] != null;
                 else if (Math.Abs(xTarget - xIndex) == Math.Abs(yTarget - yIndex))
                     collision = Game1.Instance.DrawPiece[x, y] != null;
 
