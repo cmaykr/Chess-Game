@@ -31,6 +31,8 @@ namespace Chess_Game
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            Window.AllowUserResizing = true;
+            Window.ClientSizeChanged += DrawBoard.OnResize;
         }
 
         protected override void LoadContent()
@@ -39,7 +41,7 @@ namespace Chess_Game
 
             // TODO: use this.Content to load your game content here
 
-            boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - 200, GraphicsDevice.Viewport.Bounds.Height / 2 - 160);
+            boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - (DrawBoard.TileSize.X * 5), GraphicsDevice.Viewport.Bounds.Height / 2 - (DrawBoard.TileSize.Y * 4));
             
 
             DrawBoard.PieceContent(DrawPiece);
@@ -53,6 +55,7 @@ namespace Chess_Game
             // TODO: Add your update logic here
 
             DrawBoard.PieceMove(DrawPiece, boardPosition);
+
 
             base.Update(gameTime);
         }

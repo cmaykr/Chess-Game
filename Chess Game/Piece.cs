@@ -46,10 +46,10 @@ namespace Chess_Game
 
             //Bestämmer positionen alla pjäserna ska ha på spelbrädet.
             Rectangle piecePos = new(
-                xCoord * Board.Instance.TileSize + (int)Game1.boardPosition.X,
-                yCoord * Board.Instance.TileSize + (int)Game1.boardPosition.Y,
-                Board.Instance.TileSize,
-                Board.Instance.TileSize
+                xCoord * (int)Board.Instance.TileSize.X + (int)Game1.boardPosition.X,
+                yCoord * (int)Board.Instance.TileSize.Y + (int)Game1.boardPosition.Y,
+                (int)Board.Instance.TileSize.X,
+                (int)Board.Instance.TileSize.Y
             );
             spriteBatch.Draw(type1, piecePos, pieceColor);
         }

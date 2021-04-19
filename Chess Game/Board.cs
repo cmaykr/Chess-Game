@@ -15,7 +15,7 @@ namespace Chess_Game
     {
         MouseState mouse, prev;
         int xIndex, yIndex;
-        public int TileSize { get; init; } = 40;
+        public Vector2 TileSize { get; private set; } = new(40,40);
         private Texture2D tile;
         public Texture2D Tile => tile;
         Texture2D validMoveIndicator;
@@ -24,6 +24,7 @@ namespace Chess_Game
         bool pieceChosen = false;
         Piece piece = new();
         bool isPlayerOne;
+
 
         public static Board Instance;
 
@@ -43,7 +44,7 @@ namespace Chess_Game
                 for (int j = 0; j < 8; j += 1)
                 {
                     bool canMove = pieceChosen && DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, i, j) && !piece.Collision(xIndex, yIndex, i, j);
-                    Rectangle tilePos = new(i * TileSize + x, j * TileSize + y, TileSize, TileSize);
+                    Rectangle tilePos = new(i * (int)TileSize.X + x, j * (int)TileSize.Y + y, (int)TileSize.X, (int)TileSize.Y);
 
                     if (i % 2 == j % 2)
                     {
@@ -136,7 +137,7 @@ namespace Chess_Game
 
             if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
             {
-                Vector2 idxVector = new((mouse.X - boardPosition.X) / TileSize, (mouse.Y - boardPosition.Y) / TileSize);
+                Vector2 idxVector = new((mouse.X - boardPosition.X) / TileSize.X, (mouse.Y - boardPosition.Y) / TileSize.Y);
                 xIndex = (int)idxVector.X;
                 yIndex = (int)idxVector.Y;
 
@@ -144,10 +145,10 @@ namespace Chess_Game
                     pieceChosen = true;
 
             }
-            else if (pieceChosen == true && mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
+            else if (pieceChosen && mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
-                int xTarget = (int)(mouse.X - boardPosition.X) / TileSize;
-                int yTarget = (int)(mouse.Y - boardPosition.Y) / TileSize;
+                int xTarget = (int)(mouse.X - boardPosition.X) / (int)TileSize.X;
+                int yTarget = (int)(mouse.Y - boardPosition.Y) / (int)TileSize.Y;
 
                 if (xTarget == xIndex && yTarget == yIndex)
                 {
@@ -168,6 +169,11 @@ namespace Chess_Game
                 pieceChosen = false;
             }
             prev = mouse;
+        }
+        public void OnResize(Object sender, EventArgs e)
+        {
+            TileSize = new Vector2(40, 40) * Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
+            Game1.boardPosition = new Vector2(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2 - (TileSize.X * 5), Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2 - (TileSize.Y * 4));
         }
     }
 }
