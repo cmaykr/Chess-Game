@@ -32,8 +32,8 @@ namespace Chess_Game
                 pieceColor = Color.White;
             }
 
-            //Bestämmer vilken bild som pjäserna ska använda.
-            var type1 = type switch
+            // Bestämmer vilken bild som pjäserna ska använda.
+            var type = this.type switch
             {
                 PieceType.pawn => Board.Instance.Pawn,
                 PieceType.rook => Board.Instance.Rook,
@@ -44,14 +44,14 @@ namespace Chess_Game
                 _ => null,
             };
 
-            //Bestämmer positionen alla pjäserna ska ha på spelbrädet.
+            // Bestämmer positionen alla pjäserna ska ha på skärmen.
             Rectangle piecePos = new(
                 xCoord * (int)Board.Instance.TileSize.X + (int)Game1.boardPosition.X,
                 yCoord * (int)Board.Instance.TileSize.Y + (int)Game1.boardPosition.Y,
                 (int)Board.Instance.TileSize.X,
                 (int)Board.Instance.TileSize.Y
             );
-            spriteBatch.Draw(type1, piecePos, pieceColor);
+            spriteBatch.Draw(type, piecePos, pieceColor);
         }
         /// <summary>
         /// Metod returnar om pjäsen får flytta till den positionen man valt.

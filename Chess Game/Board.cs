@@ -23,7 +23,11 @@ namespace Chess_Game
         Texture2D validMoveIndicatorSquare;
         bool pieceChosen = false;
         Piece piece = new();
+        DebugMode DebugMode = new();
         bool isPlayerOne;
+        public SpriteFont font;
+        bool debug;
+
 
 
         public static Board Instance;
@@ -39,6 +43,11 @@ namespace Chess_Game
         /// </summary>
         public void BoardDraw(SpriteBatch spriteBatch, int x, int y, Piece[,] DrawPiece)
         {
+            if (Keyboard.GetState().IsKeyDown(Keys.F1))
+                debug = true;
+            if (Keyboard.GetState().IsKeyDown(Keys.F2))
+                debug = false;
+
             for (int i = 0; i < 8; i += 1)
             {
                 for (int j = 0; j < 8; j += 1)
@@ -46,6 +55,7 @@ namespace Chess_Game
                     bool canMove = pieceChosen && DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, i, j) && !piece.Collision(xIndex, yIndex, i, j);
                     Rectangle tilePos = new(i * (int)TileSize.X + x, j * (int)TileSize.Y + y, (int)TileSize.X, (int)TileSize.Y);
 
+                    // Ritar själva spelbrädet
                     if (i % 2 == j % 2)
                     {
                         spriteBatch.Draw(Tile, tilePos, new(0x94, 0x6f, 0x51));
@@ -54,7 +64,8 @@ namespace Chess_Game
                     {
                         spriteBatch.Draw(Tile, tilePos, new(0xF0, 0xD9, 0xB5));
                     }
-
+                    
+                    // Ritar var pjäsen får flytta och om det är en fiendepjäs på rutan
                     if (canMove && DrawPiece[i, j] == null)
                         spriteBatch.Draw(validMoveIndicator, tilePos, Color.DarkGreen);
                     else if(canMove && DrawPiece[i, j].isBlack != DrawPiece[xIndex, yIndex].isBlack)
@@ -66,8 +77,13 @@ namespace Chess_Game
             {
                 for (int j = 0; j < 8; j++)
                 {
+                    // Ritar pjäserna.
                     if (DrawPiece[i, j] != null)
                         DrawPiece[i, j].PieceDraw(spriteBatch, i, j);
+
+                    // Ritar koordinaterna för brädet om debug är PÅ
+                    if (debug)
+                        DebugMode.BoardCoord(spriteBatch, i * (int)TileSize.X + x, j * (int)TileSize.Y + y, i, j);
                 }
             }
         }
@@ -88,7 +104,9 @@ namespace Chess_Game
             tile = Game1.Instance.Content.Load<Texture2D>("Square");
             validMoveIndicator = Game1.Instance.Content.Load<Texture2D>("Small_Dot");
             validMoveIndicatorSquare = Game1.Instance.Content.Load<Texture2D>("SquareDot");
-
+            font = Game1.Instance.Content.Load<SpriteFont>("Arial");
+            
+            // Bestämmer var pjäserna ska finnas på spelbrädet för båda sidorna.
             string[] pieceCoord = new[]
             {
                 "PPPPPPPP",
@@ -103,6 +121,7 @@ namespace Chess_Game
 
                     var type = new Piece().type;
 
+                    // Bestämmer vilken bokstav som tillhör vilken pjäs
                     type = charPiece switch
                     {
                         'P' => PieceType.pawn,
@@ -114,7 +133,8 @@ namespace Chess_Game
                         _ => throw new System.Exception("Unkown"),
                     };
 
-                    DrawPiece[j, i] = new Piece()
+                    // Bestämmer positionerna i DrawPiece arrayen var de enskilda pjäserna ska finnas 
+                    DrawPiece[7 - j, i] = new Piece()
                     {
                         type = type,
                         isBlack = true,
