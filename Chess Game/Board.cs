@@ -55,21 +55,25 @@ namespace Chess_Game
                     bool canMove = pieceChosen && DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, i, j) && !piece.Collision(xIndex, yIndex, i, j);
                     Rectangle tilePos = new(i * (int)TileSize.X + x, j * (int)TileSize.Y + y, (int)TileSize.X, (int)TileSize.Y);
 
-                    // Ritar själva spelbrädet
+                    Color boardColor;
+
+                    // Bestämmer färgen på rutorna.
                     if (i % 2 == j % 2)
-                    {
-                        spriteBatch.Draw(Tile, tilePos, new(0x94, 0x6f, 0x51));
-                    }
+                        boardColor = new(0x94, 0x6f, 0x51);
                     else
-                    {
-                        spriteBatch.Draw(Tile, tilePos, new(0xF0, 0xD9, 0xB5));
-                    }
+                        boardColor = new(0xF0, 0xD9, 0xB5);
+                    // Om den rutan är där sin valda pjäs finns.
+                    if (pieceChosen && i == xIndex && j == yIndex)
+                        boardColor = Color.Green;
+
+                    // Ritar själva spelbrädet
+                    spriteBatch.Draw(Tile, tilePos, boardColor);
                     
                     // Ritar var pjäsen får flytta och om det är en fiendepjäs på rutan
                     if (canMove && DrawPiece[i, j] == null)
                         spriteBatch.Draw(validMoveIndicator, tilePos, Color.DarkGreen);
                     else if(canMove && DrawPiece[i, j].isBlack != DrawPiece[xIndex, yIndex].isBlack)
-                            spriteBatch.Draw(validMoveIndicatorSquare, tilePos, Color.DarkGreen);
+                        spriteBatch.Draw(validMoveIndicatorSquare, tilePos, Color.DarkGreen);
                 }
             }
 
