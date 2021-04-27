@@ -13,7 +13,7 @@ namespace Chess_Game
     /// </summary>
     class Board
     {
-        MouseState mouse, prev;
+        MouseState curr, prev;
         int xIndex, yIndex;
         public Vector2 TileSize { get; private set; } = new(40,40);
         private Texture2D tile;
@@ -24,11 +24,10 @@ namespace Chess_Game
         bool pieceChosen = false;
         Piece piece = new();
         DebugMode DebugMode = new();
-        bool isPlayerOne;
+        public bool isPlayerOne;
         public SpriteFont font;
         bool debug;
-
-
+        public bool checkMate;
 
         public static Board Instance;
 
@@ -138,7 +137,7 @@ namespace Chess_Game
                     };
 
                     // Bestämmer positionerna i DrawPiece arrayen var de enskilda pjäserna ska finnas 
-                    DrawPiece[7 - j, i] = new Piece()
+                    DrawPiece[j, i] = new Piece()
                     {
                         type = type,
                         isBlack = true,
@@ -157,11 +156,11 @@ namespace Chess_Game
         /// </summary>
         public void PieceMove(Piece[,] DrawPiece, Vector2 boardPosition)
         {
-            mouse = Mouse.GetState();
+            curr = Mouse.GetState();
 
-            if (mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
+            if (!checkMate && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
             {
-                Vector2 idxVector = new((mouse.X - boardPosition.X) / TileSize.X, (mouse.Y - boardPosition.Y) / TileSize.Y);
+                Vector2 idxVector = new((curr.X - boardPosition.X) / TileSize.X, (curr.Y - boardPosition.Y) / TileSize.Y);
                 xIndex = (int)idxVector.X;
                 yIndex = (int)idxVector.Y;
 
@@ -169,10 +168,10 @@ namespace Chess_Game
                     pieceChosen = true;
 
             }
-            else if (pieceChosen && mouse.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
+            else if (!checkMate && pieceChosen && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
-                int xTarget = (int)(mouse.X - boardPosition.X) / (int)TileSize.X;
-                int yTarget = (int)(mouse.Y - boardPosition.Y) / (int)TileSize.Y;
+                int xTarget = (int)(curr.X - boardPosition.X) / (int)TileSize.X;
+                int yTarget = (int)(curr.Y - boardPosition.Y) / (int)TileSize.Y;
 
                 if (xTarget == xIndex && yTarget == yIndex)
                 {
@@ -192,10 +191,11 @@ namespace Chess_Game
                 }
                 pieceChosen = false;
             }
-            prev = mouse;
+            prev = curr;
         }
         public void OnResize(Object sender, EventArgs e)
         {
+            GameUI.checkMateButtonSize = new Vector2(100, 30) * Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
             TileSize = new Vector2(40, 40) * Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
             Game1.boardPosition = new Vector2(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2 - (TileSize.X * 5), Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2 - (TileSize.Y * 4));
         }
