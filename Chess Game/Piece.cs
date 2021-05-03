@@ -53,9 +53,15 @@ namespace Chess_Game
             );
             spriteBatch.Draw(type, piecePos, pieceColor);
         }
+
         /// <summary>
         /// Metod returnar om pjäsen får flytta till den positionen man valt.
         /// </summary>
+        /// <param name="xIndex">X koordinaten på spelbrädet för den valda pjäsen.</param>
+        /// <param name="yIndex">Y koordinaten på spelbrädet för den valda pjäsen.</param>
+        /// <param name="xTarget">X koordinaten på spelbrädet man vill flytta pjäsen till</param>
+        /// <param name="yTarget">Y koordinaten på spelbrädet man vill flytta pjäsen till</param>
+        /// <returns></returns>
         public bool CanMove(int xIndex, int yIndex, int xTarget, int yTarget)
         {
             int xTemp = xTarget;
@@ -112,6 +118,8 @@ namespace Chess_Game
             else
                 tempDist = Math.Abs(xTarget - xIndex);
             int i = 1;
+
+            // Går igenom alla rutor mellan två pjäser och kollar om det är en annan pjäs mellan dem. 
             while (i < tempDist && collision == false)
             {
                 if (Game1.Instance.DrawPiece[xIndex, yIndex].type == PieceType.knight)
