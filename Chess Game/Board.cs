@@ -48,10 +48,10 @@ namespace Chess_Game
                 debug = false;
 
             for (int i = 0; i < 8; i += 1)
-            {
+            { 
                 for (int j = 0; j < 8; j += 1)
                 {
-                    bool canMove = pieceChosen && DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, i, j) && !piece.Collision(xIndex, yIndex, i, j);
+                    bool canMove = pieceChosen && DrawPiece[xIndex, yIndex].CanMove(DrawPiece, xIndex, yIndex, i, j) && !piece.Collision(DrawPiece, xIndex, yIndex, i, j)  && !PieceMovement.WillMoveCauseCheck(DrawPiece, xIndex, yIndex, i, j);
                     Rectangle tilePos = new(i * (int)TileSize.X + x, j * (int)TileSize.Y + y, (int)TileSize.X, (int)TileSize.Y);
 
                     Color boardColor;
@@ -181,11 +181,11 @@ namespace Chess_Game
                 {
                     pieceChosen = false;
                 }
-                else if (DrawPiece[xIndex, yIndex].CanMove(xIndex, yIndex, xTarget, yTarget) 
+                else if (DrawPiece[xIndex, yIndex].CanMove(DrawPiece, xIndex, yIndex, xTarget, yTarget) 
                     && xTarget < 8 && yTarget < 8 
                     && xTarget > -1 && yTarget > -1)
                 {
-                    if ((DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack) && !piece.Collision(xIndex, yIndex, xTarget, yTarget))
+                    if ((DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack) && !piece.Collision(DrawPiece, xIndex, yIndex, xTarget, yTarget) && !PieceMovement.WillMoveCauseCheck(DrawPiece, xIndex, yIndex, xTarget, yTarget))
                     {
                         isPlayerOne = !isPlayerOne;
                         DrawPiece[xIndex, yIndex].hasMoved = true;

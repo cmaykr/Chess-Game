@@ -62,8 +62,11 @@ namespace Chess_Game
         /// <param name="xTarget">X koordinaten på spelbrädet man vill flytta pjäsen till</param>
         /// <param name="yTarget">Y koordinaten på spelbrädet man vill flytta pjäsen till</param>
         /// <returns></returns>
-        public bool CanMove(int xIndex, int yIndex, int xTarget, int yTarget)
+        public bool CanMove(Piece[,] DrawPiece, int xIndex, int yIndex, int xTarget, int yTarget)
         {
+            if (DrawPiece[xTarget, yTarget] != null && DrawPiece[xIndex, yIndex].isBlack == DrawPiece[xTarget, yTarget].isBlack)
+                return false;
+
             int xTemp = xTarget;
             int yTemp = yTarget;
             if (!isBlack)
@@ -82,7 +85,7 @@ namespace Chess_Game
                 PieceType.pawn => (xTarget == xIndex && (yTarget == yIndex + 1 
                     || (hasMoved == false && yTarget == yIndex + 2)) 
                     && Game1.Instance.DrawPiece[xTemp, yTemp] == null) 
-                    || (xDist == 1 && yTarget == yIndex + 1 && PawnDiagonalAttack(xTemp, yTemp)),
+                    || (xDist == 1 && yTarget == yIndex + 1 && PawnDiagonalAttack(DrawPiece, xTemp, yTemp)),
                 PieceType.rook => xTarget == xIndex || yTarget == yIndex, 
                 PieceType.king => (xDist == 1 && yDist == 0) 
                     || (yDist == 1 && xDist == 0) 
@@ -98,9 +101,9 @@ namespace Chess_Game
         /// Metod som returnar om bondepjäsen
         /// kan gå diagonalt för att ta ut en pjäs.
         /// </summary>
-        static bool PawnDiagonalAttack(int xTarget, int yTarget)
+        static bool PawnDiagonalAttack(Piece[,] DrawPiece, int xTarget, int yTarget)
         {
-            if (Game1.Instance.DrawPiece[xTarget, yTarget] != null)
+            if (DrawPiece[xTarget, yTarget] != null)
                 return true;
             return false;
         }
@@ -108,7 +111,7 @@ namespace Chess_Game
         /// <summary>
         /// Returnerar om det är en pjäs mellan den valda pjäsen och den valda positionen.
         /// </summary>
-        public bool Collision(int xIndex, int yIndex, int xTarget, int yTarget)
+        public bool Collision(Piece[,] DrawPiece, int xIndex, int yIndex, int xTarget, int yTarget)
         {
             bool collision = false;
             int tempDist;
@@ -122,7 +125,7 @@ namespace Chess_Game
             // Går igenom alla rutor mellan två pjäser och kollar om det är en annan pjäs mellan dem. 
             while (i < tempDist && collision == false)
             {
-                if (Game1.Instance.DrawPiece[xIndex, yIndex].type == PieceType.knight)
+                if (DrawPiece[xIndex, yIndex].type == PieceType.knight)
                     break;
 
                 int x = (xTarget < xIndex)
@@ -134,11 +137,11 @@ namespace Chess_Game
 
                 // Kollar om pjäsen flyttas diagonalt, horisontalt eller vertikalt.
                 if (xIndex == xTarget)
-                    collision = Game1.Instance.DrawPiece[xIndex, y] != null;
+                    collision = DrawPiece[xIndex, y] != null;
                 else if (yIndex == yTarget)
-                    collision = Game1.Instance.DrawPiece[x, yIndex] != null;
+                    collision = DrawPiece[x, yIndex] != null;
                 else if (Math.Abs(xTarget - xIndex) == Math.Abs(yTarget - yIndex))
-                    collision = Game1.Instance.DrawPiece[x, y] != null;
+                    collision = DrawPiece[x, y] != null;
 
                 i++;
             }
