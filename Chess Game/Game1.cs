@@ -13,7 +13,7 @@ namespace Chess_Game
         public readonly Piece[,] DrawPiece = new Piece[8, 8];
         public static Game1 Instance;
         public static Vector2 boardPosition;
-        GameUI gameUI = new();
+        readonly GameUI gameUI = new();
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;

@@ -2,7 +2,13 @@ namespace Chess_Game
 {
     public class PieceMovement
     {
+        /*public static PieceMovement Instance;
+        public bool isCheckMate;
 
+        public PieceMovement(bool called)
+        {
+            Instance = this;
+        }
         public static (int xKing, int yKing) GetKing(Piece[,] DrawPiece) 
         {
             for (int x = 0; x < 8; x++)
@@ -39,9 +45,34 @@ namespace Chess_Game
             Tempboard[xIndex, yIndex] = null;
             Tempboard[xTarget, yTarget] = piece;
 
-            var king = GetKing(Tempboard);
+            var (xKing, yKing) = GetKing(Tempboard);
 
-            return (Check(Tempboard, king.xKing, king.yKing));
+            return Check(Tempboard, xKing, yKing);
         }
+
+        public void CheckMate(Piece[,] DrawPiece)
+        {
+            isCheckMate = false;
+            int validMoves = 0;
+            bool isChecked;
+
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    var (xKing, yKing) = GetKing(DrawPiece);
+                    isChecked = Check(DrawPiece, xKing, yKing);
+                    if (DrawPiece[xKing, yKing].CanMove(DrawPiece, xKing, yKing, i, j) && !DrawPiece[xKing,yKing].Collision(DrawPiece, xKing, yKing, i, j) && !WillMoveCauseCheck(DrawPiece, xKing, yKing, i, j))
+                    {
+                        validMoves++;
+                    }
+                    if (validMoves == 0 && isChecked)
+                    {
+                        isCheckMate = true;
+                    }
+                }
+            }
+            System.Console.WriteLine(isCheckMate);
+        }*/
     }
 }

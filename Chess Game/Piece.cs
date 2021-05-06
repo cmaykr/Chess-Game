@@ -35,12 +35,12 @@ namespace Chess_Game
             // Bestämmer vilken bild som pjäserna ska använda.
             var type = this.type switch
             {
-                PieceType.pawn => Board.Instance.Pawn,
-                PieceType.rook => Board.Instance.Rook,
-                PieceType.king => Board.Instance.King,
-                PieceType.bishop => Board.Instance.Bishop,
-                PieceType.knight => Board.Instance.Knight,
-                PieceType.queen => Board.Instance.Queen,
+                PieceType.Pawn => Board.Instance.Pawn,
+                PieceType.Rook => Board.Instance.Rook,
+                PieceType.King => Board.Instance.King,
+                PieceType.Bishop => Board.Instance.Bishop,
+                PieceType.Knight => Board.Instance.Knight,
+                PieceType.Queen => Board.Instance.Queen,
                 _ => null,
             };
 
@@ -67,8 +67,11 @@ namespace Chess_Game
             if (DrawPiece[xTarget, yTarget] != null && DrawPiece[xIndex, yIndex].isBlack == DrawPiece[xTarget, yTarget].isBlack)
                 return false;
 
-            int xTemp = xTarget;
-            int yTemp = yTarget;
+            int xTargetTemp = xTarget;
+            int yTargetTemp = yTarget;
+            int xIndexTemp = xIndex;
+            int yIndexTemp = yIndex;
+
             if (!isBlack)
             {
                 yIndex = 7 - yIndex;
@@ -82,17 +85,19 @@ namespace Chess_Game
             // returnerar hur den valda pjäsen kan flyttas.
             return type switch
             {
-                PieceType.pawn => (xTarget == xIndex && (yTarget == yIndex + 1 
+                PieceType.Pawn => (xTarget == xIndex && (yTarget == yIndex + 1 
                     || (hasMoved == false && yTarget == yIndex + 2)) 
-                    && Game1.Instance.DrawPiece[xTemp, yTemp] == null) 
-                    || (xDist == 1 && yTarget == yIndex + 1 && PawnDiagonalAttack(DrawPiece, xTemp, yTemp)),
-                PieceType.rook => xTarget == xIndex || yTarget == yIndex, 
-                PieceType.king => (xDist == 1 && yDist == 0) 
+                    && Game1.Instance.DrawPiece[xTargetTemp, yTargetTemp] == null) 
+                    || (xDist == 1 && yTarget == yIndex + 1 && PawnDiagonalAttack(DrawPiece, xTargetTemp, yTargetTemp))
+                    || EnPassant(DrawPiece, xTarget, yTarget),
+                PieceType.Rook => xTarget == xIndex || yTarget == yIndex, 
+                PieceType.King => (xDist == 1 && yDist == 0) 
                     || (yDist == 1 && xDist == 0) 
-                    || (xDist == yDist && (xDist == 1 || yDist == 1)),
-                PieceType.bishop => xDist == yDist,
-                PieceType.knight => xDist == 2 && yDist == 1 || (yDist == 2 && xDist == 1),
-                PieceType.queen => xTarget == xIndex || yTarget == yIndex || xDist == yDist,
+                    || (xDist == yDist && (xDist == 1 || yDist == 1))
+                    || Castling(DrawPiece, xIndexTemp, yIndexTemp, xTargetTemp, yTargetTemp, xDist),
+                PieceType.Bishop => xDist == yDist,
+                PieceType.Knight => xDist == 2 && yDist == 1 || (yDist == 2 && xDist == 1),
+                PieceType.Queen => xTarget == xIndex || yTarget == yIndex || xDist == yDist,
                 _ => false,
             };
         }
@@ -108,10 +113,35 @@ namespace Chess_Game
             return false;
         }
 
+        // Doesn't do anything yet
+        static bool EnPassant(Piece[,] Board, int xTarget, int yTarget)
+        {
+            return false;
+        }
+
+        // Doesn't move rook when castling
+        bool Castling(Piece[,] BoardPiece, int xIndex, int yIndex, int xTarget, int yTarget, int xDist)
+        {
+            int xCastlingRook;
+            if (xTarget < xIndex)
+                xCastlingRook = 0;
+            else
+                xCastlingRook = 7;
+
+            if (yTarget == yIndex && xDist == 2 && !Collision(BoardPiece, xIndex, yIndex, xCastlingRook, yTarget))
+            {
+                if (!BoardPiece[xCastlingRook, yIndex].hasMoved && !BoardPiece[xIndex, yIndex].hasMoved)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// Returnerar om det är en pjäs mellan den valda pjäsen och den valda positionen.
         /// </summary>
-        public bool Collision(Piece[,] DrawPiece, int xIndex, int yIndex, int xTarget, int yTarget)
+        public static bool Collision(Piece[,] DrawPiece, int xIndex, int yIndex, int xTarget, int yTarget)
         {
             bool collision = false;
             int tempDist;
@@ -125,7 +155,7 @@ namespace Chess_Game
             // Går igenom alla rutor mellan två pjäser och kollar om det är en annan pjäs mellan dem. 
             while (i < tempDist && collision == false)
             {
-                if (DrawPiece[xIndex, yIndex].type == PieceType.knight)
+                if (DrawPiece[xIndex, yIndex].type == PieceType.Knight)
                     break;
 
                 int x = (xTarget < xIndex)
@@ -150,11 +180,11 @@ namespace Chess_Game
     }
     public enum PieceType
     {
-        pawn,
-        rook,
-        king,
-        queen,
-        bishop,
-        knight
+        Pawn,
+        Rook,
+        King,
+        Queen,
+        Bishop,
+        Knight
     }
 }

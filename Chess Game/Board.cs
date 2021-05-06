@@ -14,7 +14,9 @@ namespace Chess_Game
     class Board
     {
         MouseState curr, prev;
-        int xIndex, yIndex;
+        int xIndex = 0, yIndex = 0;
+        public int xLastMoveTarget, yLastMoveTarget;
+        public int xLastMove, yLastMove;
         public Vector2 TileSize { get; private set; } = new(40,40);
         private Texture2D tile;
         public Texture2D Tile => tile;
@@ -22,8 +24,8 @@ namespace Chess_Game
         public Texture2D Pawn, Rook, Knight, King, Bishop, Queen;
         Texture2D validMoveIndicatorSquare;
         bool pieceChosen = false;
-        Piece piece = new();
-        DebugMode DebugMode = new();
+        readonly Piece piece = new();
+        readonly DebugMode DebugMode = new();
         public bool isPlayerOne;
         public SpriteFont font;
         bool debug;
@@ -51,16 +53,16 @@ namespace Chess_Game
             { 
                 for (int j = 0; j < 8; j += 1)
                 {
-                    bool canMove = pieceChosen && DrawPiece[xIndex, yIndex].CanMove(DrawPiece, xIndex, yIndex, i, j) && !piece.Collision(DrawPiece, xIndex, yIndex, i, j)  && !PieceMovement.WillMoveCauseCheck(DrawPiece, xIndex, yIndex, i, j);
+                    bool canMove = pieceChosen && DrawPiece[xIndex, yIndex].CanMove(DrawPiece, xIndex, yIndex, i, j) && !Piece.Collision(DrawPiece, xIndex, yIndex, i, j);
                     Rectangle tilePos = new(i * (int)TileSize.X + x, j * (int)TileSize.Y + y, (int)TileSize.X, (int)TileSize.Y);
 
                     Color boardColor;
 
                     // Bestämmer färgen på rutorna.
                     if (i % 2 == j % 2)
-                        boardColor = new(0x94, 0x6f, 0x51);
-                    else
                         boardColor = new(0xF0, 0xD9, 0xB5);
+                    else
+                        boardColor = new(0x94, 0x6f, 0x51);
                     // Om den rutan är där sin valda pjäs finns.
                     if (pieceChosen && i == xIndex && j == yIndex)
                         boardColor = Color.Green;
@@ -113,7 +115,7 @@ namespace Chess_Game
             string[] pieceCoord = new[]
             {
                 "PPPPPPPP",
-                "RGBKQBGR"
+                "RGBQKBGR"
             };
 
             for (int i = 0; i < pieceCoord.Length; i++)
@@ -127,12 +129,12 @@ namespace Chess_Game
                     // Bestämmer vilken bokstav som tillhör vilken pjäs
                     type = charPiece switch
                     {
-                        'P' => PieceType.pawn,
-                        'R' => PieceType.rook,
-                        'G' => PieceType.knight,
-                        'B' => PieceType.bishop,
-                        'K' => PieceType.king,
-                        'Q' => PieceType.queen,
+                        'P' => PieceType.Pawn,
+                        'R' => PieceType.Rook,
+                        'G' => PieceType.Knight,
+                        'B' => PieceType.Bishop,
+                        'K' => PieceType.King,
+                        'Q' => PieceType.Queen,
                         _ => throw new System.Exception("Unkown"),
                     };
 
@@ -160,7 +162,7 @@ namespace Chess_Game
         {
             curr = Mouse.GetState();
 
-            if (!checkMate && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
+            if (curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
             {
                 Vector2 idxVector = new((curr.X - boardPosition.X) / TileSize.X, (curr.Y - boardPosition.Y) / TileSize.Y);
                 xIndex = (int)idxVector.X;
@@ -171,7 +173,7 @@ namespace Chess_Game
                     pieceChosen = true;
 
             }
-            else if (!checkMate && pieceChosen && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
+            else if (pieceChosen && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
                 int xTarget = (int)(curr.X - boardPosition.X) / (int)TileSize.X;
                 int yTarget = (int)(curr.Y - boardPosition.Y) / (int)TileSize.Y;
@@ -181,16 +183,20 @@ namespace Chess_Game
                 {
                     pieceChosen = false;
                 }
-                else if (DrawPiece[xIndex, yIndex].CanMove(DrawPiece, xIndex, yIndex, xTarget, yTarget) 
-                    && xTarget < 8 && yTarget < 8 
-                    && xTarget > -1 && yTarget > -1)
+                else if (xTarget < 8 && yTarget < 8 && xTarget > -1 && yTarget > -1 
+                    && DrawPiece[xIndex, yIndex].CanMove(DrawPiece, xIndex, yIndex, xTarget, yTarget))
                 {
-                    if ((DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack) && !piece.Collision(DrawPiece, xIndex, yIndex, xTarget, yTarget) && !PieceMovement.WillMoveCauseCheck(DrawPiece, xIndex, yIndex, xTarget, yTarget))
+                    if ((DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack) && !Piece.Collision(DrawPiece, xIndex, yIndex, xTarget, yTarget))
                     {
                         isPlayerOne = !isPlayerOne;
                         DrawPiece[xIndex, yIndex].hasMoved = true;
                         DrawPiece[xTarget, yTarget] = DrawPiece[xIndex, yIndex];
                         DrawPiece[xIndex, yIndex] = null;
+
+                        xLastMove = xIndex;
+                        yLastMove = yIndex;
+                        xLastMoveTarget = xTarget;
+                        yLastMoveTarget = yTarget;
                     }
                 }
                 pieceChosen = false;
