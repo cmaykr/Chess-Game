@@ -20,7 +20,7 @@ namespace Chess_Game
         /// <param name="y">Y Positionen för skärmen.</param>
         /// <param name="xCoord">X Koordinaten för den rutan på spelbrädet.</param>
         /// <param name="yCoord">Y Koordinaten för den rutan på spelbrädet.</param>
-        public void BoardCoord(SpriteBatch spritebatch, int x, int y, int xCoord, int yCoord)
+        public static void BoardCoord(SpriteBatch spritebatch, int x, int y, int xCoord, int yCoord)
         {
             spritebatch.DrawString(Board.Instance.font, $"{xCoord}, {yCoord}", new Vector2(x, y), Color.Red);
         }

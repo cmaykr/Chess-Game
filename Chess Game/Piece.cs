@@ -64,6 +64,8 @@ namespace Chess_Game
         /// <returns></returns>
         public bool CanMove(Piece[,] DrawPiece, int xIndex, int yIndex, int xTarget, int yTarget)
         {
+            if (xTarget < 0 || xTarget > 8 || yTarget < 0 || yTarget > 8)
+                return false;
             if (DrawPiece[xTarget, yTarget] != null && DrawPiece[xIndex, yIndex].isBlack == DrawPiece[xTarget, yTarget].isBlack)
                 return false;
 
@@ -119,18 +121,32 @@ namespace Chess_Game
             return false;
         }
 
-        // Doesn't move rook when castling
-        bool Castling(Piece[,] BoardPiece, int xIndex, int yIndex, int xTarget, int yTarget, int xDist)
+        /// <summary>
+        /// Metod för specialregeln Castling, vilket är att kungen flyttar 2 steg åt sidan istället för 1 steg.
+        /// Castling använder också ett av tornen för att regeln ska gälla, och både kungen och tornet får inte ha flyttats innan.
+        /// </summary>
+        /// <param name="BoardPiece"></param>
+        /// <param name="xIndex"></param>
+        /// <param name="yIndex"></param>
+        /// <param name="xTarget"></param>
+        /// <param name="yTarget"></param>
+        /// <param name="xDist"></param>
+        /// <returns>Returnerar true om kungen får castla</returns>
+        static bool Castling(Piece[,] BoardPiece, int xIndex, int yIndex, int xTarget, int yTarget, int xDist)
         {
-            int xCastlingRook;
-            if (xTarget < xIndex)
-                xCastlingRook = 0;
-            else
-                xCastlingRook = 7;
+            Board.Instance.xCastlingRook = 0;
 
-            if (yTarget == yIndex && xDist == 2 && !Collision(BoardPiece, xIndex, yIndex, xCastlingRook, yTarget))
+            if (BoardPiece[xIndex, yIndex].hasMoved)
+                return false;
+
+            if (xTarget < xIndex)
+                Board.Instance.xCastlingRook = 0;
+            else
+                Board.Instance.xCastlingRook = 7;
+
+            if (yTarget == yIndex && xDist == 2 && !Collision(BoardPiece, xIndex, yIndex, Board.Instance.xCastlingRook, yTarget))
             {
-                if (!BoardPiece[xCastlingRook, yIndex].hasMoved && !BoardPiece[xIndex, yIndex].hasMoved)
+                if (!BoardPiece[Board.Instance.xCastlingRook, yIndex].hasMoved)
                 {
                     return true;
                 }
