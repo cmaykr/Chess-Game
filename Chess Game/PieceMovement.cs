@@ -18,18 +18,18 @@ namespace Chess_Game
             }
             return (-1, -1);
         }
-        public static bool Check(Piece[,] DrawPiece, int xKing, int yKing)
+        public static bool Check(Piece[,] DrawPiece)
         {
+            var (xKing, yKing) = GetKing(DrawPiece);
+
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 8; y++)
                 {
                     if (DrawPiece[x, y] != null && DrawPiece[x, y].CanMove(DrawPiece, x, y, xKing, yKing) && !Piece.Collision(DrawPiece, x, y, xKing, yKing) && DrawPiece[x, y].isBlack != DrawPiece[xKing, yKing].isBlack)
                     {
-                        if (DrawPiece[x, y].type == PieceType.Pawn && x == xKing)
-                            return false;
-
-                        return true;
+                        if (!(DrawPiece[x, y].type == PieceType.Pawn && x == xKing))
+                            return true;
                     }
                 }
             }
@@ -44,9 +44,7 @@ namespace Chess_Game
             tempBoard[xIndex, yIndex] = null;
             tempBoard[xTarget, yTarget] = piece;
 
-            var (xKing, yKing) = GetKing(tempBoard);
-
-            return Check(tempBoard, xKing, yKing);
+            return Check(tempBoard);
         }
     }
 }
