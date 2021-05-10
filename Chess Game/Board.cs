@@ -27,7 +27,6 @@ namespace Chess_Game
         public bool isPlayerOne;
         public SpriteFont font;
         bool debug;
-        public int xCastlingRook;
 
         public static Board Instance;
 
@@ -186,7 +185,6 @@ namespace Chess_Game
                 {
                     if ((DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack) && !Piece.Collision(DrawPiece, xIndex, yIndex, xTarget, yTarget) && !PieceMovement.WillMoveCauseCheck(DrawPiece, xIndex, yIndex, xTarget, yTarget))
                     {
-                        isPlayerOne = !isPlayerOne;
                         DrawPiece[xIndex, yIndex].hasMoved = true;
                         DrawPiece[xTarget, yTarget] = DrawPiece[xIndex, yIndex];
                         DrawPiece[xIndex, yIndex] = null;
@@ -196,6 +194,8 @@ namespace Chess_Game
                         yLastMove = yIndex;
                         xLastMoveTarget = xTarget;
                         yLastMoveTarget = yTarget;
+
+                        isPlayerOne = !isPlayerOne;
                     }
                 }
                 pieceChosen = false;
@@ -205,6 +205,12 @@ namespace Chess_Game
 
         void HasCastled(Piece[,] DrawPiece, int xIndex, int yIndex, int xTarget)
         {
+            int xCastlingRook;
+            if (xTarget < xIndex)
+                xCastlingRook = 0;
+            else
+                xCastlingRook = 7;
+
             int xDist = Math.Abs(xTarget - xIndex);
             if (xDist == 2 && DrawPiece[xTarget, yIndex].type == PieceType.King)
             {

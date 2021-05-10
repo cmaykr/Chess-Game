@@ -96,7 +96,7 @@ namespace Chess_Game
                 PieceType.King => (xDist == 1 && yDist == 0) 
                     || (yDist == 1 && xDist == 0) 
                     || (xDist == yDist && (xDist == 1 || yDist == 1))
-                    || Castling(DrawPiece, xIndexTemp, yIndexTemp, xTargetTemp, yTargetTemp, xDist),
+                    || tryCastling(DrawPiece, xIndexTemp, yIndexTemp, xTargetTemp, yTargetTemp, xDist),
                 PieceType.Bishop => xDist == yDist,
                 PieceType.Knight => xDist == 2 && yDist == 1 || (yDist == 2 && xDist == 1),
                 PieceType.Queen => xTarget == xIndex || yTarget == yIndex || xDist == yDist,
@@ -132,21 +132,21 @@ namespace Chess_Game
         /// <param name="yTarget"></param>
         /// <param name="xDist"></param>
         /// <returns>Returnerar true om kungen får castla</returns>
-        static bool Castling(Piece[,] BoardPiece, int xIndex, int yIndex, int xTarget, int yTarget, int xDist)
+        static bool tryCastling(Piece[,] BoardPiece, int xIndex, int yIndex, int xTarget, int yTarget, int xDist)
         {
-            Board.Instance.xCastlingRook = 0;
 
             if (BoardPiece[xIndex, yIndex].hasMoved)
                 return false;
 
+            int xCastlingRook;
             if (xTarget < xIndex)
-                Board.Instance.xCastlingRook = 0;
+                xCastlingRook = 0;
             else
-                Board.Instance.xCastlingRook = 7;
+                xCastlingRook = 7;
 
-            if (yTarget == yIndex && xDist == 2 && !Collision(BoardPiece, xIndex, yIndex, Board.Instance.xCastlingRook, yTarget))
+            if (yTarget == yIndex && xDist == 2 && !Collision(BoardPiece, xIndex, yIndex, xCastlingRook, yTarget))
             {
-                if (!BoardPiece[Board.Instance.xCastlingRook, yIndex].hasMoved)
+                if (!BoardPiece[xCastlingRook, yIndex].hasMoved)
                 {
                     return true;
                 }
