@@ -27,6 +27,7 @@ namespace Chess_Game
         public bool isPlayerOne;
         public SpriteFont font;
         bool debug;
+        public bool isCheckMate;
 
         public static Board Instance;
 
@@ -159,7 +160,7 @@ namespace Chess_Game
         {
             curr = Mouse.GetState();
 
-            if (curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
+            if (!isCheckMate && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
             {
                 Vector2 idxVector = new((curr.X - boardPosition.X) / TileSize.X, (curr.Y - boardPosition.Y) / TileSize.Y);
                 xIndex = (int)idxVector.X;
@@ -170,7 +171,7 @@ namespace Chess_Game
                     pieceChosen = true;
 
             }
-            else if (pieceChosen && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
+            else if (!isCheckMate && pieceChosen && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
                 int xTarget = (int)(curr.X - boardPosition.X) / (int)TileSize.X;
                 int yTarget = (int)(curr.Y - boardPosition.Y) / (int)TileSize.Y;
@@ -196,6 +197,7 @@ namespace Chess_Game
                         yLastMoveTarget = yTarget;
 
                         isPlayerOne = !isPlayerOne;
+                        isCheckMate = PieceMovement.isCheckMate(DrawPiece);
                     }
                 }
                 pieceChosen = false;
@@ -212,7 +214,7 @@ namespace Chess_Game
                 xCastlingRook = 7;
 
             int xDist = Math.Abs(xTarget - xIndex);
-            if (xDist == 2 && DrawPiece[xTarget, yIndex].type == PieceType.King)
+            if (DrawPiece[xTarget, yIndex] != null && xDist == 2 && DrawPiece[xTarget, yIndex].type == PieceType.King)
             {
                 DrawPiece[xCastlingRook, yIndex].hasMoved = true;
                 if (xTarget < xIndex)

@@ -27,8 +27,15 @@ namespace Chess_Game
         /// </summary>
         public void GameUIDraw(SpriteBatch spriteBatch)
         {
-            checkMateButtonCoord = new((int)checkMateButton.X - 350, (int)checkMateButton.Y - 150, (int)checkMateButtonSize.X, (int)checkMateButtonSize.Y);
-            spriteBatch.DrawString(Board.Instance.font, (!Board.Instance.isPlayerOne) ? "Whites turn" : "Blacks turn", new Vector2(checkMateButton.X - 350, checkMateButton.Y - 100), Color.Black);
+            string gameText;
+            checkMateButtonCoord = new((int)checkMateButton.X - 400, (int)checkMateButton.Y - 150, (int)checkMateButtonSize.X, (int)checkMateButtonSize.Y);
+
+            if (Board.Instance.isCheckMate)
+                gameText = "Checkmate, " + ((Board.Instance.isPlayerOne) ? "White won" : "Black won");
+            else
+                gameText = (!Board.Instance.isPlayerOne) ? "Whites turn" : "Blacks turn";
+
+            spriteBatch.DrawString(Board.Instance.font, gameText, new Vector2(checkMateButton.X - 350, checkMateButton.Y - 100), Color.Black);
         }
 
         /// <summary>

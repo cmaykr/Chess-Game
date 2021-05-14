@@ -2,8 +2,6 @@ namespace Chess_Game
 {
     public class PieceMovement
     {
-        bool isCheckMated;
-
         static (int xKing, int yKing) GetKing(Piece[,] DrawPiece) 
         {
             for (int x = 0; x < 8; x++)
@@ -36,7 +34,6 @@ namespace Chess_Game
             return false;
         }
 
-        // Cannot move under pawn, even if nothing can take out the king.
         public static bool WillMoveCauseCheck(Piece[,] DrawPiece, int xIndex, int yIndex, int xTarget, int yTarget)
         {
             Piece[,] tempBoard = (Piece[,])DrawPiece.Clone();
@@ -45,6 +42,30 @@ namespace Chess_Game
             tempBoard[xTarget, yTarget] = piece;
 
             return Check(tempBoard);
+        }
+
+        public static bool isCheckMate(Piece[,] DrawPiece)
+        {
+            for (int x = 0; x < 8; x++)
+            {
+                for (int y = 0; y < 8; y++)
+                {
+                    for (int i = 0; i < 8; i++)
+                    {
+                        for (int j = 0; j < 8; j++)
+                        {
+                            if (DrawPiece[x, y] != null && DrawPiece[x, y].isBlack == Board.Instance.isPlayerOne)
+                            {
+                                if (DrawPiece[x, y].CanMove(DrawPiece, x, y, i, j) && !Piece.Collision(DrawPiece, x, y, i, j) && !WillMoveCauseCheck(DrawPiece, x, y, i, j))
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
         }
     }
 }
