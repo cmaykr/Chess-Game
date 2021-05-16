@@ -27,7 +27,7 @@ namespace Chess_Game
         public bool isPlayerOne;
         public SpriteFont font;
         bool debug;
-        public bool isCheckMate;
+        public bool CheckMate;
 
         public static Board Instance;
 
@@ -160,7 +160,7 @@ namespace Chess_Game
         {
             curr = Mouse.GetState();
 
-            if (!isCheckMate && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
+            if (!CheckMate && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
             {
                 Vector2 idxVector = new((curr.X - boardPosition.X) / TileSize.X, (curr.Y - boardPosition.Y) / TileSize.Y);
                 xIndex = (int)idxVector.X;
@@ -171,7 +171,7 @@ namespace Chess_Game
                     pieceChosen = true;
 
             }
-            else if (!isCheckMate && pieceChosen && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
+            else if (!CheckMate && pieceChosen && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
                 int xTarget = (int)(curr.X - boardPosition.X) / (int)TileSize.X;
                 int yTarget = (int)(curr.Y - boardPosition.Y) / (int)TileSize.Y;
@@ -197,7 +197,7 @@ namespace Chess_Game
                         yLastMoveTarget = yTarget;
 
                         isPlayerOne = !isPlayerOne;
-                        isCheckMate = PieceMovement.isCheckMate(DrawPiece);
+                        CheckMate = PieceMovement.isCheckMate(DrawPiece);
                     }
                 }
                 pieceChosen = false;

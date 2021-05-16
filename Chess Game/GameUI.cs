@@ -14,12 +14,16 @@ namespace Chess_Game
         public Rectangle checkMateButtonCoord;
         MouseState curr, prev;
 
+        float playerOneTimer = 600f;
+        float playerTwoTimer = 600f;
+
         /// <summary>
         /// Laddar in alla filer som behövs för att rita spelrutan.
         /// </summary>
         public void GameUIContent()
         {
-            checkMateButton = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2, Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2);
+            checkMateButton = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2,
+                Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2);
         }
 
         /// <summary>
@@ -28,14 +32,50 @@ namespace Chess_Game
         public void GameUIDraw(SpriteBatch spriteBatch)
         {
             string gameText;
-            checkMateButtonCoord = new((int)checkMateButton.X - 400, (int)checkMateButton.Y - 150, (int)checkMateButtonSize.X, (int)checkMateButtonSize.Y);
+            checkMateButtonCoord = new((int)checkMateButton.X - 350,
+                (int)checkMateButton.Y - 150,
+                (int)checkMateButtonSize.X,
+                (int)checkMateButtonSize.Y);
 
-            if (Board.Instance.isCheckMate)
-                gameText = "Checkmate, " + ((Board.Instance.isPlayerOne) ? "White won" : "Black won");
+            if (Board.Instance.CheckMate && playerOneTimer > 0 && playerTwoTimer > 0)
+            {
+                gameText = "Checkmate, " + (Board.Instance.isPlayerOne ? "White won" : "Black won");
+            }
+            else if (playerOneTimer <= 0 || playerTwoTimer <= 0)
+            {
+                Board.Instance.CheckMate = true;
+                gameText = "No time left, " + (Board.Instance.isPlayerOne ? "White won" : "Black won");
+            }
             else
+            {
                 gameText = (!Board.Instance.isPlayerOne) ? "Whites turn" : "Blacks turn";
+            }
 
-            spriteBatch.DrawString(Board.Instance.font, gameText, new Vector2(checkMateButton.X - 350, checkMateButton.Y - 100), Color.Black);
+            spriteBatch.DrawString(Board.Instance.font,
+                gameText,
+                new Vector2(checkMateButton.X - 350, checkMateButton.Y - 100),
+                Color.Black);
+            spriteBatch.DrawString(Board.Instance.font,
+                $"Time left: {(int)(Board.Instance.isPlayerOne ? playerOneTimer : playerTwoTimer)}",
+                new Vector2(checkMateButton.X - 350, checkMateButton.Y),
+                Color.Black);
+        }
+
+        public void GameUIUpdate(GameTime gameTime)
+        {
+            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (!Board.Instance.CheckMate)
+            {
+                if (Board.Instance.isPlayerOne)
+                {
+                    playerOneTimer -= elapsedTime;
+                }
+                else
+                {
+                    playerTwoTimer -= elapsedTime;
+                }
+            }
         }
 
         /// <summary>

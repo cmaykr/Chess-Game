@@ -57,6 +57,7 @@ namespace Chess_Game
 
             DrawBoard.PieceMove(DrawPiece, boardPosition);
             gameUI.GameUIButtons();
+            gameUI.GameUIUpdate(gameTime);
 
 
             base.Update(gameTime);
