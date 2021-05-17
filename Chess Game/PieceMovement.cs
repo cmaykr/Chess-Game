@@ -8,7 +8,7 @@ namespace Chess_Game
             {
                 for (int y = 0; y < 8; y++)
                 {
-                    if (DrawPiece[x, y] != null && DrawPiece[x, y].type == PieceType.King && DrawPiece[x, y].isBlack == Board.Instance.isPlayerOne)
+                    if (DrawPiece[x, y] != null && DrawPiece[x, y].type == PieceType.King && DrawPiece[x, y].isBlack != Board.Instance.IsPlayerOne)
                     {
                         return (x, y);
                     }
@@ -54,7 +54,7 @@ namespace Chess_Game
                     {
                         for (int j = 0; j < 8; j++)
                         {
-                            if (DrawPiece[x, y] != null && DrawPiece[x, y].isBlack == Board.Instance.isPlayerOne)
+                            if (DrawPiece[x, y] != null && DrawPiece[x, y].isBlack != Board.Instance.IsPlayerOne)
                             {
                                 if (DrawPiece[x, y].CanMove(DrawPiece, x, y, i, j) && !Piece.Collision(DrawPiece, x, y, i, j) && !WillMoveCauseCheck(DrawPiece, x, y, i, j))
                                 {

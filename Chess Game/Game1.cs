@@ -43,9 +43,6 @@ namespace Chess_Game
             // TODO: use this.Content to load your game content here
 
             boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - (DrawBoard.TileSize.X * 5), GraphicsDevice.Viewport.Bounds.Height / 2 - (DrawBoard.TileSize.Y * 4));
-
-            DrawBoard.PieceContent(DrawPiece);
-            gameUI.GameUIContent();
         }
 
         protected override void Update(GameTime gameTime)
@@ -55,9 +52,7 @@ namespace Chess_Game
 
             // TODO: Add your update logic here
 
-            DrawBoard.PieceMove(DrawPiece, boardPosition);
-            gameUI.GameUIButtons();
-            gameUI.GameUIUpdate(gameTime);
+            DrawBoard.BoardUpdate(gameTime, DrawPiece, boardPosition);
 
 
             base.Update(gameTime);
@@ -71,7 +66,6 @@ namespace Chess_Game
 
             _spriteBatch.Begin();
             DrawBoard.BoardDraw(_spriteBatch, (int)boardPosition.X, (int)boardPosition.Y, DrawPiece);
-            gameUI.GameUIDraw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);

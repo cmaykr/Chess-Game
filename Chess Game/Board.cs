@@ -24,10 +24,15 @@ namespace Chess_Game
         public Texture2D Pawn, Rook, Knight, King, Bishop, Queen;
         Texture2D validMoveIndicatorSquare;
         bool pieceChosen = false;
-        public bool isPlayerOne;
-        public SpriteFont font;
+        public bool IsPlayerOne = true;
         bool debug;
         public bool CheckMate;
+        bool timerRun;
+        readonly GameUI gameUI = new();
+
+        float playerTwoTimer = 600f;
+        float playerOneTimer = 600f;
+        float timeIncrement = 10f;
 
         public static Board Instance;
 
@@ -86,16 +91,17 @@ namespace Chess_Game
 
                     // Ritar koordinaterna för brädet om debug är PÅ
                     if (debug)
-                        DebugMode.BoardCoord(spriteBatch, i * (int)TileSize.X + x, j * (int)TileSize.Y + y, i, j);
+                        gameUI.BoardCoord(spriteBatch, i * (int)TileSize.X + x, j * (int)TileSize.Y + y, i, j);
                 }
             }
+            gameUI.GameUIDraw(spriteBatch, playerOneTimer, playerTwoTimer);
         }
 
         /// <summary>
         /// Instanserar alla bilderna.
         /// Bestämmer var pjäserna ska finnas i arrayen.
         /// </summary>
-        public void PieceContent(Piece[,] DrawPiece)
+        void PieceContent(Piece[,] DrawPiece)
         {
             Pawn = Game1.Instance.Content.Load<Texture2D>("Pawn");
             Rook = Game1.Instance.Content.Load<Texture2D>("rook");
@@ -107,7 +113,6 @@ namespace Chess_Game
             tile = Game1.Instance.Content.Load<Texture2D>("Square");
             validMoveIndicator = Game1.Instance.Content.Load<Texture2D>("Small_Dot");
             validMoveIndicatorSquare = Game1.Instance.Content.Load<Texture2D>("SquareDot");
-            font = Game1.Instance.Content.Load<SpriteFont>("Arial");
             
             // Bestämmer var pjäserna ska finnas på spelbrädet för båda sidorna.
             string[] pieceCoord = new[]
@@ -151,12 +156,20 @@ namespace Chess_Game
             }
         }
 
+        public void BoardUpdate(GameTime gameTime, Piece[,] DrawPiece, Vector2 boardPosition)
+        {
+            PieceMove(DrawPiece, boardPosition);
+            PieceContent(DrawPiece);
+            gameUI.GameUIContent();
+            DecrementTimer(gameTime);
+        }
+
         /// <summary>
         /// Metod för att välja och flytta pjäserna.
         /// </summary>
         /// <param name="DrawPiece">Sparar positionen för alla pjäser på spelbrädet.</param>
         /// <param name="boardPosition">Positionen för pjäserna på spelrutan.</param>
-        public void PieceMove(Piece[,] DrawPiece, Vector2 boardPosition)
+        void PieceMove(Piece[,] DrawPiece, Vector2 boardPosition)
         {
             curr = Mouse.GetState();
 
@@ -167,8 +180,8 @@ namespace Chess_Game
                 yIndex = (int)idxVector.Y;
 
                 // Kollar om koordinaten man har klickat på är på spelbrädet.
-                if (xIndex > -1 && xIndex < 8 && yIndex > -1 && yIndex < 8 && DrawPiece[xIndex, yIndex] != null && DrawPiece[xIndex, yIndex].isBlack == isPlayerOne)
-                    pieceChosen = true;
+                if (xIndex > -1 && xIndex < 8 && yIndex > -1 && yIndex < 8 && DrawPiece[xIndex, yIndex] != null && DrawPiece[xIndex, yIndex].isBlack != IsPlayerOne)
+                    pieceChosen = timerRun = true;
 
             }
             else if (!CheckMate && pieceChosen && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
@@ -184,19 +197,26 @@ namespace Chess_Game
                 else if (xTarget < 8 && yTarget < 8 && xTarget > -1 && yTarget > -1 
                     && DrawPiece[xIndex, yIndex].CanMove(DrawPiece, xIndex, yIndex, xTarget, yTarget))
                 {
-                    if ((DrawPiece[xTarget, yTarget] == null || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack) && !Piece.Collision(DrawPiece, xIndex, yIndex, xTarget, yTarget) && !PieceMovement.WillMoveCauseCheck(DrawPiece, xIndex, yIndex, xTarget, yTarget))
+                    if ((
+                            DrawPiece[xTarget, yTarget] == null 
+                            || DrawPiece[xTarget, yTarget].isBlack != DrawPiece[xIndex, yIndex].isBlack
+                        ) 
+                        && !Piece.Collision(DrawPiece, xIndex, yIndex, xTarget, yTarget) 
+                        && !PieceMovement.WillMoveCauseCheck(DrawPiece, xIndex, yIndex, xTarget, yTarget))
                     {
                         DrawPiece[xIndex, yIndex].hasMoved = true;
                         DrawPiece[xTarget, yTarget] = DrawPiece[xIndex, yIndex];
                         DrawPiece[xIndex, yIndex] = null;
-                        HasCastled(DrawPiece, xIndex, yIndex, xTarget);
+                        HasCastled(DrawPiece, xIndex, yTarget, xTarget);
 
                         xLastMove = xIndex;
                         yLastMove = yIndex;
                         xLastMoveTarget = xTarget;
                         yLastMoveTarget = yTarget;
 
-                        isPlayerOne = !isPlayerOne;
+                        ApplyTimeIncrement();
+
+                        IsPlayerOne = !IsPlayerOne;
                         CheckMate = PieceMovement.isCheckMate(DrawPiece);
                     }
                 }
@@ -205,7 +225,7 @@ namespace Chess_Game
             prev = curr;
         }
 
-        void HasCastled(Piece[,] DrawPiece, int xIndex, int yIndex, int xTarget)
+        void HasCastled(Piece[,] DrawPiece, int xIndex, int yTarget, int xTarget)
         {
             int xCastlingRook;
             if (xTarget < xIndex)
@@ -214,14 +234,48 @@ namespace Chess_Game
                 xCastlingRook = 7;
 
             int xDist = Math.Abs(xTarget - xIndex);
-            if (DrawPiece[xTarget, yIndex] != null && xDist == 2 && DrawPiece[xTarget, yIndex].type == PieceType.King)
+            if (((Board.Instance.IsPlayerOne) ? yTarget == 7 : yTarget == 0) && DrawPiece[xTarget, yTarget] != null && xDist == 2 && DrawPiece[xTarget, yTarget].type == PieceType.King)
             {
-                DrawPiece[xCastlingRook, yIndex].hasMoved = true;
+                DrawPiece[xCastlingRook, yTarget].hasMoved = true;
                 if (xTarget < xIndex)
-                    DrawPiece[xIndex - 1, yIndex] = DrawPiece[xCastlingRook, yIndex];
+                    DrawPiece[xIndex - 1, yTarget] = DrawPiece[xCastlingRook, yTarget];
                 else
-                    DrawPiece[xIndex + 1, yIndex] = DrawPiece[xCastlingRook, yIndex];
-                DrawPiece[xCastlingRook, yIndex] = null;
+                    DrawPiece[xIndex + 1, yTarget] = DrawPiece[xCastlingRook, yTarget];
+                DrawPiece[xCastlingRook, yTarget] = null;
+            }
+        }
+
+        void ApplyTimeIncrement()
+        {
+            if (!timerRun)
+            {
+                return;
+            }
+
+            if (Board.Instance.IsPlayerOne)
+            {
+                playerOneTimer += timeIncrement;
+            }
+            else
+            {
+                playerTwoTimer += timeIncrement;
+            }
+        }
+
+        void DecrementTimer(GameTime gameTime)
+        {
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (!CheckMate && timerRun)
+            {
+                if (IsPlayerOne)
+                {
+                    playerOneTimer -= dt;
+                }
+                else
+                {
+                    playerTwoTimer -= dt;
+                }
             }
         }
 

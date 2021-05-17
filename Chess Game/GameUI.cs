@@ -13,9 +13,7 @@ namespace Chess_Game
         public static Vector2 checkMateButtonSize = new(100, 30);
         public Rectangle checkMateButtonCoord;
         MouseState curr, prev;
-
-        float playerOneTimer = 600f;
-        float playerTwoTimer = 600f;
+        SpriteFont font;
 
         /// <summary>
         /// Laddar in alla filer som behövs för att rita spelrutan.
@@ -24,12 +22,13 @@ namespace Chess_Game
         {
             checkMateButton = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2,
                 Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2);
+            font = Game1.Instance.Content.Load<SpriteFont>("Arial");
         }
 
         /// <summary>
         /// Ritar allt som ska finnas under spelets gång.
         /// </summary>
-        public void GameUIDraw(SpriteBatch spriteBatch)
+        public void GameUIDraw(SpriteBatch spriteBatch, float playerOneTimer, float playerTwoTimer)
         {
             string gameText;
             checkMateButtonCoord = new((int)checkMateButton.X - 350,
@@ -37,45 +36,32 @@ namespace Chess_Game
                 (int)checkMateButtonSize.X,
                 (int)checkMateButtonSize.Y);
 
-            if (Board.Instance.CheckMate && playerOneTimer > 0 && playerTwoTimer > 0)
+            if (Board.Instance.CheckMate && playerTwoTimer > 0 && playerTwoTimer > 0)
             {
-                gameText = "Checkmate, " + (Board.Instance.isPlayerOne ? "White won" : "Black won");
+                gameText = "Checkmate, " + (!Board.Instance.IsPlayerOne ? "White won" : "Black won");
             }
-            else if (playerOneTimer <= 0 || playerTwoTimer <= 0)
+            else if (playerTwoTimer <= 0 || playerTwoTimer <= 0)
             {
                 Board.Instance.CheckMate = true;
-                gameText = "No time left, " + (Board.Instance.isPlayerOne ? "White won" : "Black won");
+                gameText = "No time left, " + (!Board.Instance.IsPlayerOne ? "White won" : "Black won");
             }
             else
             {
-                gameText = (!Board.Instance.isPlayerOne) ? "Whites turn" : "Blacks turn";
+                gameText = (Board.Instance.IsPlayerOne) ? "Whites turn" : "Blacks turn";
             }
 
-            spriteBatch.DrawString(Board.Instance.font,
+            spriteBatch.DrawString(font,
                 gameText,
                 new Vector2(checkMateButton.X - 350, checkMateButton.Y - 100),
                 Color.Black);
-            spriteBatch.DrawString(Board.Instance.font,
-                $"Time left: {(int)(Board.Instance.isPlayerOne ? playerOneTimer : playerTwoTimer)}",
+            spriteBatch.DrawString(font,
+                $"Time left2: {(int)(playerTwoTimer / 60):00}:{(int)(playerTwoTimer % 60):00}",
                 new Vector2(checkMateButton.X - 350, checkMateButton.Y),
                 Color.Black);
-        }
-
-        public void GameUIUpdate(GameTime gameTime)
-        {
-            float elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (!Board.Instance.CheckMate)
-            {
-                if (Board.Instance.isPlayerOne)
-                {
-                    playerOneTimer -= elapsedTime;
-                }
-                else
-                {
-                    playerTwoTimer -= elapsedTime;
-                }
-            }
+            spriteBatch.DrawString(font,
+                $"Time left: {(int)(playerOneTimer / 60):00}:{(int)(playerOneTimer % 60):00}",
+                new Vector2(checkMateButton.X - 350, checkMateButton.Y+100),
+                Color.Black);
         }
 
         /// <summary>
@@ -87,6 +73,18 @@ namespace Chess_Game
             var mousePos = new Point(curr.X, curr.Y);
 
             prev = curr;
+        }
+        /// <summary>
+        /// Metod för att rita koordinaterna på spelbrädet
+        /// </summary>
+        /// <param name="spritebatch"></param>
+        /// <param name="x">X Positionen för skärmen.</param>
+        /// <param name="y">Y Positionen för skärmen.</param>
+        /// <param name="xCoord">X Koordinaten för den rutan på spelbrädet.</param>
+        /// <param name="yCoord">Y Koordinaten för den rutan på spelbrädet.</param>
+        public void BoardCoord(SpriteBatch spritebatch, int x, int y, int xCoord, int yCoord)
+        {
+            spritebatch.DrawString(font, $"{xCoord}, {yCoord}", new Vector2(x, y), Color.Red);
         }
     }
 }
