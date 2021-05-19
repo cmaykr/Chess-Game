@@ -43,6 +43,7 @@ namespace Chess_Game
             // TODO: use this.Content to load your game content here
 
             boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - (DrawBoard.TileSize.X * 5), GraphicsDevice.Viewport.Bounds.Height / 2 - (DrawBoard.TileSize.Y * 4));
+            DrawBoard.BoardContent(DrawPiece);
         }
 
         protected override void Update(GameTime gameTime)

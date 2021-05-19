@@ -55,11 +55,11 @@ namespace Chess_Game
                 new Vector2(checkMateButton.X - 350, checkMateButton.Y - 100),
                 Color.Black);
             spriteBatch.DrawString(font,
-                $"Time left2: {(int)(playerTwoTimer / 60):00}:{(int)(playerTwoTimer % 60):00}",
+                $"Blacks Time: {(int)(playerTwoTimer / 60):00}:{(int)(playerTwoTimer % 60):00}",
                 new Vector2(checkMateButton.X - 350, checkMateButton.Y),
                 Color.Black);
             spriteBatch.DrawString(font,
-                $"Time left: {(int)(playerOneTimer / 60):00}:{(int)(playerOneTimer % 60):00}",
+                $"Whites Time: {(int)(playerOneTimer / 60):00}:{(int)(playerOneTimer % 60):00}",
                 new Vector2(checkMateButton.X - 350, checkMateButton.Y+100),
                 Color.Black);
         }

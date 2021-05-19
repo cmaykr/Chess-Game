@@ -41,6 +41,18 @@ namespace Chess_Game
             Instance = this;
         }
 
+        public void BoardContent(Piece[,] DrawPiece)
+        {
+            PieceContent(DrawPiece);
+            gameUI.GameUIContent();
+        }
+
+        public void BoardUpdate(GameTime gameTime, Piece[,] DrawPiece, Vector2 boardPosition)
+        {
+            PieceMove(DrawPiece, boardPosition);
+            DecrementTimer(gameTime);
+        }
+
         /// <summary>
         /// Ritar spelbrädet, 
         /// visar också var man kan flytta en pjäs.
@@ -154,14 +166,6 @@ namespace Chess_Game
                     };
                 }
             }
-        }
-
-        public void BoardUpdate(GameTime gameTime, Piece[,] DrawPiece, Vector2 boardPosition)
-        {
-            PieceMove(DrawPiece, boardPosition);
-            PieceContent(DrawPiece);
-            gameUI.GameUIContent();
-            DecrementTimer(gameTime);
         }
 
         /// <summary>
