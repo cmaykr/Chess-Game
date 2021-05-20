@@ -14,6 +14,7 @@ namespace Chess_Game
         public Rectangle checkMateButtonCoord;
         MouseState curr, prev;
         SpriteFont font;
+        List<string> notationList = new();
 
         /// <summary>
         /// Laddar in alla filer som behövs för att rita spelrutan.
@@ -62,6 +63,9 @@ namespace Chess_Game
                 $"Whites Time: {(int)(playerOneTimer / 60):00}:{(int)(playerOneTimer % 60):00}",
                 new Vector2(checkMateButton.X - 350, checkMateButton.Y+100),
                 Color.Black);
+
+            spriteBatch.DrawString(font, "Moves:", new Vector2(checkMateButton.X + 212, checkMateButton.Y - 168), Color.Black);
+            NotationDraw(spriteBatch);
         }
 
         /// <summary>
@@ -85,6 +89,48 @@ namespace Chess_Game
         public void BoardCoord(SpriteBatch spritebatch, int x, int y, int xCoord, int yCoord)
         {
             spritebatch.DrawString(font, $"{xCoord}, {yCoord}", new Vector2(x, y), Color.Red);
+        }
+
+        public void AddNotation(Piece[,] Pieces, int xIndex, int yIndex, int xTarget, int yTarget)
+        {
+            string tempNotation = "";
+
+            tempNotation += Pieces[xIndex, yIndex].type switch
+            {
+                PieceType.King => "K",
+                PieceType.Queen => "Q",
+                PieceType.Bishop => "B",
+                PieceType.Rook => "R",
+                PieceType.Knight => "N",
+                _ => "",
+            };
+            if (Pieces[xTarget, yTarget] != null)
+                tempNotation += 'x';
+
+            tempNotation += (char)('a' + xTarget);
+            tempNotation += yTarget;
+
+            notationList.Add(tempNotation);
+        }
+        void NotationDraw(SpriteBatch spriteBatch)
+        {
+            int notationYCoord;
+            string notationtext;
+
+            for (int i = 0; i < notationList.Count; i++)
+            {
+                notationYCoord = (int)Math.Ceiling(((double)i + 1) / 2);
+                if (i % 2 == 0)
+                {
+                    notationtext = $"{notationYCoord}:  {notationList[i]}";
+                }
+                else
+                {
+                    notationtext = notationList[i];
+                }
+
+                spriteBatch.DrawString(font, notationtext, new Vector2(checkMateButton.X + ((i % 2 == 0) ? 200 : 270), checkMateButton.Y - 150 + ((notationYCoord - 1) * 20)), Color.Black);
+            }
         }
     }
 }

@@ -2,13 +2,13 @@ namespace Chess_Game
 {
     public class PieceMovement
     {
-        static (int xKing, int yKing) GetKing(Piece[,] DrawPiece) 
+        static (int xKing, int yKing) GetKing(Piece[,] Pieces) 
         {
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 8; y++)
                 {
-                    if (DrawPiece[x, y] != null && DrawPiece[x, y].type == PieceType.King && DrawPiece[x, y].isBlack != Board.Instance.IsPlayerOne)
+                    if (Pieces[x, y] != null && Pieces[x, y].type == PieceType.King && Pieces[x, y].isBlack != Board.Instance.IsPlayerOne)
                     {
                         return (x, y);
                     }
@@ -16,17 +16,17 @@ namespace Chess_Game
             }
             return (-1, -1);
         }
-        public static bool Check(Piece[,] DrawPiece)
+        static bool Check(Piece[,] Pieces)
         {
-            var (xKing, yKing) = GetKing(DrawPiece);
+            var (xKing, yKing) = GetKing(Pieces);
 
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 8; y++)
                 {
-                    if (DrawPiece[x, y] != null && DrawPiece[x, y].CanMove(DrawPiece, x, y, xKing, yKing) && !Piece.Collision(DrawPiece, x, y, xKing, yKing) && DrawPiece[x, y].isBlack != DrawPiece[xKing, yKing].isBlack)
+                    if (Pieces[x, y] != null && Pieces[x, y].CanMove(Pieces, x, y, xKing, yKing) && !Piece.Collision(Pieces, x, y, xKing, yKing) && Pieces[x, y].isBlack != Pieces[xKing, yKing].isBlack)
                     {
-                        if (!(DrawPiece[x, y].type == PieceType.Pawn && x == xKing))
+                        if (!(Pieces[x, y].type == PieceType.Pawn && x == xKing))
                             return true;
                     }
                 }
@@ -34,9 +34,9 @@ namespace Chess_Game
             return false;
         }
 
-        public static bool WillMoveCauseCheck(Piece[,] DrawPiece, int xIndex, int yIndex, int xTarget, int yTarget)
+        public static bool WillMoveCauseCheck(Piece[,] Pieces, int xIndex, int yIndex, int xTarget, int yTarget)
         {
-            Piece[,] tempBoard = (Piece[,])DrawPiece.Clone();
+            Piece[,] tempBoard = (Piece[,])Pieces.Clone();
             var piece = tempBoard[xIndex, yIndex];
             tempBoard[xIndex, yIndex] = null;
             tempBoard[xTarget, yTarget] = piece;
@@ -44,7 +44,7 @@ namespace Chess_Game
             return Check(tempBoard);
         }
 
-        public static bool isCheckMate(Piece[,] DrawPiece)
+        public static bool IsCheckMate(Piece[,] Pieces)
         {
             for (int x = 0; x < 8; x++)
             {
@@ -54,9 +54,9 @@ namespace Chess_Game
                     {
                         for (int j = 0; j < 8; j++)
                         {
-                            if (DrawPiece[x, y] != null && DrawPiece[x, y].isBlack != Board.Instance.IsPlayerOne)
+                            if (Pieces[x, y] != null && Pieces[x, y].isBlack != Board.Instance.IsPlayerOne)
                             {
-                                if (DrawPiece[x, y].CanMove(DrawPiece, x, y, i, j) && !Piece.Collision(DrawPiece, x, y, i, j) && !WillMoveCauseCheck(DrawPiece, x, y, i, j))
+                                if (Pieces[x, y].CanMove(Pieces, x, y, i, j) && !Piece.Collision(Pieces, x, y, i, j) && !WillMoveCauseCheck(Pieces, x, y, i, j))
                                 {
                                     return false;
                                 }

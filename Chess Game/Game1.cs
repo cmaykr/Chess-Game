@@ -10,10 +10,9 @@ namespace Chess_Game
     public class Game1 : Game
     {
         readonly Board DrawBoard = new();
-        public readonly Piece[,] DrawPiece = new Piece[8, 8];
+        public readonly Piece[,] Pieces = new Piece[8, 8];
         public static Game1 Instance;
         public static Vector2 boardPosition;
-        readonly GameUI gameUI = new();
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -43,7 +42,7 @@ namespace Chess_Game
             // TODO: use this.Content to load your game content here
 
             boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - (DrawBoard.TileSize.X * 5), GraphicsDevice.Viewport.Bounds.Height / 2 - (DrawBoard.TileSize.Y * 4));
-            DrawBoard.BoardContent(DrawPiece);
+            DrawBoard.BoardContent(Pieces);
         }
 
         protected override void Update(GameTime gameTime)
@@ -53,7 +52,7 @@ namespace Chess_Game
 
             // TODO: Add your update logic here
 
-            DrawBoard.BoardUpdate(gameTime, DrawPiece, boardPosition);
+            DrawBoard.BoardUpdate(gameTime, Pieces, boardPosition);
 
 
             base.Update(gameTime);
@@ -66,7 +65,7 @@ namespace Chess_Game
             // TODO: Add your drawing code here
 
             _spriteBatch.Begin();
-            DrawBoard.BoardDraw(_spriteBatch, (int)boardPosition.X, (int)boardPosition.Y, DrawPiece);
+            DrawBoard.BoardDraw(_spriteBatch, (int)boardPosition.X, (int)boardPosition.Y, Pieces);
             _spriteBatch.End();
 
             base.Draw(gameTime);
