@@ -91,7 +91,7 @@ namespace Chess_Game
                     || (hasMoved == false && yTarget == yIndex + 2)) 
                     && Game1.Instance.Pieces[xTargetTemp, yTargetTemp] == null) 
                     || (xDist == 1 && yTarget == yIndex + 1 && PawnDiagonalAttack(Pieces, xTargetTemp, yTargetTemp))
-                    || EnPassant(Pieces, xTarget, yTarget),
+                    || EnPassant(Pieces, xIndexTemp, yIndexTemp, xTargetTemp, yTargetTemp),
                 PieceType.Rook => xTarget == xIndex || yTarget == yIndex, 
                 PieceType.King => (xDist == 1 && yDist == 0) 
                     || (yDist == 1 && xDist == 0) 
@@ -116,8 +116,25 @@ namespace Chess_Game
         }
 
         // Doesn't do anything yet
-        static bool EnPassant(Piece[,] Board, int xTarget, int yTarget)
+        bool EnPassant(Piece[,] Pieces, int xIndex, int yIndex, int xTarget, int yTarget)
         {
+
+            int xLastMove = Board.Instance.xLastMove;
+            int yLastMove = Board.Instance.yLastMove;
+            int xLastMoveTarget = Board.Instance.xLastMoveTarget;
+            int yLastMoveTarget = Board.Instance.yLastMoveTarget;
+
+            if (Pieces[xLastMoveTarget, yLastMoveTarget].type == PieceType.Pawn && Math.Abs(yLastMoveTarget - yLastMove) == 2)
+            {
+                if (yIndex == yLastMoveTarget && Math.Abs(xIndex - xLastMoveTarget) == 1)
+                {
+                    if (xTarget == xLastMoveTarget && yTarget == (isBlack ? yLastMoveTarget + 1 : yLastMoveTarget - 1))
+                    {
+                        Board.Instance.hasEnPassant = true;
+                        return true;
+                    }
+                }
+            }
             return false;
         }
 

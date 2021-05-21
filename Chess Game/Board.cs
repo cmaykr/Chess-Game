@@ -29,6 +29,7 @@ namespace Chess_Game
         bool debug;
         public bool CheckMate;
         bool timerRun;
+        public bool hasEnPassant;
         readonly GameUI gameUI = new();
 
         float playerTwoTimer = 600f;
@@ -214,6 +215,7 @@ namespace Chess_Game
                         Pieces[xTarget, yTarget] = Pieces[xIndex, yIndex];
                         Pieces[xIndex, yIndex] = null;
                         HasCastled(Pieces, xIndex, yTarget, xTarget);
+                        EnPassant(Pieces);
 
                         xLastMove = xIndex;
                         yLastMove = yIndex;
@@ -249,6 +251,15 @@ namespace Chess_Game
                 else
                     Pieces[xIndex + 1, yTarget] = Pieces[xCastlingRook, yTarget];
                 Pieces[xCastlingRook, yTarget] = null;
+            }
+        }
+        
+        void EnPassant(Piece[,] Pieces)
+        {
+            if (hasEnPassant)
+            {
+                Pieces[xLastMoveTarget, yLastMoveTarget] = null;
+                hasEnPassant = false;
             }
         }
 
