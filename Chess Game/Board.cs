@@ -13,9 +13,8 @@ namespace Chess_Game
     /// </summary>
     class Board
     {
-        MouseState curr, prev;
+        public MouseState curr, prev;
         int xIndex = 0, yIndex = 0;
-        public int Turns { get; private set; } = 0;
         public int xLastMoveTarget, yLastMoveTarget;
         public int xLastMove, yLastMove;
         public Vector2 TileSize { get; private set; } = new(40,40);
@@ -24,13 +23,14 @@ namespace Chess_Game
         Texture2D validMoveIndicator;
         public Texture2D Pawn, Rook, Knight, King, Bishop, Queen;
         Texture2D validMoveIndicatorSquare;
-        bool pieceChosen = false;
+        public bool pieceChosen = false;
         public bool IsPlayerOne = true;
         bool debug;
         public bool CheckMate;
         bool timerRun;
         public bool hasEnPassant;
-        readonly GameUI gameUI = new();
+        public readonly GameUI gameUI = new();
+        PieceMovement MovePiece = new();
 
         float playerTwoTimer = 600f;
         float playerOneTimer = 600f;
@@ -192,49 +192,12 @@ namespace Chess_Game
             }
             else if (!CheckMate && pieceChosen && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
-                int xTarget = (int)(curr.X - boardPosition.X) / (int)TileSize.X;
-                int yTarget = (int)(curr.Y - boardPosition.Y) / (int)TileSize.Y;
-
-                // Kollar om det är tillåtet att flytta pjäsen till den valda positionen.
-                if (xTarget == xIndex && yTarget == yIndex)
-                {
-                    pieceChosen = false;
-                }
-                else if (xTarget < 8 && yTarget < 8 && xTarget > -1 && yTarget > -1 
-                    && Pieces[xIndex, yIndex].CanMove(Pieces, xIndex, yIndex, xTarget, yTarget))
-                {
-                    if ((
-                            Pieces[xTarget, yTarget] == null 
-                            || Pieces[xTarget, yTarget].isBlack != Pieces[xIndex, yIndex].isBlack
-                        ) 
-                        && !Piece.Collision(Pieces, xIndex, yIndex, xTarget, yTarget) 
-                        && !PieceMovement.WillMoveCauseCheck(Pieces, xIndex, yIndex, xTarget, yTarget))
-                    {
-                        gameUI.AddNotation(Pieces, xIndex, yIndex, xTarget, yTarget);
-                        Pieces[xIndex, yIndex].hasMoved = true;
-                        Pieces[xTarget, yTarget] = Pieces[xIndex, yIndex];
-                        Pieces[xIndex, yIndex] = null;
-                        HasCastled(Pieces, xIndex, yTarget, xTarget);
-                        EnPassant(Pieces);
-
-                        xLastMove = xIndex;
-                        yLastMove = yIndex;
-                        xLastMoveTarget = xTarget;
-                        yLastMoveTarget = yTarget;
-                        Turns++;
-
-                        ApplyTimeIncrement();
-
-                        IsPlayerOne = !IsPlayerOne;
-                        CheckMate = PieceMovement.IsCheckMate(Pieces);
-                    }
-                }
-                pieceChosen = false;
+                MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition);
             }
             prev = curr;
         }
 
-        void HasCastled(Piece[,] Pieces, int xIndex, int yTarget, int xTarget)
+        public void HasCastled(Piece[,] Pieces, int xIndex, int yTarget, int xTarget)
         {
             int xCastlingRook;
             if (xTarget < xIndex)
@@ -254,7 +217,7 @@ namespace Chess_Game
             }
         }
         
-        void EnPassant(Piece[,] Pieces)
+        public void EnPassant(Piece[,] Pieces)
         {
             if (hasEnPassant)
             {
@@ -263,7 +226,7 @@ namespace Chess_Game
             }
         }
 
-        void ApplyTimeIncrement()
+        public void ApplyTimeIncrement()
         {
             if (!timerRun)
             {

@@ -1,7 +1,16 @@
+using System;
+using System.Text;
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
+
 namespace Chess_Game
 {
     public class PieceMovement
     {
+        public int Turns { get; private set; } = 0;
+
         static (int xKing, int yKing) GetKing(Piece[,] Pieces) 
         {
             for (int x = 0; x < 8; x++)
@@ -66,6 +75,48 @@ namespace Chess_Game
                 }
             }
             return true;
+        }
+
+        public void MoveChosenPiece(Piece[,] Pieces, int xIndex, int yIndex, Vector2 boardPosition)
+        {
+            int xTarget = (int)(Board.Instance.curr.X - boardPosition.X) / (int)Board.Instance.TileSize.X;
+            int yTarget = (int)(Board.Instance.curr.Y - boardPosition.Y) / (int)Board.Instance.TileSize.Y;
+
+            // Kollar om det är tillåtet att flytta pjäsen till den valda positionen.
+            if (xTarget == xIndex && yTarget == yIndex)
+            {
+                Board.Instance.pieceChosen = false;
+            }
+            else if (xTarget < 8 && yTarget < 8 && xTarget > -1 && yTarget > -1
+                && Pieces[xIndex, yIndex].CanMove(Pieces, xIndex, yIndex, xTarget, yTarget))
+            {
+                if ((
+                        Pieces[xTarget, yTarget] == null
+                        || Pieces[xTarget, yTarget].isBlack != Pieces[xIndex, yIndex].isBlack
+                    )
+                    && !Piece.Collision(Pieces, xIndex, yIndex, xTarget, yTarget)
+                    && !WillMoveCauseCheck(Pieces, xIndex, yIndex, xTarget, yTarget))
+                {
+                    Board.Instance.gameUI.AddNotation(Pieces, xIndex, yIndex, xTarget, yTarget);
+                    Pieces[xIndex, yIndex].hasMoved = true;
+                    Pieces[xTarget, yTarget] = Pieces[xIndex, yIndex];
+                    Pieces[xIndex, yIndex] = null;
+                    Board.Instance.HasCastled(Pieces, xIndex, yTarget, xTarget);
+                    Board.Instance.EnPassant(Pieces);
+
+                    Board.Instance.xLastMove = xIndex;
+                    Board.Instance.yLastMove = yIndex;
+                    Board.Instance.xLastMoveTarget = xTarget;
+                    Board.Instance.yLastMoveTarget = yTarget;
+                    Turns += 1;
+
+                    Board.Instance.ApplyTimeIncrement();
+
+                    Board.Instance.IsPlayerOne = !Board.Instance.IsPlayerOne;
+                    Board.Instance.CheckMate = IsCheckMate(Pieces);
+                }
+            }
+            Board.Instance.pieceChosen = false;
         }
     }
 }
