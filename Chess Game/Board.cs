@@ -15,8 +15,6 @@ namespace Chess_Game
     {
         public MouseState curr, prev;
         int xIndex = 0, yIndex = 0;
-        public int xLastMoveTarget, yLastMoveTarget;
-        public int xLastMove, yLastMove;
         public Vector2 TileSize { get; private set; } = new(40,40);
         private Texture2D tile;
         public Texture2D Tile => tile;
@@ -27,14 +25,9 @@ namespace Chess_Game
         public bool IsPlayerOne = true;
         bool debug;
         public bool CheckMate;
-        bool timerRun;
-        public bool hasEnPassant;
+        public bool timerRun;
         public readonly GameUI gameUI = new();
         PieceMovement MovePiece = new();
-
-        float playerTwoTimer = 600f;
-        float playerOneTimer = 600f;
-        readonly float timeIncrement = 10f;
 
         public static Board Instance;
 
@@ -52,7 +45,7 @@ namespace Chess_Game
         public void BoardUpdate(GameTime gameTime, Piece[,] Pieces, Vector2 boardPosition)
         {
             PieceMove(Pieces, boardPosition);
-            DecrementTimer(gameTime);
+            MovePiece.DecrementTimer(gameTime);
         }
 
         /// <summary>
@@ -108,7 +101,7 @@ namespace Chess_Game
                         gameUI.BoardCoord(spriteBatch, i * (int)TileSize.X + x, j * (int)TileSize.Y + y, i, j);
                 }
             }
-            gameUI.GameUIDraw(spriteBatch, playerOneTimer, playerTwoTimer);
+            gameUI.GameUIDraw(spriteBatch, MovePiece.playerOneTimer, MovePiece.playerTwoTimer);
         }
 
         /// <summary>
@@ -195,69 +188,6 @@ namespace Chess_Game
                 MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition);
             }
             prev = curr;
-        }
-
-        public void HasCastled(Piece[,] Pieces, int xIndex, int yTarget, int xTarget)
-        {
-            int xCastlingRook;
-            if (xTarget < xIndex)
-                xCastlingRook = 0;
-            else
-                xCastlingRook = 7;
-
-            int xDist = Math.Abs(xTarget - xIndex);
-            if (((IsPlayerOne) ? yTarget == 7 : yTarget == 0) && Pieces[xTarget, yTarget] != null && xDist == 2 && Pieces[xTarget, yTarget].type == PieceType.King)
-            {
-                Pieces[xCastlingRook, yTarget].hasMoved = true;
-                if (xTarget < xIndex)
-                    Pieces[xIndex - 1, yTarget] = Pieces[xCastlingRook, yTarget];
-                else
-                    Pieces[xIndex + 1, yTarget] = Pieces[xCastlingRook, yTarget];
-                Pieces[xCastlingRook, yTarget] = null;
-            }
-        }
-        
-        public void EnPassant(Piece[,] Pieces)
-        {
-            if (hasEnPassant)
-            {
-                Pieces[xLastMoveTarget, yLastMoveTarget] = null;
-                hasEnPassant = false;
-            }
-        }
-
-        public void ApplyTimeIncrement()
-        {
-            if (!timerRun)
-            {
-                return;
-            }
-
-            if (IsPlayerOne)
-            {
-                playerOneTimer += timeIncrement;
-            }
-            else
-            {
-                playerTwoTimer += timeIncrement;
-            }
-        }
-
-        void DecrementTimer(GameTime gameTime)
-        {
-            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (!CheckMate && timerRun)
-            {
-                if (IsPlayerOne)
-                {
-                    playerOneTimer -= dt;
-                }
-                else
-                {
-                    playerTwoTimer -= dt;
-                }
-            }
         }
 
         /// <summary>

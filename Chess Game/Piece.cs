@@ -118,11 +118,11 @@ namespace Chess_Game
         // Doesn't do anything yet
         bool EnPassant(Piece[,] Pieces, int xIndex, int yIndex, int xTarget, int yTarget)
         {
+            PieceMovement MovePiece = new();
 
-            int xLastMove = Board.Instance.xLastMove;
-            int yLastMove = Board.Instance.yLastMove;
-            int xLastMoveTarget = Board.Instance.xLastMoveTarget;
-            int yLastMoveTarget = Board.Instance.yLastMoveTarget;
+            int yLastMove = MovePiece.yLastMove;
+            int xLastMoveTarget = MovePiece.xLastMoveTarget;
+            int yLastMoveTarget = MovePiece.yLastMoveTarget;
 
             if (Pieces[xLastMoveTarget, yLastMoveTarget].type == PieceType.Pawn && Math.Abs(yLastMoveTarget - yLastMove) == 2)
             {
@@ -130,7 +130,7 @@ namespace Chess_Game
                 {
                     if (xTarget == xLastMoveTarget && yTarget == (isBlack ? yLastMoveTarget + 1 : yLastMoveTarget - 1))
                     {
-                        Board.Instance.hasEnPassant = true;
+                        MovePiece.hasEnPassant = true;
                         return true;
                     }
                 }
