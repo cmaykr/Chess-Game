@@ -89,7 +89,7 @@ namespace Chess_Game
             {
                 PieceType.Pawn => (xTarget == xIndex && (yTarget == yIndex + 1 
                     || (hasMoved == false && yTarget == yIndex + 2)) 
-                    && Game1.Instance.Pieces[xTargetTemp, yTargetTemp] == null) 
+                    && Pieces[xTargetTemp, yTargetTemp] == null) 
                     || (xDist == 1 && yTarget == yIndex + 1 && PawnDiagonalAttack(Pieces, xTargetTemp, yTargetTemp))
                     || EnPassant(Pieces, xIndexTemp, yIndexTemp, xTargetTemp, yTargetTemp),
                 PieceType.Rook => xTarget == xIndex || yTarget == yIndex, 

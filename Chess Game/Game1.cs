@@ -9,10 +9,10 @@ namespace Chess_Game
 {
     public class Game1 : Game
     {
-        readonly Board DrawBoard = new();
-        public readonly Piece[,] Pieces = new Piece[8, 8];
         public static Game1 Instance;
         public static Vector2 boardPosition;
+        readonly Board DrawBoard = new();
+        Screen Screen = new GameScreen();
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -40,9 +40,8 @@ namespace Chess_Game
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-
+            Screen.LoadContent();
             boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - (DrawBoard.TileSize.X * 5), GraphicsDevice.Viewport.Bounds.Height / 2 - (DrawBoard.TileSize.Y * 4));
-            DrawBoard.BoardContent(Pieces);
         }
 
         protected override void Update(GameTime gameTime)
@@ -51,9 +50,7 @@ namespace Chess_Game
                 Exit();
 
             // TODO: Add your update logic here
-
-            DrawBoard.BoardUpdate(gameTime, Pieces, boardPosition);
-
+            Screen.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -63,10 +60,7 @@ namespace Chess_Game
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
-            _spriteBatch.Begin();
-            DrawBoard.BoardDraw(_spriteBatch, (int)boardPosition.X, (int)boardPosition.Y, Pieces);
-            _spriteBatch.End();
+            Screen.Draw(_spriteBatch);
 
             base.Draw(gameTime);
         }

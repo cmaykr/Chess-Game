@@ -36,18 +36,6 @@ namespace Chess_Game
             Instance = this;
         }
 
-        public void BoardContent(Piece[,] Pieces)
-        {
-            PieceContent(Pieces);
-            GameUI.GameUIContent();
-        }
-
-        public void BoardUpdate(GameTime gameTime, Piece[,] Pieces, Vector2 boardPosition)
-        {
-            PieceMove(Pieces, boardPosition);
-            GameUI.DecrementTimer(gameTime);
-        }
-
         /// <summary>
         /// Ritar spelbrädet, 
         /// visar också var man kan flytta en pjäs.
@@ -108,7 +96,7 @@ namespace Chess_Game
         /// Instanserar alla bilderna.
         /// Bestämmer var pjäserna ska finnas i arrayen.
         /// </summary>
-        void PieceContent(Piece[,] Pieces)
+        public void PieceContent(Piece[,] Pieces)
         {
             Pawn = Game1.Instance.Content.Load<Texture2D>("Pawn");
             Rook = Game1.Instance.Content.Load<Texture2D>("rook");
@@ -168,7 +156,7 @@ namespace Chess_Game
         /// </summary>
         /// <param name="Pieces">Sparar positionen för alla pjäser på spelbrädet.</param>
         /// <param name="boardPosition">Positionen för pjäserna på spelrutan.</param>
-        void PieceMove(Piece[,] Pieces, Vector2 boardPosition)
+        public void PieceMove(Piece[,] Pieces, Vector2 boardPosition)
         {
             curr = Mouse.GetState();
 
@@ -212,6 +200,8 @@ namespace Chess_Game
             GameUI.checkMateButtonSize = new Vector2(100, 30) * Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
             TileSize = new Vector2(40, 40) * Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
             Game1.boardPosition = new Vector2(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2 - (TileSize.X * 5), Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2 - (TileSize.Y * 4));
+            Console.WriteLine(Game1.boardPosition);
+            Console.WriteLine(TileSize);
         }
     }
 }
