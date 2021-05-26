@@ -118,8 +118,7 @@ namespace Chess_Game
         // Doesn't do anything yet
         bool EnPassant(Piece[,] Pieces, int xIndex, int yIndex, int xTarget, int yTarget)
         {
-            PieceMovement MovePiece = new();
-
+            var MovePiece = Board.Instance.MovePiece;
             int yLastMove = MovePiece.yLastMove;
             int xLastMoveTarget = MovePiece.xLastMoveTarget;
             int yLastMoveTarget = MovePiece.yLastMoveTarget;
@@ -151,7 +150,7 @@ namespace Chess_Game
         /// <returns>Returnerar true om kungen får castla</returns>
         static bool TryCastling(Piece[,] BoardPiece, int xIndex, int yIndex, int xTarget, int yTarget, int xDist)
         {
-
+            var MovePiece = Board.Instance.MovePiece;
             if (BoardPiece[xIndex, yIndex].hasMoved)
                 return false;
 
@@ -165,6 +164,7 @@ namespace Chess_Game
             {
                 if (!BoardPiece[xCastlingRook, yIndex].hasMoved)
                 {
+                    MovePiece.hasCastled = true;
                     return true;
                 }
             }

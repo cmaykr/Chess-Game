@@ -15,6 +15,11 @@ namespace Chess_Game
         MouseState curr, prev;
         SpriteFont font;
         List<string> notationList = new();
+        public int Turns { get; set; } = 0;
+
+        public float playerTwoTimer = 600f;
+        public float playerOneTimer = 600f;
+        readonly float timeIncrement = 3f;
 
         /// <summary>
         /// Laddar in alla filer som behövs för att rita spelrutan.
@@ -94,21 +99,32 @@ namespace Chess_Game
         public void AddNotation(Piece[,] Pieces, int xIndex, int yIndex, int xTarget, int yTarget)
         {
             string tempNotation = "";
+            var MovePiece = Board.Instance.MovePiece;
 
-            tempNotation += Pieces[xIndex, yIndex].type switch
+            if (MovePiece.hasCastled)
             {
-                PieceType.King => "K",
-                PieceType.Queen => "Q",
-                PieceType.Bishop => "B",
-                PieceType.Rook => "R",
-                PieceType.Knight => "N",
-                _ => "",
-            };
-            if (Pieces[xTarget, yTarget] != null)
-                tempNotation += 'x';
+                if (xTarget > xIndex)
+                    tempNotation += "0-0";
+                else
+                    tempNotation += "0-0-0";
+            }
+            else
+            {
+                tempNotation += Pieces[xIndex, yIndex].type switch
+                {
+                    PieceType.King => "K",
+                    PieceType.Queen => "Q",
+                    PieceType.Bishop => "B",
+                    PieceType.Rook => "R",
+                    PieceType.Knight => "N",
+                    _ => "",
+                };
+                if (Pieces[xTarget, yTarget] != null)
+                    tempNotation += 'x';
 
-            tempNotation += (char)('a' + xTarget);
-            tempNotation += yTarget;
+                tempNotation += (char)('a' + xTarget);
+                tempNotation += yTarget;
+            }
 
             notationList.Add(tempNotation);
         }
@@ -130,6 +146,40 @@ namespace Chess_Game
                 }
 
                 spriteBatch.DrawString(font, notationtext, new Vector2(checkMateButton.X + ((i % 2 == 0) ? 200 : 270), checkMateButton.Y - 150 + ((notationYCoord - 1) * 20)), Color.Black);
+            }
+        }
+
+        public void ApplyTimeIncrement()
+        {
+            if (!Board.Instance.timerRun)
+            {
+                return;
+            }
+
+            if (Board.Instance.IsPlayerOne)
+            {
+                playerOneTimer += timeIncrement;
+            }
+            else
+            {
+                playerTwoTimer += timeIncrement;
+            }
+        }
+
+        public void DecrementTimer(GameTime gameTime)
+        {
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (!Board.Instance.CheckMate && Board.Instance.timerRun)
+            {
+                if (Board.Instance.IsPlayerOne)
+                {
+                    playerOneTimer -= dt;
+                }
+                else
+                {
+                    playerTwoTimer -= dt;
+                }
             }
         }
     }

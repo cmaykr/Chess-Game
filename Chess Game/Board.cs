@@ -26,8 +26,8 @@ namespace Chess_Game
         bool debug;
         public bool CheckMate;
         public bool timerRun;
-        public readonly GameUI gameUI = new();
-        PieceMovement MovePiece = new();
+        public readonly GameUI GameUI = new();
+        public PieceMovement MovePiece = new();
 
         public static Board Instance;
 
@@ -39,13 +39,13 @@ namespace Chess_Game
         public void BoardContent(Piece[,] Pieces)
         {
             PieceContent(Pieces);
-            gameUI.GameUIContent();
+            GameUI.GameUIContent();
         }
 
         public void BoardUpdate(GameTime gameTime, Piece[,] Pieces, Vector2 boardPosition)
         {
             PieceMove(Pieces, boardPosition);
-            MovePiece.DecrementTimer(gameTime);
+            GameUI.DecrementTimer(gameTime);
         }
 
         /// <summary>
@@ -98,10 +98,10 @@ namespace Chess_Game
 
                     // Ritar koordinaterna för brädet om debug är PÅ
                     if (debug)
-                        gameUI.BoardCoord(spriteBatch, i * (int)TileSize.X + x, j * (int)TileSize.Y + y, i, j);
+                        GameUI.BoardCoord(spriteBatch, i * (int)TileSize.X + x, j * (int)TileSize.Y + y, i, j);
                 }
             }
-            gameUI.GameUIDraw(spriteBatch, MovePiece.playerOneTimer, MovePiece.playerTwoTimer);
+            GameUI.GameUIDraw(spriteBatch, GameUI.playerOneTimer, GameUI.playerTwoTimer);
         }
 
         /// <summary>
@@ -185,7 +185,21 @@ namespace Chess_Game
             }
             else if (!CheckMate && pieceChosen && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
             {
-                MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition);
+                if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition))
+                {
+
+                    MovePiece.xLastMove = xIndex;
+                    MovePiece.yLastMove = yIndex;
+
+                    MovePiece.xLastMoveTarget = MovePiece.XTarget;
+                    MovePiece.yLastMoveTarget = MovePiece.YTarget;
+                    GameUI.Turns += 1;
+
+                    GameUI.ApplyTimeIncrement();
+
+                    IsPlayerOne = !IsPlayerOne;
+                    CheckMate = PieceMovement.IsCheckMate(Pieces);
+                }
             }
             prev = curr;
         }
