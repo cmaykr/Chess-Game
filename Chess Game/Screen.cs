@@ -13,6 +13,10 @@ namespace Chess_Game
         public static Texture2D Button_Open { get; private set; }
         public static Texture2D Button_Selected { get; private set; }
 
+        public static MouseState curr;
+        public static MouseState prev;
+        public static Point mousePos;
+
         public virtual void Initialize()
         {
 
@@ -27,7 +31,15 @@ namespace Chess_Game
 
         public virtual void Update(GameTime gameTime)
         {
+            curr = Mouse.GetState();
+            mousePos = new Point(curr.X, curr.Y);
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                Game1.Screen = new MainMenuScreen();
+                Game1.Screen.Initialize();
+                Game1.Screen.LoadContent();
+            }
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)

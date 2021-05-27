@@ -9,45 +9,58 @@ namespace Chess_Game
 {
     class MainMenu
     {
-        MouseState curr;
-        MouseState prev;
-        Point mousePos;
-        Texture2D PlayButton;
         Rectangle PlayButtonPos;
+        Rectangle RuleButtonPos;
+        Rectangle LeaderboardButtonPos;
 
         public void MenuContent()
         {
-            PlayButtonPos = new Rectangle((int)Game1.ScreenMiddle.X - 90, (int)Game1.ScreenMiddle.Y - 150, 120, 40);
+            PlayButtonPos = new Rectangle((int)Game1.ScreenMiddle.X - 110, (int)Game1.ScreenMiddle.Y - 150, 180, 60);
+            RuleButtonPos = new Rectangle((int)Game1.ScreenMiddle.X - 110, (int)Game1.ScreenMiddle.Y - 60, 180, 60);
+            LeaderboardButtonPos = new Rectangle((int)Game1.ScreenMiddle.X - 110, (int)Game1.ScreenMiddle.Y + 30, 180, 60);
+
         }
-        public void MenuDraw(SpriteBatch spriteBatch)
+        public void MenuDraw(SpriteBatch spriteBatch, SpriteFont Font, Point mousePos)
         {
             spriteBatch.Begin();
-            spriteBatch.DrawString(Screen.Font, "David's Chess Game", new Vector2(Game1.ScreenMiddle.X - 100, Game1.ScreenMiddle.Y - 200), Color.Black);
-            if (PlayButtonPos.Contains(mousePos))
-            {
-                PlayButton = Screen.Button_Selected;
-            }
-            else
-            {
-                PlayButton = Screen.Button_Open;
-            }
-            spriteBatch.Draw(PlayButton, PlayButtonPos, Color.White);
-            spriteBatch.DrawString(Screen.Font, "Play", new Vector2(PlayButtonPos.X + 46, PlayButtonPos.Y + 12), Color.Black);
+            spriteBatch.DrawString(Font, "David's Chess Game", new Vector2(Game1.ScreenMiddle.X - 100, Game1.ScreenMiddle.Y - 200), Color.Black);
+
+            spriteBatch.Draw(PlayButtonPos.Contains(mousePos) ? Screen.Button_Selected : Screen.Button_Open, PlayButtonPos, Color.White);
+            spriteBatch.DrawString(Font, "Play", new Vector2(PlayButtonPos.X + 75, PlayButtonPos.Y + 20), Color.Black);
+
+            spriteBatch.Draw(RuleButtonPos.Contains(mousePos) ? Screen.Button_Selected : Screen.Button_Open, RuleButtonPos, Color.White);
+            spriteBatch.DrawString(Font, "Rules", new Vector2(RuleButtonPos.X + 70, RuleButtonPos.Y + 20), Color.Black);
+
+            spriteBatch.Draw(LeaderboardButtonPos.Contains(mousePos) ? Screen.Button_Selected : Screen.Button_Open, LeaderboardButtonPos, Color.White);
+            spriteBatch.DrawString(Font, "Leaderboard", new Vector2(LeaderboardButtonPos.X + 45, LeaderboardButtonPos.Y + 20), Color.Black);
             spriteBatch.End();
         }
-        public void MenuUpdate(GameTime gameTime)
+        public void MenuUpdate(GameTime gameTime, MouseState curr, MouseState prev, Point mousePos)
         {
-            curr = Mouse.GetState();
-            mousePos = new Point(curr.X, curr.Y);
 
-            if (PlayButtonPos.Contains(mousePos) && curr.LeftButton == ButtonState.Released && prev.LeftButton == ButtonState.Pressed)
+            if (curr.LeftButton == ButtonState.Released && prev.LeftButton == ButtonState.Pressed)
             {
-                Game1.Screen = new GameScreen();
-                Game1.Screen.Initialize();
-                Game1.Screen.LoadContent();
+                if (PlayButtonPos.Contains(mousePos))
+                {
+                    Game1.Screen = new GameScreen();
+                    Game1.Screen.Initialize();
+                    Game1.Screen.LoadContent();
+                }
+                if (RuleButtonPos.Contains(mousePos))
+                {
+                    Game1.Screen = new ChessRulesHelpScreen();
+                    Game1.Screen.Initialize();
+                    Game1.Screen.LoadContent();
+                }
+                if (LeaderboardButtonPos.Contains(mousePos))
+                {
+                    Game1.Screen = new LeaderBoardScreen();
+                    Game1.Screen.Initialize();
+                    Game1.Screen.LoadContent();
+                }
             }
 
-            prev = curr;
+            Screen.prev = curr;
         }
     }
 }
