@@ -46,8 +46,8 @@ namespace Chess_Game
 
             // Bestämmer positionen alla pjäserna ska ha på skärmen.
             Rectangle piecePos = new(
-                xCoord * (int)Board.Instance.TileSize.X + (int)Game1.boardPosition.X,
-                yCoord * (int)Board.Instance.TileSize.Y + (int)Game1.boardPosition.Y,
+                xCoord * (int)Board.Instance.TileSize.X + (int)Game1.BoardPosition.X,
+                yCoord * (int)Board.Instance.TileSize.Y + (int)Game1.BoardPosition.Y,
                 (int)Board.Instance.TileSize.X,
                 (int)Board.Instance.TileSize.Y
             );

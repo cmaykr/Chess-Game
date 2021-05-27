@@ -9,10 +9,11 @@ namespace Chess_Game
 {
     public class Game1 : Game
     {
+        public static Screen Screen = new MainMenuScreen();
         public static Game1 Instance;
-        public static Vector2 boardPosition;
+        public static Vector2 BoardPosition;
+        public static Vector2 ScreenMiddle;
         readonly Board DrawBoard = new();
-        Screen Screen = new GameScreen();
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -30,9 +31,9 @@ namespace Chess_Game
         {
             // TODO: Add your initialization logic here
 
-            base.Initialize();
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += DrawBoard.OnResize;
+            base.Initialize();
         }
 
         protected override void LoadContent()
@@ -40,8 +41,9 @@ namespace Chess_Game
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            BoardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - (DrawBoard.TileSize.X * 5), GraphicsDevice.Viewport.Bounds.Height / 2 - (DrawBoard.TileSize.Y * 4));
+            ScreenMiddle = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2);
             Screen.LoadContent();
-            boardPosition = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2 - (DrawBoard.TileSize.X * 5), GraphicsDevice.Viewport.Bounds.Height / 2 - (DrawBoard.TileSize.Y * 4));
         }
 
         protected override void Update(GameTime gameTime)

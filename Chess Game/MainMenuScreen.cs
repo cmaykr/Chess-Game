@@ -7,10 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Chess_Game
 {
-    public class GameScreen : Screen
+    class MainMenuScreen : Screen
     {
-        public readonly Piece[,] Pieces = new Piece[8, 8];
-        readonly Board DrawBoard = new();
+        MainMenu mainMenu = new();
 
         public override void Initialize()
         {
@@ -21,25 +20,21 @@ namespace Chess_Game
         {
             base.LoadContent();
 
-            DrawBoard.PieceContent(Pieces);
-            Board.Instance.GameUI.GameUIContent();
+            mainMenu.MenuContent();
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            DrawBoard.PieceMove(Pieces, Game1.BoardPosition);
-            Board.Instance.GameUI.DecrementTimer(gameTime);
+            mainMenu.MenuUpdate(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
 
-            spriteBatch.Begin();
-            DrawBoard.BoardDraw(spriteBatch, (int)Game1.BoardPosition.X, (int)Game1.BoardPosition.Y, Pieces);
-            spriteBatch.End();
+            mainMenu.MenuDraw(spriteBatch);
         }
     }
 }

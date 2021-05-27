@@ -28,7 +28,7 @@ namespace Chess_Game
         {
             checkMateButton = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2,
                 Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2);
-            font = Game1.Instance.Content.Load<SpriteFont>("Arial");
+            font = Screen.Font;
         }
 
         /// <summary>

@@ -51,7 +51,11 @@ namespace Chess_Game
             { 
                 for (int j = 0; j < 8; j += 1)
                 {
-                    bool canMove = pieceChosen && Pieces[xIndex, yIndex].CanMove(Pieces, xIndex, yIndex, i, j) && !Piece.Collision(Pieces, xIndex, yIndex, i, j) && !PieceMovement.WillMoveCauseCheck(Pieces, xIndex, yIndex, i, j);
+                    bool canMove = pieceChosen 
+                        && Pieces[xIndex, yIndex].CanMove(Pieces, xIndex, yIndex, i, j) 
+                        && !Piece.Collision(Pieces, xIndex, yIndex, i, j) 
+                        && !PieceMovement.WillMoveCauseCheck(Pieces, xIndex, yIndex, i, j);
+
                     Rectangle tilePos = new(i * (int)TileSize.X + x, j * (int)TileSize.Y + y, (int)TileSize.X, (int)TileSize.Y);
 
                     Color boardColor;
@@ -197,10 +201,14 @@ namespace Chess_Game
         /// </summary>
         public void OnResize(Object sender, EventArgs e)
         {
-            GameUI.checkMateButtonSize = new Vector2(100, 30) * Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
+            GameUI.checkMateButtonSize = new Vector2(100, 30)
+                * Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() 
+                / new Vector2(800, 480);
             TileSize = new Vector2(40, 40) * Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
-            Game1.boardPosition = new Vector2(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2 - (TileSize.X * 5), Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2 - (TileSize.Y * 4));
-            Console.WriteLine(Game1.boardPosition);
+            Game1.BoardPosition = new Vector2(
+                Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2 - (TileSize.X * 5),
+                Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2 - (TileSize.Y * 4)
+                );
             Console.WriteLine(TileSize);
         }
     }
