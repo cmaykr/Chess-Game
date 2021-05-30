@@ -18,9 +18,9 @@ namespace Chess_Game
         List<string> notationList = new();
         public int Turns { get; set; } = 0;
 
-        public float playerTwoTimer = 600f;
-        public float playerOneTimer = 600f;
-        readonly float timeIncrement = 3f;
+        public float playerTwoTimer;
+        public float playerOneTimer;
+        public float timeIncrement = 3f;
 
         /// <summary>
         /// Laddar in alla filer som behövs för att rita spelrutan.
