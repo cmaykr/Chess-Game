@@ -48,9 +48,6 @@ namespace Chess_Game
 
         protected override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Back))
-                Exit();
-
             // TODO: Add your update logic here
             Screen.Update(gameTime);
 

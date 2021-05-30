@@ -42,7 +42,7 @@ namespace Chess_Game
             {
                 if (PlayButtonPos.Contains(mousePos))
                 {
-                    Game1.Screen = new GameScreen();
+                    Game1.Screen = new GameSettingsScreen();
                     Game1.Screen.Initialize();
                     Game1.Screen.LoadContent();
                 }
