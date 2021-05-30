@@ -59,8 +59,6 @@ namespace Chess_Game
                     Game1.Screen.LoadContent();
                 }
             }
-
-            Screen.prev = curr;
         }
     }
 }

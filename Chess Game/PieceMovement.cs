@@ -117,8 +117,8 @@ namespace Chess_Game
         /// <param name="boardPosition"></param>
         public bool MoveChosenPiece(Piece[,] Pieces, int xIndex, int yIndex, Vector2 boardPosition)
         {
-            XTarget = (int)(Board.Instance.curr.X - boardPosition.X) / (int)Board.Instance.TileSize.X;
-            YTarget = (int)(Board.Instance.curr.Y - boardPosition.Y) / (int)Board.Instance.TileSize.Y;
+            XTarget = (int)(Screen.curr.X - boardPosition.X) / (int)Board.Instance.TileSize.X;
+            YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)Board.Instance.TileSize.Y;
 
             Board.Instance.pieceChosen = false;
             // Kollar om det är tillåtet att flytta pjäsen till den valda positionen.

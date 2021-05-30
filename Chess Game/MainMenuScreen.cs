@@ -28,6 +28,8 @@ namespace Chess_Game
             base.Update(gameTime);
 
             mainMenu.MenuUpdate(gameTime, curr, prev, mousePos);
+
+            prev = curr;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

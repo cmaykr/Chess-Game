@@ -31,6 +31,9 @@ namespace Chess_Game
 
             DrawBoard.PieceMove(Pieces, Game1.BoardPosition);
             Board.Instance.GameUI.DecrementTimer(gameTime);
+            Board.Instance.GameUI.GameUIButtons();
+
+            prev = curr;
         }
 
         public override void Draw(SpriteBatch spriteBatch)

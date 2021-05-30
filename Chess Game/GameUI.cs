@@ -12,7 +12,8 @@ namespace Chess_Game
         public Vector2 checkMateButton;
         public static Vector2 checkMateButtonSize = new(100, 30);
         public Rectangle checkMateButtonCoord;
-        MouseState curr, prev;
+        Rectangle GiveUpButtonPos;
+        Rectangle AskDrawButtonPos;
         SpriteFont font;
         List<string> notationList = new();
         public int Turns { get; set; } = 0;
@@ -29,6 +30,8 @@ namespace Chess_Game
             checkMateButton = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2,
                 Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2);
             font = Screen.Font;
+            GiveUpButtonPos = new((int)Game1.ScreenMiddle.X - 320, (int)Game1.ScreenMiddle.Y + 170, 120, 40);
+            AskDrawButtonPos = new((int)Game1.ScreenMiddle.X + 120, (int)Game1.ScreenMiddle.Y + 170, 120, 40);
         }
 
         /// <summary>
@@ -44,12 +47,20 @@ namespace Chess_Game
 
             if (Board.Instance.CheckMate && playerTwoTimer > 0 && playerTwoTimer > 0)
             {
-                gameText = "Checkmate, " + (!Board.Instance.IsPlayerOne ? "White won" : "Black won");
+                gameText = "Checkmate, " + (Board.Instance.WhiteWon ? "White won" : "Black won");
             }
             else if (playerTwoTimer <= 0 || playerTwoTimer <= 0)
             {
                 Board.Instance.CheckMate = true;
-                gameText = "No time left, " + (!Board.Instance.IsPlayerOne ? "White won" : "Black won");
+                gameText = "No time left, " + (Board.Instance.WhiteWon ? "White won" : "Black won");
+            }
+            else if (Board.Instance.WhiteWon && Board.Instance.BlackWon)
+            {
+                gameText = "Draw";
+            }
+            else if (Board.Instance.GaveUp)
+            {
+                gameText = (Board.Instance.IsPlayerOne ? "White" : "Black") + " gave up";
             }
             else
             {
@@ -66,10 +77,17 @@ namespace Chess_Game
                 Color.Black);
             spriteBatch.DrawString(font,
                 $"Whites Time: {(int)(playerOneTimer / 60):00}:{(int)(playerOneTimer % 60):00}",
-                new Vector2(checkMateButton.X - 350, checkMateButton.Y+100),
+                new Vector2(checkMateButton.X - 350, checkMateButton.Y + 100),
                 Color.Black);
 
             spriteBatch.DrawString(font, "Moves:", new Vector2(checkMateButton.X + 212, checkMateButton.Y - 168), Color.Black);
+
+            spriteBatch.Draw(GiveUpButtonPos.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, GiveUpButtonPos, Color.White);
+            spriteBatch.DrawString(font, "Give Up", new Vector2(GiveUpButtonPos.X + 20, GiveUpButtonPos.Y + 12), Color.Black);
+
+            spriteBatch.Draw(AskDrawButtonPos.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, AskDrawButtonPos, Color.White);
+            spriteBatch.DrawString(font, "Draw?", new Vector2(AskDrawButtonPos.X + 60, AskDrawButtonPos.Y + 12), Color.Black);
+
             NotationDraw(spriteBatch);
         }
 
@@ -78,11 +96,29 @@ namespace Chess_Game
         /// </summary>
         public void GameUIButtons()
         {
-            curr = Mouse.GetState();
-            var mousePos = new Point(curr.X, curr.Y);
-
-            prev = curr;
+            if (Screen.curr.LeftButton == ButtonState.Released && Screen.prev.LeftButton == ButtonState.Pressed)
+            {
+                if (GiveUpButtonPos.Contains(Screen.mousePos))
+                {
+                    if (Board.Instance.IsPlayerOne)
+                    {
+                        Board.Instance.WhiteWon = true;
+                        Board.Instance.GaveUp = true;
+                    }
+                    else
+                    {
+                        Board.Instance.BlackWon = true;
+                        Board.Instance.GaveUp = true;
+                    }
+                }
+                if (AskDrawButtonPos.Contains(Screen.mousePos))
+                {
+                    Board.Instance.WhiteWon = true;
+                    Board.Instance.BlackWon = true;
+                }
+            }
         }
+
         /// <summary>
         /// Metod för att rita koordinaterna på spelbrädet
         /// </summary>
@@ -145,7 +181,10 @@ namespace Chess_Game
                     notationtext = notationList[i];
                 }
 
-                spriteBatch.DrawString(font, notationtext, new Vector2(checkMateButton.X + ((i % 2 == 0) ? 200 : 270), checkMateButton.Y - 150 + ((notationYCoord - 1) * 20)), Color.Black);
+                if (notationYCoord <= 10)
+                {
+                    spriteBatch.DrawString(font, notationtext, new Vector2(checkMateButton.X + ((i % 2 == 0) ? 200 : 270), checkMateButton.Y - 150 + ((notationYCoord - 1) * 20)), Color.Black);
+                }
             }
         }
 

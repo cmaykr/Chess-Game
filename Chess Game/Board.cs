@@ -13,7 +13,6 @@ namespace Chess_Game
     /// </summary>
     class Board
     {
-        public MouseState curr, prev;
         int xIndex = 0, yIndex = 0;
         public Vector2 TileSize { get; private set; } = new(40,40);
         private Texture2D tile;
@@ -26,6 +25,9 @@ namespace Chess_Game
         bool debug;
         public bool CheckMate;
         public bool timerRun;
+        public bool WhiteWon;
+        public bool BlackWon;
+        public bool GaveUp;
         public readonly GameUI GameUI = new();
         public PieceMovement MovePiece = new();
 
@@ -162,11 +164,10 @@ namespace Chess_Game
         /// <param name="boardPosition">Positionen för pjäserna på spelrutan.</param>
         public void PieceMove(Piece[,] Pieces, Vector2 boardPosition)
         {
-            curr = Mouse.GetState();
 
-            if (!CheckMate && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released && pieceChosen == false)
+            if (!CheckMate && Screen.curr.LeftButton == ButtonState.Pressed && Screen.prev.LeftButton == ButtonState.Released && pieceChosen == false)
             {
-                Vector2 idxVector = new((curr.X - boardPosition.X) / TileSize.X, (curr.Y - boardPosition.Y) / TileSize.Y);
+                Vector2 idxVector = new((Screen.curr.X - boardPosition.X) / TileSize.X, (Screen.curr.Y - boardPosition.Y) / TileSize.Y);
                 xIndex = (int)idxVector.X;
                 yIndex = (int)idxVector.Y;
 
@@ -175,7 +176,7 @@ namespace Chess_Game
                     pieceChosen = timerRun = true;
 
             }
-            else if (!CheckMate && pieceChosen && curr.LeftButton == ButtonState.Pressed && prev.LeftButton == ButtonState.Released)
+            else if (!CheckMate && pieceChosen && Screen.curr.LeftButton == ButtonState.Pressed && Screen.prev.LeftButton == ButtonState.Released)
             {
                 if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition))
                 {
@@ -193,7 +194,6 @@ namespace Chess_Game
                     CheckMate = PieceMovement.IsCheckMate(Pieces);
                 }
             }
-            prev = curr;
         }
 
         /// <summary>
