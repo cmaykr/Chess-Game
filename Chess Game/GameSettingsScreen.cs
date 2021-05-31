@@ -1,9 +1,6 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Chess_Game
 {
@@ -14,14 +11,14 @@ namespace Chess_Game
         Vector2 timeIncrementPos;
         Rectangle increment2sPos, increment5sPos, increment10sPos;
         Rectangle startButtonPos;
-        float time = 600;
-        float time2Min = 120;
-        float time5Min = 300;
-        float time10Min = 600;
-        float timeIncrement = 5;
-        float timeIncrement2s = 2;
-        float timeIncrement5s = 5;
-        float timeIncrement10 = 10;
+        float Time { get; set; } = 600;
+        float Time2Min { get; } = 120;
+        float Time5Min { get; } = 300;
+        float Time10Min { get; } = 600;
+        float TimeIncrement { get; set; } = 5;
+        float TimeIncrement2s { get; } = 2;
+        float TimeIncrement5s { get; } = 5;
+        float TimeIncrement10 { get; } = 10;
 
         public override void Initialize()
         {
@@ -52,36 +49,33 @@ namespace Chess_Game
             {
                 if (time2MinPos.Contains(mousePos))
                 {
-                    time = time2Min;
+                    Time = Time2Min;
                 }
                 if (time5MinPos.Contains(mousePos))
                 {
-                    time = time5Min;
+                    Time = Time5Min;
                 }
                 if (time10MinPos.Contains(mousePos))
                 {
-                    time = time10Min;
+                    Time = Time10Min;
                 }
                 if (increment2sPos.Contains(mousePos))
                 {
-                    timeIncrement = timeIncrement2s;
+                    TimeIncrement = TimeIncrement2s;
                 }
                 if (increment5sPos.Contains(mousePos))
                 {
-                    timeIncrement = timeIncrement5s;
+                    TimeIncrement = TimeIncrement5s;
                 }
                 if (increment10sPos.Contains(mousePos))
                 {
-                    timeIncrement = timeIncrement10;
+                    TimeIncrement = TimeIncrement10;
                 }
                 if (startButtonPos.Contains(mousePos))
                 {
-                    Game1.Screen = new GameScreen();
+                    Game1.Screen = new GameScreen(Time, TimeIncrement);
                     Game1.Screen.Initialize();
                     Game1.Screen.LoadContent();
-                    Board.Instance.GameUI.playerOneTimer = time;
-                    Board.Instance.GameUI.playerTwoTimer = time;
-                    Board.Instance.GameUI.timeIncrement = timeIncrement;
                 }
             }
 
@@ -102,12 +96,12 @@ namespace Chess_Game
             spriteBatch.Draw(time10MinPos.Contains(mousePos) ? Button_Selected : Button_Open, time10MinPos, Color.White);
             spriteBatch.DrawString(Font, "10 Minutes", new Vector2(time10MinPos.X + 20, time10MinPos.Y + 12), Color.Black);
 
-            spriteBatch.DrawString(Font, $"Time: {(int)(time / 60):00}:{(int)(time % 60):00}", timePos, Color.Black);
+            spriteBatch.DrawString(Font, $"Time: {(int)(Time / 60):00}:{(int)(Time % 60):00}", timePos, Color.Black);
 
             spriteBatch.Draw(startButtonPos.Contains(mousePos) ? Button_Selected : Button_Open, startButtonPos, Color.White);
             spriteBatch.DrawString(Font, "Start", new Vector2(startButtonPos.X + 45, startButtonPos.Y + 12), Color.Black);
 
-            spriteBatch.DrawString(Font, $"Time increment: {(int)(timeIncrement % 60):00}", timeIncrementPos, Color.Black);
+            spriteBatch.DrawString(Font, $"Time increment: {(int)(TimeIncrement % 60):00}", timeIncrementPos, Color.Black);
 
             spriteBatch.Draw(increment2sPos.Contains(mousePos) ? Button_Selected : Button_Open, increment2sPos, Color.White);
             spriteBatch.DrawString(Font, "2 s", new Vector2(increment2sPos.X + 20, increment2sPos.Y + 12), Color.Black);

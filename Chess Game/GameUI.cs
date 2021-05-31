@@ -1,33 +1,30 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace Chess_Game
 {
-    class GameUI
+    public class GameUI
     {
-        public Vector2 checkMateButton;
-        public static Vector2 checkMateButtonSize = new(100, 30);
-        public Rectangle checkMateButtonCoord;
+        Vector2 CheckMateButton { get; set; }
         Rectangle GiveUpButtonPos;
         Rectangle AskDrawButtonPos;
         SpriteFont font;
         List<string> notationList = new();
         public int Turns { get; set; } = 0;
 
-        public float playerTwoTimer;
-        public float playerOneTimer;
-        public float timeIncrement = 3f;
+        public float PlayerTwoTimer { get; set; }
+        public float PlayerOneTimer { get; set; }
+        public float TimeIncrement { get; set; }
 
         /// <summary>
         /// Laddar in alla filer som behövs för att rita spelrutan.
         /// </summary>
         public void GameUIContent()
         {
-            checkMateButton = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2,
+            CheckMateButton = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2,
                 Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2);
             font = Screen.Font;
             GiveUpButtonPos = new((int)Game1.ScreenMiddle.X - 320, (int)Game1.ScreenMiddle.Y + 170, 120, 40);
@@ -37,22 +34,18 @@ namespace Chess_Game
         /// <summary>
         /// Ritar allt som ska finnas under spelets gång.
         /// </summary>
-        public void GameUIDraw(SpriteBatch spriteBatch, float playerOneTimer, float playerTwoTimer)
+        public void GameUIDraw(SpriteBatch spriteBatch)
         {
             string gameText;
-            checkMateButtonCoord = new((int)checkMateButton.X - 350,
-                (int)checkMateButton.Y - 150,
-                (int)checkMateButtonSize.X,
-                (int)checkMateButtonSize.Y);
 
-            if (Board.Instance.CheckMate && playerTwoTimer > 0 && playerTwoTimer > 0)
+            if (Board.Instance.CheckMate && PlayerTwoTimer > 0 && PlayerTwoTimer > 0)
             {
-                gameText = "Checkmate, " + (Board.Instance.WhiteWon ? "White won" : "Black won");
+                gameText = "Checkmate, " + (!Board.Instance.IsPlayerOne ? "White won" : "Black won");
             }
-            else if (playerTwoTimer <= 0 || playerTwoTimer <= 0)
+            else if (PlayerTwoTimer <= 0 || PlayerTwoTimer <= 0)
             {
                 Board.Instance.CheckMate = true;
-                gameText = "No time left, " + (Board.Instance.WhiteWon ? "White won" : "Black won");
+                gameText = "No time left, " + (!Board.Instance.IsPlayerOne ? "White won" : "Black won");
             }
             else if (Board.Instance.WhiteWon && Board.Instance.BlackWon)
             {
@@ -64,23 +57,23 @@ namespace Chess_Game
             }
             else
             {
-                gameText = (Board.Instance.IsPlayerOne) ? "Whites turn" : "Blacks turn";
+                gameText = Board.Instance.IsPlayerOne ? "Whites turn" : "Blacks turn";
             }
 
             spriteBatch.DrawString(font,
                 gameText,
-                new Vector2(checkMateButton.X - 350, checkMateButton.Y - 100),
+                new Vector2(CheckMateButton.X - 350, CheckMateButton.Y - 100),
                 Color.Black);
             spriteBatch.DrawString(font,
-                $"Blacks Time: {(int)(playerTwoTimer / 60):00}:{(int)(playerTwoTimer % 60):00}",
-                new Vector2(checkMateButton.X - 350, checkMateButton.Y),
+                $"Blacks Time: {(int)(PlayerTwoTimer / 60):00}:{(int)(PlayerTwoTimer % 60):00}",
+                new Vector2(CheckMateButton.X - 350, CheckMateButton.Y),
                 Color.Black);
             spriteBatch.DrawString(font,
-                $"Whites Time: {(int)(playerOneTimer / 60):00}:{(int)(playerOneTimer % 60):00}",
-                new Vector2(checkMateButton.X - 350, checkMateButton.Y + 100),
+                $"Whites Time: {(int)(PlayerOneTimer / 60):00}:{(int)(PlayerOneTimer % 60):00}",
+                new Vector2(CheckMateButton.X - 350, CheckMateButton.Y + 100),
                 Color.Black);
 
-            spriteBatch.DrawString(font, "Moves:", new Vector2(checkMateButton.X + 212, checkMateButton.Y - 168), Color.Black);
+            spriteBatch.DrawString(font, "Moves:", new Vector2(CheckMateButton.X + 212, CheckMateButton.Y - 168), Color.Black);
 
             spriteBatch.Draw(GiveUpButtonPos.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, GiveUpButtonPos, Color.White);
             spriteBatch.DrawString(font, "Give Up", new Vector2(GiveUpButtonPos.X + 20, GiveUpButtonPos.Y + 12), Color.Black);
@@ -100,7 +93,7 @@ namespace Chess_Game
             {
                 if (GiveUpButtonPos.Contains(Screen.mousePos))
                 {
-                    if (Board.Instance.IsPlayerOne)
+                    if (!Board.Instance.IsPlayerOne)
                     {
                         Board.Instance.WhiteWon = true;
                         Board.Instance.GaveUp = true;
@@ -183,7 +176,7 @@ namespace Chess_Game
 
                 if (notationYCoord <= 10)
                 {
-                    spriteBatch.DrawString(font, notationtext, new Vector2(checkMateButton.X + ((i % 2 == 0) ? 200 : 270), checkMateButton.Y - 150 + ((notationYCoord - 1) * 20)), Color.Black);
+                    spriteBatch.DrawString(font, notationtext, new Vector2(CheckMateButton.X + ((i % 2 == 0) ? 200 : 270), CheckMateButton.Y - 150 + ((notationYCoord - 1) * 20)), Color.Black);
                 }
             }
         }
@@ -197,11 +190,11 @@ namespace Chess_Game
 
             if (Board.Instance.IsPlayerOne)
             {
-                playerOneTimer += timeIncrement;
+                PlayerOneTimer += TimeIncrement;
             }
             else
             {
-                playerTwoTimer += timeIncrement;
+                PlayerTwoTimer += TimeIncrement;
             }
         }
 
@@ -213,11 +206,11 @@ namespace Chess_Game
             {
                 if (Board.Instance.IsPlayerOne)
                 {
-                    playerOneTimer -= dt;
+                    PlayerOneTimer -= dt;
                 }
                 else
                 {
-                    playerTwoTimer -= dt;
+                    PlayerTwoTimer -= dt;
                 }
             }
         }

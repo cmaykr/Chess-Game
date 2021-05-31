@@ -1,8 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Chess_Game
@@ -11,7 +7,16 @@ namespace Chess_Game
     {
         public readonly Piece[,] Pieces = new Piece[8, 8];
         readonly Board DrawBoard = new();
+        public readonly GameUI GameUI = new();
+        public static GameScreen Instance;
 
+        public GameScreen(float time, float timeIncrement)
+        {
+            Instance = this;
+            GameUI.PlayerOneTimer = time;
+            GameUI.PlayerTwoTimer = time;
+            GameUI.TimeIncrement = timeIncrement;
+        }
         public override void Initialize()
         {
             base.Initialize();
@@ -22,7 +27,7 @@ namespace Chess_Game
             base.LoadContent();
 
             DrawBoard.PieceContent(Pieces);
-            Board.Instance.GameUI.GameUIContent();
+            GameUI.GameUIContent();
         }
 
         public override void Update(GameTime gameTime)
@@ -30,8 +35,8 @@ namespace Chess_Game
             base.Update(gameTime);
 
             DrawBoard.PieceMove(Pieces, Game1.BoardPosition);
-            Board.Instance.GameUI.DecrementTimer(gameTime);
-            Board.Instance.GameUI.GameUIButtons();
+            GameUI.DecrementTimer(gameTime);
+            GameUI.GameUIButtons();
 
             prev = curr;
         }

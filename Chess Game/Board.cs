@@ -1,9 +1,7 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Chess_Game
 {
@@ -14,7 +12,7 @@ namespace Chess_Game
     class Board
     {
         int xIndex = 0, yIndex = 0;
-        public Vector2 TileSize { get; private set; } = new(40,40);
+        public Vector2 TileSize { get; private set; } = new(40, 40);
         private Texture2D tile;
         public Texture2D Tile => tile;
         Texture2D validMoveIndicator;
@@ -28,7 +26,7 @@ namespace Chess_Game
         public bool WhiteWon;
         public bool BlackWon;
         public bool GaveUp;
-        public readonly GameUI GameUI = new();
+
         public PieceMovement MovePiece = new();
 
         public static Board Instance;
@@ -50,12 +48,12 @@ namespace Chess_Game
                 debug = false;
 
             for (int i = 0; i < 8; i += 1)
-            { 
+            {
                 for (int j = 0; j < 8; j += 1)
                 {
-                    bool canMove = pieceChosen 
-                        && Pieces[xIndex, yIndex].CanMove(Pieces, xIndex, yIndex, i, j) 
-                        && !Piece.Collision(Pieces, xIndex, yIndex, i, j) 
+                    bool canMove = pieceChosen
+                        && Pieces[xIndex, yIndex].CanMove(Pieces, xIndex, yIndex, i, j)
+                        && !Piece.Collision(Pieces, xIndex, yIndex, i, j)
                         && !PieceMovement.WillMoveCauseCheck(Pieces, xIndex, yIndex, i, j);
 
                     Rectangle tilePos = new(i * (int)TileSize.X + x, j * (int)TileSize.Y + y, (int)TileSize.X, (int)TileSize.Y);
@@ -73,11 +71,11 @@ namespace Chess_Game
 
                     // Ritar själva spelbrädet
                     spriteBatch.Draw(Tile, tilePos, boardColor);
-                    
+
                     // Ritar var pjäsen får flytta och om det är en fiendepjäs på rutan
                     if (canMove && Pieces[i, j] == null)
                         spriteBatch.Draw(validMoveIndicator, tilePos, Color.DarkGreen);
-                    else if(canMove && Pieces[i, j].isBlack != Pieces[xIndex, yIndex].isBlack)
+                    else if (canMove && Pieces[i, j].isBlack != Pieces[xIndex, yIndex].isBlack)
                         spriteBatch.Draw(validMoveIndicatorSquare, tilePos, Color.DarkGreen);
                 }
             }
@@ -92,10 +90,10 @@ namespace Chess_Game
 
                     // Ritar koordinaterna för brädet om debug är PÅ
                     if (debug)
-                        GameUI.BoardCoord(spriteBatch, i * (int)TileSize.X + x, j * (int)TileSize.Y + y, i, j);
+                        GameScreen.Instance.GameUI.BoardCoord(spriteBatch, i * (int)TileSize.X + x, j * (int)TileSize.Y + y, i, j);
                 }
             }
-            GameUI.GameUIDraw(spriteBatch, GameUI.playerOneTimer, GameUI.playerTwoTimer);
+            GameScreen.Instance.GameUI.GameUIDraw(spriteBatch);
         }
 
         /// <summary>
@@ -114,7 +112,7 @@ namespace Chess_Game
             tile = Game1.Instance.Content.Load<Texture2D>("Square");
             validMoveIndicator = Game1.Instance.Content.Load<Texture2D>("Small_Dot");
             validMoveIndicatorSquare = Game1.Instance.Content.Load<Texture2D>("SquareDot");
-            
+
             // Bestämmer var pjäserna ska finnas på spelbrädet för båda sidorna.
             string[] pieceCoord = new[]
             {
@@ -186,9 +184,9 @@ namespace Chess_Game
 
                     MovePiece.xLastMoveTarget = MovePiece.XTarget;
                     MovePiece.yLastMoveTarget = MovePiece.YTarget;
-                    GameUI.Turns += 1;
+                    GameScreen.Instance.GameUI.Turns += 1;
 
-                    GameUI.ApplyTimeIncrement();
+                    GameScreen.Instance.GameUI.ApplyTimeIncrement();
 
                     IsPlayerOne = !IsPlayerOne;
                     CheckMate = PieceMovement.IsCheckMate(Pieces);
@@ -199,11 +197,8 @@ namespace Chess_Game
         /// <summary>
         /// Funktion som ändrar positionerna och storleken när skärmen ändrar upplösning.
         /// </summary>
-        public void OnResize(Object sender, EventArgs e)
+        public void OnResize(object sender, EventArgs e)
         {
-            GameUI.checkMateButtonSize = new Vector2(100, 30)
-                * Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() 
-                / new Vector2(800, 480);
             TileSize = new Vector2(40, 40) * Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
             Game1.BoardPosition = new Vector2(
                 Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2 - (TileSize.X * 5),

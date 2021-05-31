@@ -1,9 +1,5 @@
-using System;
-using System.Text;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Chess_Game
 {
@@ -21,7 +17,7 @@ namespace Chess_Game
         /// </summary>
         /// <param name="Pieces">Spelbrädet som metoden hämtar kungens koordinater ifrån.</param>
         /// <returns>Returnerar x och y koordinaterna för kungen.</returns>
-        static (int xKing, int yKing) GetKing(Piece[,] Pieces) 
+        static (int xKing, int yKing) GetKing(Piece[,] Pieces)
         {
             for (int x = 0; x < 8; x++)
             {
@@ -132,7 +128,7 @@ namespace Chess_Game
                     && !Piece.Collision(Pieces, xIndex, yIndex, XTarget, YTarget)
                     && !WillMoveCauseCheck(Pieces, xIndex, yIndex, XTarget, YTarget))
                 {
-                    Board.Instance.GameUI.AddNotation(Pieces, xIndex, yIndex, XTarget, YTarget);
+                    GameScreen.Instance.GameUI.AddNotation(Pieces, xIndex, yIndex, XTarget, YTarget);
                     Pieces[xIndex, yIndex].hasMoved = true;
                     Pieces[XTarget, YTarget] = Pieces[xIndex, yIndex];
                     Pieces[xIndex, yIndex] = null;

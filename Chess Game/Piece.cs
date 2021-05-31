@@ -1,9 +1,6 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace Chess_Game
 {
@@ -87,14 +84,14 @@ namespace Chess_Game
             // returnerar hur den valda pjäsen kan flyttas.
             return type switch
             {
-                PieceType.Pawn => (xTarget == xIndex && (yTarget == yIndex + 1 
-                    || (hasMoved == false && yTarget == yIndex + 2)) 
-                    && Pieces[xTargetTemp, yTargetTemp] == null) 
+                PieceType.Pawn => (xTarget == xIndex && (yTarget == yIndex + 1
+                    || (hasMoved == false && yTarget == yIndex + 2))
+                    && Pieces[xTargetTemp, yTargetTemp] == null)
                     || (xDist == 1 && yTarget == yIndex + 1 && PawnDiagonalAttack(Pieces, xTargetTemp, yTargetTemp))
                     || EnPassant(Pieces, xIndexTemp, yIndexTemp, xTargetTemp, yTargetTemp),
-                PieceType.Rook => xTarget == xIndex || yTarget == yIndex, 
-                PieceType.King => (xDist == 1 && yDist == 0) 
-                    || (yDist == 1 && xDist == 0) 
+                PieceType.Rook => xTarget == xIndex || yTarget == yIndex,
+                PieceType.King => (xDist == 1 && yDist == 0)
+                    || (yDist == 1 && xDist == 0)
                     || (xDist == yDist && (xDist == 1 || yDist == 1))
                     || TryCastling(Pieces, xIndexTemp, yIndexTemp, xTargetTemp, yTargetTemp, xDist),
                 PieceType.Bishop => xDist == yDist,
