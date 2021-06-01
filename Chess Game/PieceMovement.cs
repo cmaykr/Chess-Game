@@ -9,8 +9,6 @@ namespace Chess_Game
         public bool hasCastled;
         public int xLastMoveTarget, yLastMoveTarget;
         public int xLastMove, yLastMove;
-        public int XTarget { get; private set; }
-        public int YTarget { get; private set; }
 
         /// <summary>
         /// Hämtar positionen av motsatta spelarens kung.
@@ -111,10 +109,8 @@ namespace Chess_Game
         /// <param name="xIndex"></param>
         /// <param name="yIndex"></param>
         /// <param name="boardPosition"></param>
-        public bool MoveChosenPiece(Piece[,] Pieces, int xIndex, int yIndex, Vector2 boardPosition)
+        public bool MoveChosenPiece(Piece[,] Pieces, int xIndex, int yIndex, Vector2 boardPosition, int XTarget, int YTarget)
         {
-            XTarget = (int)(Screen.curr.X - boardPosition.X) / (int)Board.Instance.TileSize.X;
-            YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)Board.Instance.TileSize.Y;
 
             Board.Instance.pieceChosen = false;
             // Kollar om det är tillåtet att flytta pjäsen till den valda positionen.

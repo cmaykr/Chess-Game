@@ -12,12 +12,17 @@ namespace Chess_Game
     class Board
     {
         int xIndex = 0, yIndex = 0;
+        public int XTarget { get; private set; }
+        public int YTarget { get; private set; }
         public Vector2 TileSize { get; private set; } = new(40, 40);
         private Texture2D tile;
         public Texture2D Tile => tile;
         Texture2D validMoveIndicator;
         public Texture2D Pawn, Rook, Knight, King, Bishop, Queen;
         Texture2D validMoveIndicatorSquare;
+        Texture2D chosenPiece;
+        Color chosenPieceColor;
+        bool clickMove;
         public bool pieceChosen = false;
         public bool IsPlayerOne = true;
         bool debug;
@@ -94,6 +99,8 @@ namespace Chess_Game
                 }
             }
             GameScreen.Instance.GameUI.GameUIDraw(spriteBatch);
+
+            DragPiece(Pieces, spriteBatch);
         }
 
         /// <summary>
@@ -156,14 +163,16 @@ namespace Chess_Game
         }
 
         /// <summary>
-        /// Metod för att välja och flytta pjäserna.
+        /// Metod för att välja pjäs för att flytta.
         /// </summary>
         /// <param name="Pieces">Sparar positionen för alla pjäser på spelbrädet.</param>
         /// <param name="boardPosition">Positionen för pjäserna på spelrutan.</param>
         public void PieceMove(Piece[,] Pieces, Vector2 boardPosition)
         {
 
-            if (!CheckMate && Screen.curr.LeftButton == ButtonState.Pressed && Screen.prev.LeftButton == ButtonState.Released && pieceChosen == false)
+            // if Satsen bestämmer vilken position den valda pjäsen har, den bestämmer också var man vill flytta pjäsen
+            // genom att dra eller klicka med musen.
+            if (!CheckMate && Screen.curr.LeftButton == ButtonState.Pressed && pieceChosen == false)
             {
                 Vector2 idxVector = new((Screen.curr.X - boardPosition.X) / TileSize.X, (Screen.curr.Y - boardPosition.Y) / TileSize.Y);
                 xIndex = (int)idxVector.X;
@@ -174,23 +183,88 @@ namespace Chess_Game
                     pieceChosen = timerRun = true;
 
             }
-            else if (!CheckMate && pieceChosen && Screen.curr.LeftButton == ButtonState.Pressed && Screen.prev.LeftButton == ButtonState.Released)
+            else if (!CheckMate && pieceChosen && Screen.curr.LeftButton == ButtonState.Pressed && Screen.prev.LeftButton == ButtonState.Released && clickMove)
             {
-                if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition))
+                XTarget = (int)(Screen.curr.X - boardPosition.X) / (int)TileSize.X;
+                YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
+
+                // Kollar om pjäsen får flytta dit.
+                if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition, XTarget, YTarget))
                 {
 
                     MovePiece.xLastMove = xIndex;
                     MovePiece.yLastMove = yIndex;
 
-                    MovePiece.xLastMoveTarget = MovePiece.XTarget;
-                    MovePiece.yLastMoveTarget = MovePiece.YTarget;
+                    MovePiece.xLastMoveTarget = XTarget;
+                    MovePiece.yLastMoveTarget = YTarget;
                     GameScreen.Instance.GameUI.Turns += 1;
 
                     GameScreen.Instance.GameUI.ApplyTimeIncrement();
 
                     IsPlayerOne = !IsPlayerOne;
                     CheckMate = PieceMovement.IsCheckMate(Pieces);
+                    clickMove = false;
                 }
+            }
+            else if (!CheckMate && pieceChosen && Screen.prev.LeftButton == ButtonState.Pressed && Screen.curr.LeftButton == ButtonState.Released)
+            {
+                XTarget = (int)(Screen.curr.X - boardPosition.X) / (int)TileSize.X;
+                YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
+
+                // Kollar om positionen man släppte pjäsen på är samma position den var på.
+                if (XTarget == xIndex && YTarget == yIndex)
+                {
+                    clickMove = true;
+                }
+                else
+                {
+                    if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition, XTarget, YTarget))
+                    {
+
+                        MovePiece.xLastMove = xIndex;
+                        MovePiece.yLastMove = yIndex;
+
+                        MovePiece.xLastMoveTarget = XTarget;
+                        MovePiece.yLastMoveTarget = YTarget;
+                        GameScreen.Instance.GameUI.Turns += 1;
+
+                        GameScreen.Instance.GameUI.ApplyTimeIncrement();
+
+                        IsPlayerOne = !IsPlayerOne;
+                        CheckMate = PieceMovement.IsCheckMate(Pieces);
+                    }
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Metod som ritar pjäsen vid positionen av musen.
+        /// </summary>
+        /// <param name="Pieces">Spelbrädet pjäserna är på.</param>
+        /// <param name="spriteBatch">Variabel för att kunna rita sprites i spelet.</param>
+        void DragPiece(Piece[,] Pieces, SpriteBatch spriteBatch)
+        {
+            // Kollar så man har valt en pjäs och om vänsterklick är nertryckt.
+            if(pieceChosen && Screen.curr.LeftButton == ButtonState.Pressed)
+            {
+                chosenPiece = Pieces[xIndex, yIndex].type switch
+                {
+                    PieceType.Pawn => Pawn,
+                    PieceType.Rook => Rook,
+                    PieceType.King => King,
+                    PieceType.Bishop => Bishop,
+                    PieceType.Knight => Knight,
+                    PieceType.Queen => Queen,
+                    _ => null,
+                };
+                if (Pieces[xIndex, yIndex].isBlack)
+                    chosenPieceColor = new(16, 19, 20);
+                else
+                    chosenPieceColor = Color.White;
+
+                Rectangle piecePos = new(Screen.curr.X - 20, Screen.curr.Y - 20, (int)TileSize.X, (int)TileSize.Y);
+                spriteBatch.Draw(chosenPiece, piecePos, chosenPieceColor);
             }
         }
 

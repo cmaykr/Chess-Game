@@ -8,7 +8,7 @@ namespace Chess_Game
 {
     public class GameUI
     {
-        Vector2 CheckMateButton { get; set; }
+        Vector2 NotationPos { get; set; }
         Rectangle GiveUpButtonPos;
         Rectangle AskDrawButtonPos;
         SpriteFont font;
@@ -24,7 +24,7 @@ namespace Chess_Game
         /// </summary>
         public void GameUIContent()
         {
-            CheckMateButton = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2,
+            NotationPos = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2,
                 Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2);
             font = Screen.Font;
             GiveUpButtonPos = new((int)Game1.ScreenMiddle.X - 320, (int)Game1.ScreenMiddle.Y + 170, 120, 40);
@@ -62,18 +62,18 @@ namespace Chess_Game
 
             spriteBatch.DrawString(font,
                 gameText,
-                new Vector2(CheckMateButton.X - 350, CheckMateButton.Y - 100),
+                new Vector2(NotationPos.X - 350, NotationPos.Y - 100),
                 Color.Black);
             spriteBatch.DrawString(font,
                 $"Blacks Time: {(int)(PlayerTwoTimer / 60):00}:{(int)(PlayerTwoTimer % 60):00}",
-                new Vector2(CheckMateButton.X - 350, CheckMateButton.Y),
+                new Vector2(NotationPos.X - 350, NotationPos.Y),
                 Color.Black);
             spriteBatch.DrawString(font,
                 $"Whites Time: {(int)(PlayerOneTimer / 60):00}:{(int)(PlayerOneTimer % 60):00}",
-                new Vector2(CheckMateButton.X - 350, CheckMateButton.Y + 100),
+                new Vector2(NotationPos.X - 350, NotationPos.Y + 100),
                 Color.Black);
 
-            spriteBatch.DrawString(font, "Moves:", new Vector2(CheckMateButton.X + 212, CheckMateButton.Y - 168), Color.Black);
+            spriteBatch.DrawString(font, "Moves:", new Vector2(NotationPos.X + 212, NotationPos.Y - 168), Color.Black);
 
             spriteBatch.Draw(GiveUpButtonPos.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, GiveUpButtonPos, Color.White);
             spriteBatch.DrawString(font, "Give Up", new Vector2(GiveUpButtonPos.X + 20, GiveUpButtonPos.Y + 12), Color.Black);
@@ -176,7 +176,7 @@ namespace Chess_Game
 
                 if (notationYCoord <= 10)
                 {
-                    spriteBatch.DrawString(font, notationtext, new Vector2(CheckMateButton.X + ((i % 2 == 0) ? 200 : 270), CheckMateButton.Y - 150 + ((notationYCoord - 1) * 20)), Color.Black);
+                    spriteBatch.DrawString(font, notationtext, new Vector2(NotationPos.X + ((i % 2 == 0) ? 200 : 270), NotationPos.Y - 150 + ((notationYCoord - 1) * 20)), Color.Black);
                 }
             }
         }
