@@ -59,7 +59,7 @@ namespace Chess_Game
         /// <param name="yIndex">Y koordinaten på spelbrädet för den valda pjäsen.</param>
         /// <param name="xTarget">X koordinaten på spelbrädet man vill flytta pjäsen till</param>
         /// <param name="yTarget">Y koordinaten på spelbrädet man vill flytta pjäsen till</param>
-        /// <returns></returns>
+        /// <returns>Returnerar om pjäsen får flytta till den rutan.</returns>
         public bool CanMove(Piece[,] Pieces, int xIndex, int yIndex, int xTarget, int yTarget)
         {
             if (xTarget < 0 || xTarget > 8 || yTarget < 0 || yTarget > 8)

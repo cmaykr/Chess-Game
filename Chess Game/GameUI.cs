@@ -14,6 +14,9 @@ namespace Chess_Game
         SpriteFont font;
         List<string> notationList = new();
         public int Turns { get; set; } = 0;
+        bool WhiteWon;
+        bool BlackWon;
+        bool GaveUp;
 
         public float PlayerTwoTimer { get; set; }
         public float PlayerOneTimer { get; set; }
@@ -47,11 +50,11 @@ namespace Chess_Game
                 Board.Instance.CheckMate = true;
                 gameText = "No time left, " + (!Board.Instance.IsPlayerOne ? "White won" : "Black won");
             }
-            else if (Board.Instance.WhiteWon && Board.Instance.BlackWon)
+            else if (WhiteWon && BlackWon)
             {
                 gameText = "Draw";
             }
-            else if (Board.Instance.GaveUp)
+            else if (GaveUp)
             {
                 gameText = (Board.Instance.IsPlayerOne ? "White" : "Black") + " gave up";
             }
@@ -84,6 +87,23 @@ namespace Chess_Game
             NotationDraw(spriteBatch);
         }
 
+        public PieceType PromotionUI()
+        {
+            var keyboard = Keyboard.GetState().GetPressedKeys();
+
+            if (keyboard.Length <= 0)
+                return PieceType.Pawn;
+
+            return keyboard[0] switch
+            {
+                Keys.Q => PieceType.Queen,
+                Keys.R => PieceType.Rook,
+                Keys.G => PieceType.Knight,
+                Keys.B => PieceType.Bishop,
+                _ => PieceType.Pawn,
+            };
+        }
+
         /// <summary>
         /// Kollar om knappar som finns under en match trycks och bestämmer vad som händer när en knapp har tryckts.
         /// </summary>
@@ -95,19 +115,19 @@ namespace Chess_Game
                 {
                     if (!Board.Instance.IsPlayerOne)
                     {
-                        Board.Instance.WhiteWon = true;
-                        Board.Instance.GaveUp = true;
+                        WhiteWon = true;
+                        GaveUp = true;
                     }
                     else
                     {
-                        Board.Instance.BlackWon = true;
-                        Board.Instance.GaveUp = true;
+                        BlackWon = true;
+                        GaveUp = true;
                     }
                 }
                 if (AskDrawButtonPos.Contains(Screen.mousePos))
                 {
-                    Board.Instance.WhiteWon = true;
-                    Board.Instance.BlackWon = true;
+                    WhiteWon = true;
+                    BlackWon = true;
                 }
             }
         }
