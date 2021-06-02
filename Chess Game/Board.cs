@@ -13,8 +13,8 @@ namespace Chess_Game
     {
         int xIndex = 0;
         int yIndex = 0;
-        public int xTarget { get; private set; }
-        public int yTarget { get; private set; }
+        public int XTarget { get; private set; }
+        public int YTarget { get; private set; }
         public Vector2 TileSize { get; private set; } = new(40, 40);
         Texture2D tile;
         public Texture2D Tile => tile;
@@ -26,10 +26,10 @@ namespace Chess_Game
         bool clickMove;
         bool promotingPiece;
         public bool pieceChosen = false;
-        public bool IsPlayerOne { get; private set; } = true;
+        public bool IsPlayerOne { get; set; } = true;
         bool debug;
         public bool CheckMate;
-        public bool timerRun { get; private set; }
+        public bool TimerRun { get; private set; }
 
         public PieceMovement MovePiece = new();
 
@@ -170,7 +170,7 @@ namespace Chess_Game
         {
             if (promotingPiece)
             {
-                PawnPromotion(Pieces, xTarget, yTarget);
+                PawnPromotion(Pieces, XTarget, YTarget);
             }
             // if Satsen bestämmer vilken position den valda pjäsen har, den bestämmer också var man vill flytta pjäsen
             // genom att dra eller klicka med musen.
@@ -182,62 +182,67 @@ namespace Chess_Game
 
                 // Kollar om koordinaten man har klickat på är på spelbrädet.
                 if (xIndex > -1 && xIndex < 8 && yIndex > -1 && yIndex < 8 && Pieces[xIndex, yIndex] != null && Pieces[xIndex, yIndex].isBlack != IsPlayerOne)
-                    pieceChosen = timerRun = true;
+                    pieceChosen = TimerRun = true;
 
             }
             else if (!promotingPiece && !CheckMate && pieceChosen && Screen.curr.LeftButton == ButtonState.Pressed && Screen.prev.LeftButton == ButtonState.Released && clickMove)
             {
-                xTarget = (int)(Screen.curr.X - boardPosition.X) / (int)TileSize.X;
-                yTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
+                XTarget = (int)(Screen.curr.X - boardPosition.X) / (int)TileSize.X;
+                YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
 
                 // Kollar om pjäsen får flytta dit.
-                if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition, xTarget, yTarget))
+                if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition, XTarget, YTarget))
                 {
-                    if (Pieces[xTarget, yTarget].type == PieceType.Pawn && (yTarget == 0 || yTarget == 7))
+                    if (Pieces[XTarget, YTarget].type == PieceType.Pawn && (YTarget == 0 || YTarget == 7))
                     {
                         promotingPiece = true;
                     }
                     else if (!promotingPiece)
                     {
-                        movenPiece(Pieces);
+                        MovenPiece(Pieces);
                         clickMove = false;
                     }
                 }
             }
             else if (!CheckMate && pieceChosen && Screen.prev.LeftButton == ButtonState.Pressed && Screen.curr.LeftButton == ButtonState.Released)
             {
-                xTarget = (int)(Screen.curr.X - boardPosition.X) / (int)TileSize.X;
-                yTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
+                XTarget = (int)(Screen.curr.X - boardPosition.X) / (int)TileSize.X;
+                YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
 
                 // Kollar om positionen man släppte pjäsen på är samma position den var på.
-                if (xTarget == xIndex && yTarget == yIndex)
+                if (XTarget == xIndex && YTarget == yIndex)
                 {
                     clickMove = true;
                 }
                 else
                 {
-                    if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition, xTarget, yTarget))
+                    if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition, XTarget, YTarget))
                     {
-                        if (Pieces[xTarget, yTarget].type == PieceType.Pawn && (yTarget == 0 || yTarget == 7))
+                        if (Pieces[XTarget, YTarget].type == PieceType.Pawn && (YTarget == 0 || YTarget == 7))
                         {
                             promotingPiece = true;
                         }
                         else
                         {
-                            movenPiece(Pieces);
+                            MovenPiece(Pieces);
                         }
                     }
                 }
             }
         }
 
-        void movenPiece(Piece[,] Pieces)
+        /// <summary>
+        /// Metoden uppdaterar alla variabler för det nuvarande spelet.
+        /// Metoden kollar också tid och schackmatt.
+        /// </summary>
+        /// <param name="Pieces">Spelbrädet som användas.</param>
+        void MovenPiece(Piece[,] Pieces)
         {
             MovePiece.xLastMove = xIndex;
             MovePiece.yLastMove = yIndex;
 
-            MovePiece.xLastMoveTarget = xTarget;
-            MovePiece.yLastMoveTarget = yTarget;
+            MovePiece.xLastMoveTarget = XTarget;
+            MovePiece.yLastMoveTarget = YTarget;
             GameScreen.Instance.GameUI.Turns += 1;
 
             GameScreen.Instance.GameUI.ApplyTimeIncrement();
@@ -245,15 +250,22 @@ namespace Chess_Game
             IsPlayerOne = !IsPlayerOne;
             CheckMate = PieceMovement.IsCheckMate(Pieces);
         }
+
+        /// <summary>
+        /// Metod som promotar den valda bonden till den valda pjäsen.
+        /// </summary>
+        /// <param name="Pieces">Spelbrädet som användas.</param>
+        /// <param name="x">X koordinaten för den promotade bonden.</param>
+        /// <param name="y">Y koordinaten för den promotade bonden.</param>
         void PawnPromotion(Piece[,] Pieces, int x, int y)
         {
-            var promotedPiece = GameScreen.Instance.GameUI.PromotionUI();
+            var promotedPiece = GameUI.PromotionUI();
 
             if (promotedPiece != PieceType.Pawn)
             {
                 Pieces[x, y].type = promotedPiece;
                 promotingPiece = false;
-                movenPiece(Pieces);
+                MovenPiece(Pieces);
             }
         }
         /// <summary>

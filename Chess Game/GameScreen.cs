@@ -5,16 +5,17 @@ namespace Chess_Game
 {
     public class GameScreen : Screen
     {
-        public readonly Piece[,] Pieces = new Piece[8, 8];
+        public Piece[,] Pieces = new Piece[8, 8];
         readonly Board DrawBoard = new();
         public readonly GameUI GameUI = new();
+        public readonly SaveGame SaveGame = new();
         public static GameScreen Instance;
 
-        public GameScreen(float time, float timeIncrement)
+        public GameScreen(float playerOneTime, float playerTwoTime, float timeIncrement)
         {
             Instance = this;
-            GameUI.PlayerOneTimer = time;
-            GameUI.PlayerTwoTimer = time;
+            GameUI.PlayerOneTimer = playerOneTime;
+            GameUI.PlayerTwoTimer = playerTwoTime;
             GameUI.TimeIncrement = timeIncrement;
         }
         public override void Initialize()

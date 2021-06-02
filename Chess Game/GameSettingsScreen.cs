@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.IO;
+using System.Text;
 
 namespace Chess_Game
 {
@@ -11,6 +14,7 @@ namespace Chess_Game
         Vector2 timeIncrementPos;
         Rectangle increment2sPos, increment5sPos, increment10sPos;
         Rectangle startButtonPos;
+        Rectangle loadGamePos;
         float Time { get; set; } = 600;
         float Time2Min { get; } = 120;
         float Time5Min { get; } = 300;
@@ -39,6 +43,8 @@ namespace Chess_Game
             increment2sPos = new((int)Game1.ScreenMiddle.X - 200, (int)Game1.ScreenMiddle.Y - 160, 120, 40);
             increment5sPos = new((int)Game1.ScreenMiddle.X - 70, (int)Game1.ScreenMiddle.Y - 160, 120, 40);
             increment10sPos = new((int)Game1.ScreenMiddle.X + 60, (int)Game1.ScreenMiddle.Y - 160, 120, 40);
+
+            loadGamePos = new((int)Game1.ScreenMiddle.X - 240, (int)Game1.ScreenMiddle.Y + 150, 120, 40);
         }
 
         public override void Update(GameTime gameTime)
@@ -73,9 +79,16 @@ namespace Chess_Game
                 }
                 if (startButtonPos.Contains(mousePos))
                 {
-                    Game1.Screen = new GameScreen(Time, TimeIncrement);
+                    Game1.Screen = new GameScreen(Time, Time, TimeIncrement);
                     Game1.Screen.Initialize();
                     Game1.Screen.LoadContent();
+                }
+                if (loadGamePos.Contains(mousePos))
+                {
+                    if (File.Exists("Davids-SaveGame.json"))
+                    {
+                        GameScreen.Instance.SaveGame.LoadGame();
+                    }
                 }
             }
 
@@ -111,6 +124,10 @@ namespace Chess_Game
 
             spriteBatch.Draw(increment10sPos.Contains(mousePos) ? Button_Selected : Button_Open, increment10sPos, Color.White);
             spriteBatch.DrawString(Font, "10 s", new Vector2(increment10sPos.X + 20, increment10sPos.Y + 12), Color.Black);
+
+            spriteBatch.Draw(loadGamePos.Contains(mousePos) ? Button_Selected : Button_Open, loadGamePos, Color.White);
+            spriteBatch.DrawString(Font, "Load Game", new Vector2(loadGamePos.X + 20, loadGamePos.Y + 12), Color.Black);
+
             spriteBatch.End();
         }
     }

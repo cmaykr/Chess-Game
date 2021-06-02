@@ -11,8 +11,9 @@ namespace Chess_Game
         Vector2 NotationPos { get; set; }
         Rectangle GiveUpButtonPos;
         Rectangle AskDrawButtonPos;
+        Rectangle saveGame;
         SpriteFont font;
-        List<string> notationList = new();
+        public List<string> NotationList { get; set; } = new();
         public int Turns { get; set; } = 0;
         bool WhiteWon;
         bool BlackWon;
@@ -32,6 +33,7 @@ namespace Chess_Game
             font = Screen.Font;
             GiveUpButtonPos = new((int)Game1.ScreenMiddle.X - 320, (int)Game1.ScreenMiddle.Y + 170, 120, 40);
             AskDrawButtonPos = new((int)Game1.ScreenMiddle.X + 120, (int)Game1.ScreenMiddle.Y + 170, 120, 40);
+            saveGame = new((int)Game1.ScreenMiddle.X - 340, (int)Game1.ScreenMiddle.Y - 200, 120, 40);
         }
 
         /// <summary>
@@ -84,16 +86,25 @@ namespace Chess_Game
             spriteBatch.Draw(AskDrawButtonPos.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, AskDrawButtonPos, Color.White);
             spriteBatch.DrawString(font, "Draw?", new Vector2(AskDrawButtonPos.X + 60, AskDrawButtonPos.Y + 12), Color.Black);
 
+            spriteBatch.Draw(saveGame.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, saveGame, Color.White);
+            spriteBatch.DrawString(font, "Save game?", new Vector2(saveGame.X + 20, saveGame.Y + 12), Color.Black);
+
             NotationDraw(spriteBatch);
         }
 
-        public PieceType PromotionUI()
+        /// <summary>
+        /// Kollar vilken tangent man trycker ner.
+        /// Returnerar av typen PieceType utifrån vilken tangent som trycks ner.
+        /// </summary>
+        /// <returns>Returnerar av typen PieceType.</returns>
+        public static PieceType PromotionUI()
         {
             var keyboard = Keyboard.GetState().GetPressedKeys();
 
             if (keyboard.Length <= 0)
                 return PieceType.Pawn;
 
+            // Kollar vilken bokstav man tryckt ner och returnerar rätt typ.
             return keyboard[0] switch
             {
                 Keys.Q => PieceType.Queen,
@@ -128,6 +139,13 @@ namespace Chess_Game
                 {
                     WhiteWon = true;
                     BlackWon = true;
+                }
+                if (saveGame.Contains(Screen.mousePos))
+                {
+                    GameScreen.Instance.SaveGame.Save();
+                    Game1.Screen = new MainMenuScreen();
+                    Game1.Screen.Initialize();
+                    Game1.Screen.LoadContent();
                 }
             }
         }
@@ -172,26 +190,26 @@ namespace Chess_Game
                     tempNotation += 'x';
 
                 tempNotation += (char)('a' + xTarget);
-                tempNotation += yTarget;
+                tempNotation += 7 - yTarget + 1;
             }
 
-            notationList.Add(tempNotation);
+            NotationList.Add(tempNotation);
         }
         void NotationDraw(SpriteBatch spriteBatch)
         {
             int notationYCoord;
             string notationtext;
 
-            for (int i = 0; i < notationList.Count; i++)
+            for (int i = 0; i < NotationList.Count; i++)
             {
                 notationYCoord = (int)Math.Ceiling(((double)i + 1) / 2);
                 if (i % 2 == 0)
                 {
-                    notationtext = $"{notationYCoord}:  {notationList[i]}";
+                    notationtext = $"{notationYCoord}:  {NotationList[i]}";
                 }
                 else
                 {
-                    notationtext = notationList[i];
+                    notationtext = NotationList[i];
                 }
 
                 if (notationYCoord <= 10)
@@ -203,7 +221,7 @@ namespace Chess_Game
 
         public void ApplyTimeIncrement()
         {
-            if (!Board.Instance.timerRun)
+            if (!Board.Instance.TimerRun)
             {
                 return;
             }
@@ -222,7 +240,7 @@ namespace Chess_Game
         {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (!Board.Instance.CheckMate && Board.Instance.timerRun)
+            if (!Board.Instance.CheckMate && Board.Instance.TimerRun)
             {
                 if (Board.Instance.IsPlayerOne)
                 {
