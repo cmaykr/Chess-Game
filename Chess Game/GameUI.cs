@@ -19,6 +19,7 @@ namespace Chess_Game
         bool BlackWon;
         bool GaveUp;
 
+
         public float PlayerTwoTimer { get; set; }
         public float PlayerOneTimer { get; set; }
         public float TimeIncrement { get; set; }
@@ -28,12 +29,7 @@ namespace Chess_Game
         /// </summary>
         public void GameUIContent()
         {
-            NotationPos = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2,
-                Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2);
             font = Screen.Font;
-            GiveUpButtonPos = new((int)Game1.ScreenMiddle.X - 320, (int)Game1.ScreenMiddle.Y + 170, 120, 40);
-            AskDrawButtonPos = new((int)Game1.ScreenMiddle.X + 120, (int)Game1.ScreenMiddle.Y + 170, 120, 40);
-            saveGame = new((int)Game1.ScreenMiddle.X - 340, (int)Game1.ScreenMiddle.Y - 200, 120, 40);
         }
 
         /// <summary>
@@ -42,6 +38,13 @@ namespace Chess_Game
         public void GameUIDraw(SpriteBatch spriteBatch)
         {
             string gameText;
+            int xScale = (int)Board.Instance.windowScale.X;
+            int yScale = (int)Board.Instance.windowScale.Y;
+
+            GiveUpButtonPos = new((int)Game1.ScreenMiddle.X * xScale - 320 * xScale, (int)Game1.ScreenMiddle.Y * yScale + 180 * yScale, 120 * xScale, 40 * yScale);
+            NotationPos = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2, Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2);
+            AskDrawButtonPos = new((int)Game1.ScreenMiddle.X * xScale + 120 * xScale, (int)Game1.ScreenMiddle.Y * yScale + 180 * yScale, 120 * xScale, 40 * yScale);
+            saveGame = new((int)Game1.ScreenMiddle.X * xScale - 340 * xScale, (int)Game1.ScreenMiddle.Y * yScale - 200 * yScale, 120 * xScale, 40 * yScale);
 
             if (Board.Instance.CheckMate && PlayerTwoTimer > 0 && PlayerTwoTimer > 0)
             {
@@ -67,29 +70,30 @@ namespace Chess_Game
 
             spriteBatch.DrawString(font,
                 gameText,
-                new Vector2(NotationPos.X - 350, NotationPos.Y - 100),
+                new Vector2(NotationPos.X - 350 * xScale, NotationPos.Y - 100 * yScale),
                 Color.Black);
             spriteBatch.DrawString(font,
                 $"Blacks Time: {(int)(PlayerTwoTimer / 60):00}:{(int)(PlayerTwoTimer % 60):00}",
-                new Vector2(NotationPos.X - 350, NotationPos.Y),
+                new Vector2(NotationPos.X - 350 * xScale, NotationPos.Y),
                 Color.Black);
             spriteBatch.DrawString(font,
                 $"Whites Time: {(int)(PlayerOneTimer / 60):00}:{(int)(PlayerOneTimer % 60):00}",
-                new Vector2(NotationPos.X - 350, NotationPos.Y + 100),
+                new Vector2(NotationPos.X - 350 * xScale, NotationPos.Y + 100 * yScale),
                 Color.Black);
 
-            spriteBatch.DrawString(font, "Moves:", new Vector2(NotationPos.X + 212, NotationPos.Y - 168), Color.Black);
+            Vector2 NotationMovePos = new(NotationPos.X + 212 * xScale, NotationPos.Y - 168 * yScale);
+            spriteBatch.DrawString(font, "Moves:", NotationMovePos, Color.Black);
 
             spriteBatch.Draw(GiveUpButtonPos.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, GiveUpButtonPos, Color.White);
-            spriteBatch.DrawString(font, "Give Up", new Vector2(GiveUpButtonPos.X + 20, GiveUpButtonPos.Y + 12), Color.Black);
+            spriteBatch.DrawString(font, "Give Up", new Vector2(GiveUpButtonPos.X + 20 * xScale, GiveUpButtonPos.Y + 12 * yScale), Color.Black);
 
             spriteBatch.Draw(AskDrawButtonPos.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, AskDrawButtonPos, Color.White);
-            spriteBatch.DrawString(font, "Draw?", new Vector2(AskDrawButtonPos.X + 60, AskDrawButtonPos.Y + 12), Color.Black);
+            spriteBatch.DrawString(font, "Draw?", new Vector2(AskDrawButtonPos.X + 60 * xScale, AskDrawButtonPos.Y + 12 * yScale), Color.Black);
 
             spriteBatch.Draw(saveGame.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, saveGame, Color.White);
             spriteBatch.DrawString(font, "Save game?", new Vector2(saveGame.X + 20, saveGame.Y + 12), Color.Black);
 
-            NotationDraw(spriteBatch);
+            NotationDraw(spriteBatch, xScale, yScale);
         }
 
         /// <summary>
@@ -195,7 +199,7 @@ namespace Chess_Game
 
             NotationList.Add(tempNotation);
         }
-        void NotationDraw(SpriteBatch spriteBatch)
+        void NotationDraw(SpriteBatch spriteBatch, int xScale, int yScale)
         {
             int notationYCoord;
             string notationtext;
@@ -214,7 +218,7 @@ namespace Chess_Game
 
                 if (notationYCoord <= 10)
                 {
-                    spriteBatch.DrawString(font, notationtext, new Vector2(NotationPos.X + ((i % 2 == 0) ? 200 : 270), NotationPos.Y - 150 + ((notationYCoord - 1) * 20)), Color.Black);
+                    spriteBatch.DrawString(font, notationtext, new Vector2(NotationPos.X + ((i % 2 == 0) ? 200 : 270) * xScale, NotationPos.Y - 150 * yScale + ((notationYCoord - 1) * 20) * yScale), Color.Black);
                 }
             }
         }

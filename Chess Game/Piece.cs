@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace Chess_Game
@@ -44,8 +43,8 @@ namespace Chess_Game
 
             // Bestämmer positionen alla pjäserna ska ha på skärmen.
             Rectangle piecePos = new(
-                xCoord * (int)Board.Instance.TileSize.X + (int)Game1.BoardPosition.X,
-                yCoord * (int)Board.Instance.TileSize.Y + (int)Game1.BoardPosition.Y,
+                xCoord * (int)Board.Instance.TileSize.X + (int)GameScreen.BoardPosition.X,
+                yCoord * (int)Board.Instance.TileSize.Y + (int)GameScreen.BoardPosition.Y,
                 (int)Board.Instance.TileSize.X,
                 (int)Board.Instance.TileSize.Y
             );

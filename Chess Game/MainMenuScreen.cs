@@ -10,6 +10,11 @@ namespace Chess_Game
         public override void Initialize()
         {
             base.Initialize();
+
+            Game1.Instance.Window.AllowUserResizing = false;
+            Game1.Instance._graphics.PreferredBackBufferWidth = 800;
+            Game1.Instance._graphics.PreferredBackBufferHeight = 480;
+            Game1.Instance._graphics.ApplyChanges();
         }
 
         public override void LoadContent()

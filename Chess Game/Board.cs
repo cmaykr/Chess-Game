@@ -30,6 +30,7 @@ namespace Chess_Game
         bool debug;
         public bool CheckMate;
         public bool TimerRun { get; private set; }
+        public Vector2 windowScale { get; private set; } = new(1, 1);
 
         public PieceMovement MovePiece = new();
 
@@ -143,7 +144,7 @@ namespace Chess_Game
                         'B' => PieceType.Bishop,
                         'K' => PieceType.King,
                         'Q' => PieceType.Queen,
-                        _ => throw new System.Exception("Unkown"),
+                        _ => throw new System.Exception("Unknown"),
                     };
 
                     // Bestämmer positionerna i Pieces arrayen var de enskilda pjäserna ska finnas 
@@ -276,7 +277,7 @@ namespace Chess_Game
         void DragPiece(Piece[,] Pieces, SpriteBatch spriteBatch)
         {
             // Kollar så man har valt en pjäs och om vänsterklick är nertryckt.
-            if(pieceChosen && Screen.curr.LeftButton == ButtonState.Pressed)
+            if (pieceChosen && Screen.curr.LeftButton == ButtonState.Pressed)
             {
                 chosenPiece = Pieces[xIndex, yIndex].type switch
                 {
@@ -303,8 +304,10 @@ namespace Chess_Game
         /// </summary>
         public void OnResize(object sender, EventArgs e)
         {
-            TileSize = new Vector2(40, 40) * Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
-            Game1.BoardPosition = new Vector2(
+            windowScale = Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
+            TileSize = new Vector2(40, 40) * windowScale;
+            Console.WriteLine(windowScale);
+            GameScreen.BoardPosition = new Vector2(
                 Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2 - (TileSize.X * 5),
                 Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2 - (TileSize.Y * 4)
                 );

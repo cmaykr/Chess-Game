@@ -16,7 +16,6 @@ namespace Chess_Game
 
         public virtual void Initialize()
         {
-
         }
 
         public virtual void LoadContent()

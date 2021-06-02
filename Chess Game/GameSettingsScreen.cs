@@ -1,9 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.IO;
-using System.Text;
 
 namespace Chess_Game
 {
@@ -44,7 +42,7 @@ namespace Chess_Game
             increment5sPos = new((int)Game1.ScreenMiddle.X - 70, (int)Game1.ScreenMiddle.Y - 160, 120, 40);
             increment10sPos = new((int)Game1.ScreenMiddle.X + 60, (int)Game1.ScreenMiddle.Y - 160, 120, 40);
 
-            loadGamePos = new((int)Game1.ScreenMiddle.X - 240, (int)Game1.ScreenMiddle.Y + 150, 120, 40);
+            loadGamePos = new((int)Game1.ScreenMiddle.X - 240, (int)Game1.ScreenMiddle.Y + 150, 160, 40);
         }
 
         public override void Update(GameTime gameTime)
@@ -126,7 +124,7 @@ namespace Chess_Game
             spriteBatch.DrawString(Font, "10 s", new Vector2(increment10sPos.X + 20, increment10sPos.Y + 12), Color.Black);
 
             spriteBatch.Draw(loadGamePos.Contains(mousePos) ? Button_Selected : Button_Open, loadGamePos, Color.White);
-            spriteBatch.DrawString(Font, "Load Game", new Vector2(loadGamePos.X + 20, loadGamePos.Y + 12), Color.Black);
+            spriteBatch.DrawString(Font, "Load Last Game", new Vector2(loadGamePos.X + 20, loadGamePos.Y + 12), Color.Black);
 
             spriteBatch.End();
         }
