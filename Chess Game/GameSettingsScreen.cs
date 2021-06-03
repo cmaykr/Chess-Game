@@ -14,13 +14,7 @@ namespace Chess_Game
         Rectangle startButtonPos;
         Rectangle loadGamePos;
         float Time { get; set; } = 600;
-        float Time2Min { get; } = 120;
-        float Time5Min { get; } = 300;
-        float Time10Min { get; } = 600;
         float TimeIncrement { get; set; } = 5;
-        float TimeIncrement2s { get; } = 2;
-        float TimeIncrement5s { get; } = 5;
-        float TimeIncrement10 { get; } = 10;
 
         public override void Initialize()
         {
@@ -53,27 +47,27 @@ namespace Chess_Game
             {
                 if (time2MinPos.Contains(mousePos))
                 {
-                    Time = Time2Min;
+                    Time = 120;
                 }
                 if (time5MinPos.Contains(mousePos))
                 {
-                    Time = Time5Min;
+                    Time = 300;
                 }
                 if (time10MinPos.Contains(mousePos))
                 {
-                    Time = Time10Min;
+                    Time = 600;
                 }
                 if (increment2sPos.Contains(mousePos))
                 {
-                    TimeIncrement = TimeIncrement2s;
+                    TimeIncrement = 2;
                 }
                 if (increment5sPos.Contains(mousePos))
                 {
-                    TimeIncrement = TimeIncrement5s;
+                    TimeIncrement = 5;
                 }
                 if (increment10sPos.Contains(mousePos))
                 {
-                    TimeIncrement = TimeIncrement10;
+                    TimeIncrement = 10;
                 }
                 if (startButtonPos.Contains(mousePos))
                 {
