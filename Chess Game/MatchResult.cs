@@ -6,9 +6,17 @@ using System.Threading.Tasks;
 
 namespace Chess_Game
 {
-    class MatchResult
+    class MatchResult : IComparable<MatchResult>
     {
         public int Turns;
         public Winner Winner;
+
+        public int CompareTo(MatchResult other)
+        {
+            if (other == null)
+                return 1;
+
+            return Turns.CompareTo(other.Turns);
+        }
     }
 }

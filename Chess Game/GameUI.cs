@@ -81,8 +81,8 @@ namespace Chess_Game
                 new Vector2(NotationPos.X - 350 * xScale, NotationPos.Y + 100 * yScale),
                 Color.Black);
 
-            Vector2 NotationMovePos = new(NotationPos.X + 212 * xScale, NotationPos.Y - 168 * yScale);
-            spriteBatch.DrawString(font, "Moves:", NotationMovePos, Color.Black);
+            Vector2 NotationMovePos = new(NotationPos.X + 212 * xScale, NotationPos.Y - 180 * yScale);
+            spriteBatch.DrawString(font, "Last 10 Moves:", NotationMovePos, Color.Black);
 
             spriteBatch.Draw(GiveUpButtonPos.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, GiveUpButtonPos, Color.White);
             spriteBatch.DrawString(font, "Give Up", new Vector2(GiveUpButtonPos.X + 20 * xScale, GiveUpButtonPos.Y + 12 * yScale), Color.Black);
@@ -204,11 +204,16 @@ namespace Chess_Game
         void NotationDraw(SpriteBatch spriteBatch, int xScale, int yScale)
         {
             int notationYCoord;
+            int rounds = 0;
             string notationtext;
-
-            for (int i = 0; i < NotationList.Count; i++)
+            int startValue = 0;
+            if (NotationList.Count >= 20)
             {
-                notationYCoord = (int)Math.Ceiling(((double)i + 1) / 2);
+                startValue = NotationList.Count - 20;
+            }
+            for (int i = startValue; i < NotationList.Count; i++)
+            {
+                notationYCoord = (int)Math.Ceiling(((double)rounds + 1) / 2);
                 if (i % 2 == 0)
                 {
                     notationtext = $"{notationYCoord}:  {NotationList[i]}";
@@ -218,10 +223,8 @@ namespace Chess_Game
                     notationtext = NotationList[i];
                 }
 
-                if (notationYCoord <= 10)
-                {
-                    spriteBatch.DrawString(font, notationtext, new Vector2(NotationPos.X + ((i % 2 == 0) ? 200 : 270) * xScale, NotationPos.Y - 150 * yScale + ((notationYCoord - 1) * 20) * yScale), Color.Black);
-                }
+                spriteBatch.DrawString(font, notationtext, new Vector2(NotationPos.X + ((i % 2 == 0) ? 200 : 270) * xScale, NotationPos.Y - 150 * yScale + ((notationYCoord - 1) * 20) * yScale), Color.Black);
+                rounds += 1;
             }
         }
 

@@ -68,6 +68,7 @@ namespace Chess_Game
                 result.Winner = Winner.Black;
 
             leaderboard.MatchResults.Add(result);
+            leaderboard.MatchResults.Sort();
             leaderboard.Save();
         }
     }
