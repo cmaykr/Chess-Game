@@ -3,6 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Chess_Game
 {
+    /// <summary>
+    /// Klassen inheritar från Screen klassen.
+    /// Är huvudklassen för huvudmeny rutan.
+    /// </summary>
     class MainMenuScreen : Screen
     {
         MainMenu mainMenu = new();

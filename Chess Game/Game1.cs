@@ -23,8 +23,6 @@ namespace Chess_Game
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
@@ -32,7 +30,6 @@ namespace Chess_Game
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
             ScreenMiddle = new Vector2(GraphicsDevice.Viewport.Bounds.Width / 2, GraphicsDevice.Viewport.Bounds.Height / 2);
             Screen.LoadContent();
         }
@@ -48,7 +45,6 @@ namespace Chess_Game
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
             Screen.Draw(_spriteBatch);
 
             base.Draw(gameTime);

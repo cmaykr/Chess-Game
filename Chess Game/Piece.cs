@@ -4,6 +4,9 @@ using System;
 
 namespace Chess_Game
 {
+    /// <summary>
+    /// Innehåller alla värden och metoder som behövs för pjäserna.
+    /// </summary>
     public class Piece
     {
         public PieceType type;
@@ -112,7 +115,15 @@ namespace Chess_Game
             return false;
         }
 
-        // Doesn't do anything yet
+        /// <summary>
+        /// Metoden kollar om den valda bondepjäsen får utföra den speciella regeln kallad En Passant.
+        /// </summary>
+        /// <param name="Pieces">Spelbrädet som används.</param>
+        /// <param name="xIndex">X värdet på den valda pjäsens position.</param>
+        /// <param name="yIndex">Y värdet på den valda pjäsens position.</param>
+        /// <param name="xTarget">X värdet på den positionen pjäsen ska flytta till.</param>
+        /// <param name="yTarget">Y värdet på den positionen pjäsen ska flytta till.</param>
+        /// <returns>Returnerar om bonden får utföra En Passant. True om den får.</returns>
         bool EnPassant(Piece[,] Pieces, int xIndex, int yIndex, int xTarget, int yTarget)
         {
             var MovePiece = Board.Instance.MovePiece;
@@ -139,11 +150,11 @@ namespace Chess_Game
         /// Castling använder också ett av tornen för att regeln ska gälla, och både kungen och tornet får inte ha flyttats innan.
         /// </summary>
         /// <param name="BoardPiece"></param>
-        /// <param name="xIndex"></param>
-        /// <param name="yIndex"></param>
-        /// <param name="xTarget"></param>
-        /// <param name="yTarget"></param>
-        /// <param name="xDist"></param>
+        /// <param name="xIndex">X värdet på den valda pjäsens position.</param>
+        /// <param name="yIndex">Y värdet på den valda pjäsens position.</param>
+        /// <param name="xTarget">X värdet på den positionen pjäsen ska flytta till.</param>
+        /// <param name="yTarget">Y värdet på den positionen pjäsen ska flytta till.</param>
+        /// <param name="xDist">Distansen mellan X på pjäsens position och x värdet dit den ska flytta.</param>
         /// <returns>Returnerar true om kungen får castla</returns>
         static bool TryCastling(Piece[,] BoardPiece, int xIndex, int yIndex, int xTarget, int yTarget, int xDist)
         {
@@ -171,6 +182,12 @@ namespace Chess_Game
         /// <summary>
         /// Returnerar om det är en pjäs mellan den valda pjäsen och den valda positionen.
         /// </summary>
+        /// <param name="Pieces">Spelbrädet som används.</param>
+        /// <param name="xIndex">X värdet på den valda pjäsens position.</param>
+        /// <param name="yIndex">Y värdet på den valda pjäsens position.</param>
+        /// <param name="xTarget">X värdet på den positionen pjäsen ska flytta till.</param>
+        /// <param name="yTarget">Y värdet på den positionen pjäsen ska flytta till.</param>
+        /// <returns></returns>
         public static bool Collision(Piece[,] Pieces, int xIndex, int yIndex, int xTarget, int yTarget)
         {
             bool collision = false;
@@ -208,6 +225,10 @@ namespace Chess_Game
             return collision;
         }
     }
+
+    /// <summary>
+    /// enumet innehåller varenda pjäs som används.
+    /// </summary>
     public enum PieceType
     {
         Pawn,

@@ -5,6 +5,10 @@ using System.IO;
 
 namespace Chess_Game
 {
+    /// <summary>
+    /// Klassen inheritar ifrån Screen klassen.
+    /// Klassen är för rutan där man bestämmer speltid och om man vill fortsätta med ett sparat spel.
+    /// </summary>
     class GameSettingsScreen : Screen
     {
         Vector2 timePos;
@@ -43,6 +47,7 @@ namespace Chess_Game
         {
             base.Update(gameTime);
 
+            // Kollar vilken knapp man har tryckt på och vad som händer då.
             if (curr.LeftButton == ButtonState.Released && prev.LeftButton == ButtonState.Pressed)
             {
                 if (time2MinPos.Contains(mousePos))

@@ -3,12 +3,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Chess_Game
 {
+    /// <summary>
+    /// Klassen inheritar ifrån Screen klassen. GameScreen är huvudklassen för hela spelrutan.
+    /// </summary>
     public class GameScreen : Screen
     {
         public Piece[,] Pieces = new Piece[8, 8];
         readonly Board DrawBoard = new();
         public readonly GameUI GameUI = new();
-        public static Vector2 BoardPosition;
+        public static Vector2 BoardPosition { get; set; }
 
         public static GameScreen Instance;
 
@@ -56,6 +59,10 @@ namespace Chess_Game
             spriteBatch.End();
         }
 
+
+        /// <summary>
+        /// Metoden kallass när någon vinner eller om det blir oavgjort.
+        /// </summary>
         public void EndOfGame()
         {
             Leaderboard leaderboard = Leaderboard.Load();

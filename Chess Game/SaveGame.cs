@@ -4,6 +4,9 @@ using System.IO;
 
 namespace Chess_Game
 {
+    /// <summary>
+    /// Klassen innehåller allt som behövs för att skapa en sparfil av den nuvarande matchen.
+    /// </summary>
     public class SaveGame
     {
         public Piece[,] currentBoard;
@@ -15,6 +18,9 @@ namespace Chess_Game
         public float playerTwoTimer;
         public float timeIncrement;
 
+        /// <summary>
+        /// Sparar detn nuvarande matchen i en fil.
+        /// </summary>
         public static void Save()
         {
             SaveGame saveGame = new();
@@ -31,6 +37,9 @@ namespace Chess_Game
             File.WriteAllText("Davids-SaveGame.json", output);
         }
 
+        /// <summary>
+        /// Läser av sparfilen och startar den sparade matchen.
+        /// </summary>
         public static void LoadGame()
         {
             string savedGame = File.ReadAllText("Davids-SaveGame.json");

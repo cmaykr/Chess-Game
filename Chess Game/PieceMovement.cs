@@ -3,6 +3,9 @@ using System;
 
 namespace Chess_Game
 {
+    /// <summary>
+    /// Klassen innehåller alla metoder för förflyttning av pjäserna.
+    /// </summary>
     public class PieceMovement
     {
         public bool hasEnPassant;
@@ -105,11 +108,13 @@ namespace Chess_Game
         /// Metod för att kolla om den valda pjäsen får flytta till en ruta.
         /// Metoden flyttar också den valda pjäsen.
         /// </summary>
-        /// <param name="Pieces"></param>
-        /// <param name="xIndex"></param>
-        /// <param name="yIndex"></param>
-        /// <param name="boardPosition"></param>
-        public bool MoveChosenPiece(Piece[,] Pieces, int xIndex, int yIndex, Vector2 boardPosition, int XTarget, int YTarget)
+        /// <param name="Pieces">Spelbrädet som används.</param>
+        /// <param name="xIndex">X värdet på den valda pjäsens position.</param>
+        /// <param name="yIndex">Y värdet på den valda pjäsens position.</param>
+        /// <param name="XTarget">X värdet där pjäsen ska flytta.</param>
+        /// <param name="YTarget">Y värdet där pjäsen ska flytta.</param>
+        /// <returns>Returnerar true om pjäsen flyttade.</returns>
+        public bool MoveChosenPiece(Piece[,] Pieces, int xIndex, int yIndex, int XTarget, int YTarget)
         {
 
             Board.Instance.pieceChosen = false;
@@ -136,6 +141,13 @@ namespace Chess_Game
             return false;
         }
 
+        /// <summary>
+        /// Om castling har skett så flyttar metoden tornet som användes vid castlingen.
+        /// </summary>
+        /// <param name="Pieces">Spelbrädet som används.</param>
+        /// <param name="xIndex">X värdet på den valda pjäsens position.</param>
+        /// <param name="xTarget">X värdet där pjäsen ska flytta.</param>
+        /// <param name="yTarget">Y värdet där pjäsen ska flytta.</param>
         public void HasCastled(Piece[,] Pieces, int xIndex, int yTarget, int xTarget)
         {
             int xCastlingRook;
@@ -145,6 +157,7 @@ namespace Chess_Game
                 xCastlingRook = 7;
 
             int xDist = Math.Abs(xTarget - xIndex);
+            // Kollar vilket torn som ska flyttas och vilken sida castlingen skedde.
             if ((Board.Instance.IsPlayerOne ? yTarget == 7 : yTarget == 0) && Pieces[xTarget, yTarget] != null && xDist == 2 && Pieces[xTarget, yTarget].type == PieceType.King)
             {
                 Pieces[xCastlingRook, yTarget].hasMoved = true;
@@ -157,6 +170,11 @@ namespace Chess_Game
             }
         }
 
+
+        /// <summary>
+        /// Metoden kallas när En Passant sker och tar bort den ovalda pjäs som användes vid En Passant.
+        /// </summary>
+        /// <param name="Pieces">Spelbrädet som används.</param>
         public void EnPassant(Piece[,] Pieces)
         {
             if (hasEnPassant)

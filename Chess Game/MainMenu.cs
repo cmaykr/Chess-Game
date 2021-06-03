@@ -4,12 +4,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Chess_Game
 {
+    /// <summary>
+    /// Klassen innehåller allt för huvudmenyn.
+    /// </summary>
     class MainMenu
     {
         Rectangle PlayButtonPos;
         Rectangle RuleButtonPos;
         Rectangle LeaderboardButtonPos;
 
+        /// <summary>
+        /// Positionerna av menyknapparna bestäms i metoden.
+        /// </summary>
         public void MenuContent()
         {
             PlayButtonPos = new Rectangle((int)Game1.ScreenMiddle.X - 110, (int)Game1.ScreenMiddle.Y - 150, 180, 60);
@@ -17,6 +23,13 @@ namespace Chess_Game
             LeaderboardButtonPos = new Rectangle((int)Game1.ScreenMiddle.X - 110, (int)Game1.ScreenMiddle.Y + 30, 180, 60);
 
         }
+
+        /// <summary>
+        /// Metoden ritar alla knappar och all text.
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="Font"></param>
+        /// <param name="mousePos"></param>
         public void MenuDraw(SpriteBatch spriteBatch, SpriteFont Font, Point mousePos)
         {
             spriteBatch.Begin();
@@ -32,6 +45,15 @@ namespace Chess_Game
             spriteBatch.DrawString(Font, "Leaderboard", new Vector2(LeaderboardButtonPos.X + 45, LeaderboardButtonPos.Y + 20), Color.Black);
             spriteBatch.End();
         }
+
+        /// <summary>
+        /// Update metoden för huvudmenyn, uppdateras varje frame.
+        /// Metoden kollar om man har tryckt på någon av knapparna.
+        /// </summary>
+        /// <param name="gameTime">Tid staten för Game klassen.</param>
+        /// <param name="curr">Det nuvarande staten för musen.</param>
+        /// <param name="prev">Mus staten från förra gången update kallades.</param>
+        /// <param name="mousePos">Positionen av musen.</param>
         public void MenuUpdate(GameTime gameTime, MouseState curr, MouseState prev, Point mousePos)
         {
 

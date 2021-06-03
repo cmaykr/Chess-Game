@@ -28,7 +28,7 @@ namespace Chess_Game
         public bool pieceChosen = false;
         public bool IsPlayerOne { get; set; } = true;
         bool debug;
-        public bool CheckMate;
+        public bool CheckMate { get; set; }
         public bool TimerRun { get; private set; }
         public Vector2 WindowScale { get; private set; } = new(1, 1);
 
@@ -85,11 +85,11 @@ namespace Chess_Game
                 }
             }
 
+            // Ritar pjäserna.
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    // Ritar pjäserna.
                     if (Pieces[i, j] != null)
                         Pieces[i, j].PieceDraw(spriteBatch, i, j);
 
@@ -133,10 +133,10 @@ namespace Chess_Game
                 {
                     char charPiece = pieceCoord[pieceCoord.Length - i - 1][j];
 
-                    var type = new Piece().type;
+                    _ = new Piece().type;
 
                     // Bestämmer vilken bokstav som tillhör vilken pjäs
-                    type = charPiece switch
+                    PieceType _type = charPiece switch
                     {
                         'P' => PieceType.Pawn,
                         'R' => PieceType.Rook,
@@ -150,12 +150,12 @@ namespace Chess_Game
                     // Bestämmer positionerna i Pieces arrayen var de enskilda pjäserna ska finnas 
                     Pieces[j, i] = new Piece()
                     {
-                        type = type,
+                        type = _type,
                         isBlack = true,
                     };
                     Pieces[j, 7 - i] = new Piece()
                     {
-                        type = type,
+                        type = _type,
                         isBlack = false,
                     };
                 }
@@ -192,7 +192,7 @@ namespace Chess_Game
                 YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
 
                 // Kollar om pjäsen får flytta dit.
-                if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition, XTarget, YTarget))
+                if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, XTarget, YTarget))
                 {
                     if (Pieces[XTarget, YTarget].type == PieceType.Pawn && (YTarget == 0 || YTarget == 7))
                     {
@@ -217,7 +217,7 @@ namespace Chess_Game
                 }
                 else
                 {
-                    if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, boardPosition, XTarget, YTarget))
+                    if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, XTarget, YTarget))
                     {
                         if (Pieces[XTarget, YTarget].type == PieceType.Pawn && (YTarget == 0 || YTarget == 7))
                         {

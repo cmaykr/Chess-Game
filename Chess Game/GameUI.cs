@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace Chess_Game
 {
+    /// <summary>
+    /// GameUI klassen håller alla variabler och metoder som behövs under en match som inte är själva spelbrädet.
+    /// </summary>
     public class GameUI
     {
         Vector2 NotationPos { get; set; }
@@ -15,8 +18,8 @@ namespace Chess_Game
         SpriteFont font;
         public List<string> NotationList { get; set; } = new();
         public int Turns { get; set; } = 0;
-        public bool WhiteWon;
-        public bool BlackWon;
+        public bool WhiteWon { get; private set; }
+        public bool BlackWon { get; private set; }
         bool GaveUp;
 
 
@@ -34,6 +37,7 @@ namespace Chess_Game
 
         /// <summary>
         /// Ritar allt som ska finnas under spelets gång.
+        /// Ritar alla knappar som finns under matchen. Ritar också all text på knapparna.
         /// </summary>
         public void GameUIDraw(SpriteBatch spriteBatch)
         {
@@ -46,6 +50,8 @@ namespace Chess_Game
             AskDrawButtonPos = new((int)Game1.ScreenMiddle.X * xScale + 120 * xScale, (int)Game1.ScreenMiddle.Y * yScale + 180 * yScale, 120 * xScale, 40 * yScale);
             saveGame = new((int)Game1.ScreenMiddle.X * xScale - 340 * xScale, (int)Game1.ScreenMiddle.Y * yScale - 200 * yScale, 120 * xScale, 40 * yScale);
 
+
+            // Ändrar texten beroende på om spelet är igång eller har avslutats.
             if (Board.Instance.CheckMate && PlayerTwoTimer > 0 && PlayerTwoTimer > 0)
             {
                 gameText = "Checkmate, " + (!Board.Instance.IsPlayerOne ? "White won" : "Black won");
@@ -106,7 +112,7 @@ namespace Chess_Game
         /// Kollar vilken tangent man trycker ner.
         /// Returnerar av typen PieceType utifrån vilken tangent som trycks ner.
         /// </summary>
-        /// <returns>Returnerar av typen PieceType.</returns>
+        /// <returns>Returnerar en pjäs.</returns>
         public static PieceType Promotion()
         {
             var keyboard = Keyboard.GetState().GetPressedKeys();
@@ -117,18 +123,24 @@ namespace Chess_Game
             // Kollar vilken bokstav man tryckt ner och returnerar rätt typ.
             return keyboard[0] switch
             {
-                Keys.Q => PieceType.Queen,
-                Keys.R => PieceType.Rook,
-                Keys.G => PieceType.Knight,
-                Keys.B => PieceType.Bishop,
+                Keys.D1 => PieceType.Queen,
+                Keys.D2 => PieceType.Rook,
+                Keys.D3 => PieceType.Knight,
+                Keys.D4 => PieceType.Bishop,
                 _ => PieceType.Pawn,
             };
         }
 
+        /// <summary>
+        /// Ritar under matchen vilka pjäser man får promota till.
+        /// Den ritar också vilka tangenter man ska trycka för pjäserna.
+        /// </summary>
+        /// <param name="xScale">X skalan för spelrutan. Jämfört med originalupplösningen.</param>
+        /// <param name="yScale">Y skalan för spelrutan. Jämfört med originalupplösningen.</param>
         public void PromotionUI(SpriteBatch spriteBatch, int xScale, int yScale)
         {
-            spriteBatch.DrawString(font, "Press key for the piece you want to promote to. You MUST promote", new Vector2(Game1.ScreenMiddle.X - 340 * xScale, Game1.ScreenMiddle.Y - 240 * yScale), Color.Black);
-            spriteBatch.DrawString(font, "Q = Queen, R = Rook, G = Knight, B = Bishop", new Vector2(Game1.ScreenMiddle.X - 340 * xScale, Game1.ScreenMiddle.Y - 220 * yScale), Color.Black);
+            spriteBatch.DrawString(font, "Press key for the piece you want to promote to. You MUST promote", new Vector2(Game1.ScreenMiddle.X * xScale - 340 * xScale, Game1.ScreenMiddle.Y * yScale - 240 * yScale), Color.Black);
+            spriteBatch.DrawString(font, "1 = Queen, 2 = Rook, 3 = Knight, 4 = Bishop", new Vector2(Game1.ScreenMiddle.X * xScale - 340 * xScale, Game1.ScreenMiddle.Y * yScale - 220 * yScale), Color.Black);
         }
         /// <summary>
         /// Kollar om knappar som finns under en match trycks och bestämmer vad som händer när en knapp har tryckts.
@@ -180,6 +192,14 @@ namespace Chess_Game
             spritebatch.DrawString(font, $"{xCoord}, {yCoord}", new Vector2(x, y), Color.Red);
         }
 
+        /// <summary>
+        /// Lägger till en notering i noteringslistan för varje drag man gör.
+        /// </summary>
+        /// <param name="Pieces">Spelbrädet som används.</param>
+        /// <param name="xIndex">X värdet på positionen där pjäsen är.</param>
+        /// <param name="yIndex">Y värdet på positionen där pjäsen är.</param>
+        /// <param name="xTarget">X värdet där pjäsen flyttar till.</param>
+        /// <param name="yTarget">Y värdet där pjäsen flyttar till.</param>
         public void AddNotation(Piece[,] Pieces, int xIndex, int yIndex, int xTarget, int yTarget)
         {
             string tempNotation = "";
@@ -212,6 +232,12 @@ namespace Chess_Game
 
             NotationList.Add(tempNotation);
         }
+
+        /// <summary>
+        /// Ritar noteringen under matchen.
+        /// </summary>
+        /// <param name="xScale">X skalan för spelrutan. Jämfört med originalupplösningen.</param>
+        /// <param name="yScale">Y skalan för spelrutan. Jämfört med originalupplösningen.</param>
         void NotationDraw(SpriteBatch spriteBatch, int xScale, int yScale)
         {
             int notationYCoord;
@@ -239,6 +265,9 @@ namespace Chess_Game
             }
         }
 
+        /// <summary>
+        /// Ökar tiden med en bestämd summa på den nuvarandes spelarens tid. Tiden räknas i sekunder.
+        /// </summary>
         public void ApplyTimeIncrement()
         {
             if (!Board.Instance.TimerRun)
@@ -256,6 +285,10 @@ namespace Chess_Game
             }
         }
 
+        /// <summary>
+        /// Tar bort tid med en bestämd summa på den nuvarandes spelares tid. Tiden räknas i sekunder.
+        /// </summary>
+        /// <param name="gameTime">Tid staten för Game</param>
         public void DecrementTimer(GameTime gameTime)
         {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;

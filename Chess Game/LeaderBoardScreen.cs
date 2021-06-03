@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace Chess_Game
 {
+    /// <summary>
+    /// LeaderBoardScreen inheritar ifrån Screen klassen och ritar själva leaderboardrutan.
+    /// </summary>
     class LeaderBoardScreen : Screen
     {
         Leaderboard leaderboard = Leaderboard.Load();
@@ -25,6 +28,7 @@ namespace Chess_Game
             base.Draw(spriteBatch);
             spriteBatch.Begin();
             spriteBatch.DrawString(Font, "Leaderboard:", new Vector2(Game1.ScreenMiddle.X - 300, Game1.ScreenMiddle.Y - 220), Color.Black);
+            // Ritar leaderboarden och räknar ut allt som behöver visas.
             for (int i = 0; i < leaderboard.MatchResults.Count; i++)
             {
                 string result = "";
