@@ -15,8 +15,8 @@ namespace Chess_Game
         SpriteFont font;
         public List<string> NotationList { get; set; } = new();
         public int Turns { get; set; } = 0;
-        bool WhiteWon;
-        bool BlackWon;
+        public bool WhiteWon;
+        public bool BlackWon;
         bool GaveUp;
 
 
@@ -138,11 +138,13 @@ namespace Chess_Game
                         BlackWon = true;
                         GaveUp = true;
                     }
+                    GameScreen.Instance.EndOfGame();
                 }
                 if (AskDrawButtonPos.Contains(Screen.mousePos))
                 {
                     WhiteWon = true;
                     BlackWon = true;
+                    GameScreen.Instance.EndOfGame();
                 }
                 if (saveGame.Contains(Screen.mousePos))
                 {

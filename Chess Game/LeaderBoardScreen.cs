@@ -5,6 +5,8 @@ namespace Chess_Game
 {
     class LeaderBoardScreen : Screen
     {
+        Leaderboard leaderboard = Leaderboard.Load();
+
         public override void LoadContent()
         {
             base.LoadContent();

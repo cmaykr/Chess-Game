@@ -250,6 +250,10 @@ namespace Chess_Game
 
             IsPlayerOne = !IsPlayerOne;
             CheckMate = PieceMovement.IsCheckMate(Pieces);
+            if (CheckMate)
+            {
+                GameScreen.Instance.EndOfGame();
+            }
         }
 
         /// <summary>

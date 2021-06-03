@@ -55,5 +55,20 @@ namespace Chess_Game
             DrawBoard.BoardDraw(spriteBatch, (int)BoardPosition.X, (int)BoardPosition.Y, Pieces);
             spriteBatch.End();
         }
+
+        public void EndOfGame()
+        {
+            Leaderboard leaderboard = Leaderboard.Load();
+            var result = new MatchResult { Turns = GameUI.Turns };
+            if (GameUI.WhiteWon && GameUI.BlackWon)
+                result.Winner = Winner.Draw;
+            else if (GameUI.WhiteWon)
+                result.Winner = Winner.White;
+            else if (GameUI.BlackWon)
+                result.Winner = Winner.Black;
+
+            leaderboard.MatchResults.Add(result);
+            leaderboard.Save();
+        }
     }
 }
