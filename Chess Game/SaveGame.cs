@@ -15,22 +15,23 @@ namespace Chess_Game
         public float playerTwoTimer;
         public float timeIncrement;
 
-        public void Save()
+        public static void Save()
         {
-            currentBoard = GameScreen.Instance.Pieces;
-            turns = GameScreen.Instance.GameUI.Turns;
-            notationList = GameScreen.Instance.GameUI.NotationList;
-            isPlayerOne = Board.Instance.IsPlayerOne;
-            playerOneTimer = GameScreen.Instance.GameUI.PlayerOneTimer;
-            playerTwoTimer = GameScreen.Instance.GameUI.PlayerTwoTimer;
-            timeIncrement = GameScreen.Instance.GameUI.TimeIncrement;
+            SaveGame saveGame = new();
+            saveGame.currentBoard = GameScreen.Instance.Pieces;
+            saveGame.turns = GameScreen.Instance.GameUI.Turns;
+            saveGame.notationList = GameScreen.Instance.GameUI.NotationList;
+            saveGame.isPlayerOne = Board.Instance.IsPlayerOne;
+            saveGame.playerOneTimer = GameScreen.Instance.GameUI.PlayerOneTimer;
+            saveGame.playerTwoTimer = GameScreen.Instance.GameUI.PlayerTwoTimer;
+            saveGame.timeIncrement = GameScreen.Instance.GameUI.TimeIncrement;
 
-            string output = JsonConvert.SerializeObject(this);
+            string output = JsonConvert.SerializeObject(saveGame);
 
             File.WriteAllText("Davids-SaveGame.json", output);
         }
 
-        public void LoadGame()
+        public static void LoadGame()
         {
             string savedGame = File.ReadAllText("Davids-SaveGame.json");
             SaveGame loadedGame = JsonConvert.DeserializeObject<SaveGame>(savedGame);

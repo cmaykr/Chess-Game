@@ -30,7 +30,7 @@ namespace Chess_Game
         bool debug;
         public bool CheckMate;
         public bool TimerRun { get; private set; }
-        public Vector2 windowScale { get; private set; } = new(1, 1);
+        public Vector2 WindowScale { get; private set; } = new(1, 1);
 
         public PieceMovement MovePiece = new();
 
@@ -304,9 +304,9 @@ namespace Chess_Game
         /// </summary>
         public void OnResize(object sender, EventArgs e)
         {
-            windowScale = Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
-            TileSize = new Vector2(40, 40) * windowScale;
-            Console.WriteLine(windowScale);
+            WindowScale = Game1.Instance.GraphicsDevice.Viewport.Bounds.Size.ToVector2() / new Vector2(800, 480);
+            TileSize = new Vector2(40, 40) * WindowScale;
+            Console.WriteLine(WindowScale);
             GameScreen.BoardPosition = new Vector2(
                 Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2 - (TileSize.X * 5),
                 Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2 - (TileSize.Y * 4)

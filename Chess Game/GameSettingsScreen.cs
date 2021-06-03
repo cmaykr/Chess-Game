@@ -85,7 +85,7 @@ namespace Chess_Game
                 {
                     if (File.Exists("Davids-SaveGame.json"))
                     {
-                        GameScreen.Instance.SaveGame.LoadGame();
+                        SaveGame.LoadGame();
                     }
                 }
             }
@@ -112,7 +112,7 @@ namespace Chess_Game
             spriteBatch.Draw(startButtonPos.Contains(mousePos) ? Button_Selected : Button_Open, startButtonPos, Color.White);
             spriteBatch.DrawString(Font, "Start", new Vector2(startButtonPos.X + 45, startButtonPos.Y + 12), Color.Black);
 
-            spriteBatch.DrawString(Font, $"Time increment: {(int)(TimeIncrement % 60):00}", timeIncrementPos, Color.Black);
+            spriteBatch.DrawString(Font, $"Time increment: {(int)(TimeIncrement % 60)} s", timeIncrementPos, Color.Black);
 
             spriteBatch.Draw(increment2sPos.Contains(mousePos) ? Button_Selected : Button_Open, increment2sPos, Color.White);
             spriteBatch.DrawString(Font, "2 s", new Vector2(increment2sPos.X + 20, increment2sPos.Y + 12), Color.Black);

@@ -8,7 +8,6 @@ namespace Chess_Game
         public Piece[,] Pieces = new Piece[8, 8];
         readonly Board DrawBoard = new();
         public readonly GameUI GameUI = new();
-        public readonly SaveGame SaveGame = new();
         public static Vector2 BoardPosition;
 
         public static GameScreen Instance;

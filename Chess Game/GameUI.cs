@@ -38,8 +38,8 @@ namespace Chess_Game
         public void GameUIDraw(SpriteBatch spriteBatch)
         {
             string gameText;
-            int xScale = (int)Board.Instance.windowScale.X;
-            int yScale = (int)Board.Instance.windowScale.Y;
+            int xScale = (int)Board.Instance.WindowScale.X;
+            int yScale = (int)Board.Instance.WindowScale.Y;
 
             GiveUpButtonPos = new((int)Game1.ScreenMiddle.X * xScale - 320 * xScale, (int)Game1.ScreenMiddle.Y * yScale + 180 * yScale, 120 * xScale, 40 * yScale);
             NotationPos = new(Game1.Instance.GraphicsDevice.Viewport.Bounds.Width / 2, Game1.Instance.GraphicsDevice.Viewport.Bounds.Height / 2);
@@ -146,7 +146,7 @@ namespace Chess_Game
                 }
                 if (saveGame.Contains(Screen.mousePos))
                 {
-                    GameScreen.Instance.SaveGame.Save();
+                    SaveGame.Save();
                     Game1.Screen = new MainMenuScreen();
                     Game1.Screen.Initialize();
                     Game1.Screen.LoadContent();
