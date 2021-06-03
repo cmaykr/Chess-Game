@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace Chess_Game
 {
@@ -25,7 +28,7 @@ namespace Chess_Game
             for (int i = 0; i < leaderboard.MatchResults.Count; i++)
             {
                 string result = "";
-                result += "Turns: " + leaderboard.MatchResults[i].Turns + "  ";
+                result += "Rounds: " + (int)Math.Ceiling(((double)leaderboard.MatchResults[i].Turns + 1) / 2) + "  ";
                 switch (leaderboard.MatchResults[i].Winner)
                 {
                     case Winner.White:

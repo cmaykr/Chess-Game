@@ -90,10 +90,16 @@ namespace Chess_Game
             spriteBatch.Draw(AskDrawButtonPos.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, AskDrawButtonPos, Color.White);
             spriteBatch.DrawString(font, "Draw?", new Vector2(AskDrawButtonPos.X + 60 * xScale, AskDrawButtonPos.Y + 12 * yScale), Color.Black);
 
-            spriteBatch.Draw(saveGame.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, saveGame, Color.White);
-            spriteBatch.DrawString(font, "Save game?", new Vector2(saveGame.X + 20, saveGame.Y + 12), Color.Black);
+            if (!Board.Instance.PromotingPiece)
+            {
+                spriteBatch.Draw(saveGame.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, saveGame, Color.White);
+                spriteBatch.DrawString(font, "Save game?", new Vector2(saveGame.X + 20, saveGame.Y + 12), Color.Black);
+            }
 
             NotationDraw(spriteBatch, xScale, yScale);
+
+            if (Board.Instance.PromotingPiece)
+                PromotionUI(spriteBatch, xScale, yScale);
         }
 
         /// <summary>
@@ -101,7 +107,7 @@ namespace Chess_Game
         /// Returnerar av typen PieceType utifrån vilken tangent som trycks ner.
         /// </summary>
         /// <returns>Returnerar av typen PieceType.</returns>
-        public static PieceType PromotionUI()
+        public static PieceType Promotion()
         {
             var keyboard = Keyboard.GetState().GetPressedKeys();
 
@@ -119,6 +125,11 @@ namespace Chess_Game
             };
         }
 
+        public void PromotionUI(SpriteBatch spriteBatch, int xScale, int yScale)
+        {
+            spriteBatch.DrawString(font, "Press key for the piece you want to promote to. You MUST promote", new Vector2(Game1.ScreenMiddle.X - 340 * xScale, Game1.ScreenMiddle.Y - 240 * yScale), Color.Black);
+            spriteBatch.DrawString(font, "Q = Queen, R = Rook, G = Knight, B = Bishop", new Vector2(Game1.ScreenMiddle.X - 340 * xScale, Game1.ScreenMiddle.Y - 220 * yScale), Color.Black);
+        }
         /// <summary>
         /// Kollar om knappar som finns under en match trycks och bestämmer vad som händer när en knapp har tryckts.
         /// </summary>
@@ -146,7 +157,7 @@ namespace Chess_Game
                     BlackWon = true;
                     GameScreen.Instance.EndOfGame();
                 }
-                if (saveGame.Contains(Screen.mousePos))
+                if (saveGame.Contains(Screen.mousePos) && !Board.Instance.PromotingPiece)
                 {
                     SaveGame.Save();
                     Game1.Screen = new MainMenuScreen();

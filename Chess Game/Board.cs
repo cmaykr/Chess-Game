@@ -24,7 +24,7 @@ namespace Chess_Game
         Texture2D chosenPiece;
         Color chosenPieceColor;
         bool clickMove;
-        bool promotingPiece;
+        public bool PromotingPiece { get; private set; }
         public bool pieceChosen = false;
         public bool IsPlayerOne { get; set; } = true;
         bool debug;
@@ -169,13 +169,13 @@ namespace Chess_Game
         /// <param name="boardPosition">Positionen för pjäserna på spelrutan.</param>
         public void PieceMove(Piece[,] Pieces, Vector2 boardPosition)
         {
-            if (promotingPiece)
+            if (PromotingPiece)
             {
                 PawnPromotion(Pieces, XTarget, YTarget);
             }
             // if Satsen bestämmer vilken position den valda pjäsen har, den bestämmer också var man vill flytta pjäsen
             // genom att dra eller klicka med musen.
-            if (!CheckMate && Screen.curr.LeftButton == ButtonState.Pressed && pieceChosen == false && !promotingPiece)
+            if (!CheckMate && Screen.curr.LeftButton == ButtonState.Pressed && pieceChosen == false && !PromotingPiece)
             {
                 Vector2 idxVector = new((Screen.curr.X - boardPosition.X) / TileSize.X, (Screen.curr.Y - boardPosition.Y) / TileSize.Y);
                 xIndex = (int)idxVector.X;
@@ -186,7 +186,7 @@ namespace Chess_Game
                     pieceChosen = TimerRun = true;
 
             }
-            else if (!promotingPiece && !CheckMate && pieceChosen && Screen.curr.LeftButton == ButtonState.Pressed && Screen.prev.LeftButton == ButtonState.Released && clickMove)
+            else if (!PromotingPiece && !CheckMate && pieceChosen && Screen.curr.LeftButton == ButtonState.Pressed && Screen.prev.LeftButton == ButtonState.Released && clickMove)
             {
                 XTarget = (int)(Screen.curr.X - boardPosition.X) / (int)TileSize.X;
                 YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
@@ -196,9 +196,9 @@ namespace Chess_Game
                 {
                     if (Pieces[XTarget, YTarget].type == PieceType.Pawn && (YTarget == 0 || YTarget == 7))
                     {
-                        promotingPiece = true;
+                        PromotingPiece = true;
                     }
-                    else if (!promotingPiece)
+                    else if (!PromotingPiece)
                     {
                         MovenPiece(Pieces);
                         clickMove = false;
@@ -221,7 +221,7 @@ namespace Chess_Game
                     {
                         if (Pieces[XTarget, YTarget].type == PieceType.Pawn && (YTarget == 0 || YTarget == 7))
                         {
-                            promotingPiece = true;
+                            PromotingPiece = true;
                         }
                         else
                         {
@@ -264,12 +264,12 @@ namespace Chess_Game
         /// <param name="y">Y koordinaten för den promotade bonden.</param>
         void PawnPromotion(Piece[,] Pieces, int x, int y)
         {
-            var promotedPiece = GameUI.PromotionUI();
+            var promotedPiece = GameUI.Promotion();
 
             if (promotedPiece != PieceType.Pawn)
             {
                 Pieces[x, y].type = promotedPiece;
-                promotingPiece = false;
+                PromotingPiece = false;
                 MovenPiece(Pieces);
             }
         }
