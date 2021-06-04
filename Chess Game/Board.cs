@@ -173,59 +173,62 @@ namespace Chess_Game
             {
                 PawnPromotion(Pieces, XTarget, YTarget);
             }
-            // if Satsen bestämmer vilken position den valda pjäsen har, den bestämmer också var man vill flytta pjäsen
-            // genom att dra eller klicka med musen.
-            if (!CheckMate && Screen.curr.LeftButton == ButtonState.Pressed && pieceChosen == false && !PromotingPiece)
+            if (!CheckMate && !GameScreen.Instance.GameUI.BlackWon && !GameScreen.Instance.GameUI.WhiteWon)
             {
-                Vector2 idxVector = new((Screen.curr.X - boardPosition.X) / TileSize.X, (Screen.curr.Y - boardPosition.Y) / TileSize.Y);
-                xIndex = (int)idxVector.X;
-                yIndex = (int)idxVector.Y;
-
-                // Kollar om koordinaten man har klickat på är på spelbrädet.
-                if (xIndex > -1 && xIndex < 8 && yIndex > -1 && yIndex < 8 && Pieces[xIndex, yIndex] != null && Pieces[xIndex, yIndex].isBlack != IsPlayerOne)
-                    pieceChosen = TimerRun = true;
-
-            }
-            else if (!PromotingPiece && !CheckMate && pieceChosen && Screen.curr.LeftButton == ButtonState.Pressed && Screen.prev.LeftButton == ButtonState.Released && clickMove)
-            {
-                XTarget = (int)(Screen.curr.X - boardPosition.X) / (int)TileSize.X;
-                YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
-
-                // Kollar om pjäsen får flytta dit.
-                if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, XTarget, YTarget))
+                // if Satsen bestämmer vilken position den valda pjäsen har, den bestämmer också var man vill flytta pjäsen
+                // genom att dra eller klicka med musen.
+                if (Screen.curr.LeftButton == ButtonState.Pressed && pieceChosen == false && !PromotingPiece)
                 {
-                    if (Pieces[XTarget, YTarget].type == PieceType.Pawn && (YTarget == 0 || YTarget == 7))
-                    {
-                        PromotingPiece = true;
-                    }
-                    else if (!PromotingPiece)
-                    {
-                        MovenPiece(Pieces);
-                        clickMove = false;
-                    }
+                    Vector2 idxVector = new((Screen.curr.X - boardPosition.X) / TileSize.X, (Screen.curr.Y - boardPosition.Y) / TileSize.Y);
+                    xIndex = (int)idxVector.X;
+                    yIndex = (int)idxVector.Y;
+
+                    // Kollar om koordinaten man har klickat på är på spelbrädet.
+                    if (xIndex > -1 && xIndex < 8 && yIndex > -1 && yIndex < 8 && Pieces[xIndex, yIndex] != null && Pieces[xIndex, yIndex].isBlack != IsPlayerOne)
+                        pieceChosen = TimerRun = true;
+
                 }
-            }
-            else if (!CheckMate && pieceChosen && Screen.prev.LeftButton == ButtonState.Pressed && Screen.curr.LeftButton == ButtonState.Released)
-            {
-                XTarget = (int)(Screen.curr.X - boardPosition.X) / (int)TileSize.X;
-                YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
+                else if (pieceChosen && Screen.curr.LeftButton == ButtonState.Pressed && Screen.prev.LeftButton == ButtonState.Released && clickMove)
+                {
+                    XTarget = (int)(Screen.curr.X - boardPosition.X) / (int)TileSize.X;
+                    YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
 
-                // Kollar om positionen man släppte pjäsen på är samma position den var på.
-                if (XTarget == xIndex && YTarget == yIndex)
-                {
-                    clickMove = true;
-                }
-                else
-                {
+                    // Kollar om pjäsen får flytta dit.
                     if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, XTarget, YTarget))
                     {
                         if (Pieces[XTarget, YTarget].type == PieceType.Pawn && (YTarget == 0 || YTarget == 7))
                         {
                             PromotingPiece = true;
                         }
-                        else
+                        else if (!PromotingPiece)
                         {
                             MovenPiece(Pieces);
+                            clickMove = false;
+                        }
+                    }
+                }
+                else if (pieceChosen && Screen.prev.LeftButton == ButtonState.Pressed && Screen.curr.LeftButton == ButtonState.Released)
+                {
+                    XTarget = (int)(Screen.curr.X - boardPosition.X) / (int)TileSize.X;
+                    YTarget = (int)(Screen.curr.Y - boardPosition.Y) / (int)TileSize.Y;
+
+                    // Kollar om positionen man släppte pjäsen på är samma position den var på.
+                    if (XTarget == xIndex && YTarget == yIndex)
+                    {
+                        clickMove = true;
+                    }
+                    else
+                    {
+                        if (MovePiece.MoveChosenPiece(Pieces, xIndex, yIndex, XTarget, YTarget))
+                        {
+                            if (Pieces[XTarget, YTarget].type == PieceType.Pawn && (YTarget == 0 || YTarget == 7))
+                            {
+                                PromotingPiece = true;
+                            }
+                            else
+                            {
+                                MovenPiece(Pieces);
+                            }
                         }
                     }
                 }

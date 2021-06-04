@@ -26,11 +26,13 @@ namespace Chess_Game
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-            spriteBatch.DrawString(Font, "Leaderboard:", new Vector2(Game1.ScreenMiddle.X - 300, Game1.ScreenMiddle.Y - 220), Color.Black);
+            spriteBatch.DrawString(Font, "Best 20 Matches:", new Vector2(Game1.ScreenMiddle.X - 300, Game1.ScreenMiddle.Y - 220), Color.Black);
+            int leaderboardCount = (leaderboard.MatchResults.Count < 20) ? leaderboard.MatchResults.Count : 20;
             // Ritar leaderboarden och räknar ut allt som behöver visas.
-            for (int i = 0; i < leaderboard.MatchResults.Count; i++)
+            for (int i = 0; i < leaderboardCount; i++)
             {
                 string result = "";
+                // Rundorna ökar när båda spelarna har gjort ett drag, börjar på runda 1.
                 result += "Rounds: " + (int)Math.Ceiling(((double)leaderboard.MatchResults[i].Turns + 1) / 2) + "  ";
                 switch (leaderboard.MatchResults[i].Winner)
                 {
@@ -45,7 +47,7 @@ namespace Chess_Game
                         break;
                 }
 
-                spriteBatch.DrawString(Font, $"{i + 1}: {result}", new Vector2(Game1.ScreenMiddle.X - 300, Game1.ScreenMiddle.Y - 200+ 20 * i), Color.Black);
+                spriteBatch.DrawString(Font, $"{i + 1}: {result}", new Vector2(Game1.ScreenMiddle.X - 300, Game1.ScreenMiddle.Y - 200 + 20 * i), Color.Black);
             }
         }
     }

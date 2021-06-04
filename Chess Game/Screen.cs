@@ -44,7 +44,6 @@ namespace Chess_Game
         /// Metoden kallas varenda frame och innehåller allt som behöver uppdateras för alla rutor.
         /// Går att overrida för de enskilda rutorna. För att kunna kontrollera vad som ska uppdateras i varje ruta.
         /// </summary>
-        /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
             curr = Mouse.GetState();
@@ -67,11 +66,10 @@ namespace Chess_Game
         /// Ritar text och knappar som behövs för varenda ruta. Kallas varenda frame.
         /// Går att overrida för den enskilda scenerna. För att kunna kontrollera vad som ska ritas i varje ruta.
         /// </summary>
-        /// <param name="spriteBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             string exitHelp = (Game1.Screen is MainMenuScreen) ? "Press ESC to Exit game" : "Press Backspace to Exit current screen.";
-            spriteBatch.DrawString(Font, exitHelp, new Vector2(Game1.ScreenMiddle.X + 150, Game1.ScreenMiddle.Y - 212), Color.Black);
+            spriteBatch.DrawString(Font, exitHelp, new Vector2(Game1.ScreenMiddle.X + 120, Game1.ScreenMiddle.Y - 224), Color.Black);
         }
     }
 }

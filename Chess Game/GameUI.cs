@@ -96,7 +96,7 @@ namespace Chess_Game
             spriteBatch.Draw(AskDrawButtonPos.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, AskDrawButtonPos, Color.White);
             spriteBatch.DrawString(font, "Draw?", new Vector2(AskDrawButtonPos.X + 60 * xScale, AskDrawButtonPos.Y + 12 * yScale), Color.Black);
 
-            if (!Board.Instance.PromotingPiece && !Board.Instance.CheckMate)
+            if (!Board.Instance.PromotingPiece && !Board.Instance.CheckMate && !WhiteWon && !BlackWon)
             {
                 spriteBatch.Draw(saveGame.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, saveGame, Color.White);
                 spriteBatch.DrawString(font, "Save game?", new Vector2(saveGame.X + 20, saveGame.Y + 12), Color.Black);
@@ -147,7 +147,7 @@ namespace Chess_Game
         /// </summary>
         public void GameUIButtons()
         {
-            if (Screen.curr.LeftButton == ButtonState.Released && Screen.prev.LeftButton == ButtonState.Pressed)
+            if (Screen.curr.LeftButton == ButtonState.Released && Screen.prev.LeftButton == ButtonState.Pressed && !Board.Instance.CheckMate && !WhiteWon && !BlackWon)
             {
                 if (GiveUpButtonPos.Contains(Screen.mousePos))
                 {
@@ -169,7 +169,7 @@ namespace Chess_Game
                     BlackWon = true;
                     GameScreen.Instance.EndOfGame();
                 }
-                if (saveGame.Contains(Screen.mousePos) && !Board.Instance.PromotingPiece && !Board.Instance.CheckMate)
+                if (saveGame.Contains(Screen.mousePos) && !Board.Instance.PromotingPiece)
                 {
                     SaveGame.Save();
                     Game1.Screen = new MainMenuScreen();
@@ -246,14 +246,17 @@ namespace Chess_Game
             int startValue = 0;
             if (NotationList.Count >= 20)
             {
-                startValue = NotationList.Count - 20;
+                if (NotationList.Count % 2 == 0)
+                    startValue = NotationList.Count - 20;
+                else
+                    startValue = NotationList.Count - 19;
             }
             for (int i = startValue; i < NotationList.Count; i++)
             {
                 notationYCoord = (int)Math.Ceiling(((double)rounds + 1) / 2);
                 if (i % 2 == 0)
                 {
-                    notationtext = $"{notationYCoord}:  {NotationList[i]}";
+                    notationtext = $"{notationYCoord + startValue}:  {NotationList[i]}";
                 }
                 else
                 {
