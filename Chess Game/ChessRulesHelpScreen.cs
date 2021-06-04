@@ -8,9 +8,17 @@ namespace Chess_Game
     /// </summary>
     class ChessRulesHelpScreen : Screen
     {
+        Texture2D chessRules;
+
+        public override void Initialize()
+        {
+            base.Initialize();
+        }
         public override void LoadContent()
         {
             base.LoadContent();
+
+            chessRules = Game1.Instance.Content.Load<Texture2D>("ChessRules");
         }
 
         public override void Update(GameTime gameTime)
@@ -21,8 +29,7 @@ namespace Chess_Game
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-
-            spriteBatch.DrawString(Font, "PLACEHOLDER", Game1.ScreenMiddle, Color.Black);
+            spriteBatch.Draw(chessRules, new Rectangle((int)Game1.ScreenMiddle.X - 250, (int)Game1.ScreenMiddle.Y - 190, 500, 390), Color.White);
         }
     }
 }
