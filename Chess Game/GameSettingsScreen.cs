@@ -96,7 +96,6 @@ namespace Chess_Game
         {
             base.Draw(spriteBatch);
 
-            spriteBatch.Begin();
             spriteBatch.Draw(time2MinPos.Contains(mousePos) ? Button_Selected : Button_Open, time2MinPos, Color.White);
             spriteBatch.DrawString(Font, "2 Minutes", new Vector2(time2MinPos.X + 20, time2MinPos.Y + 12), Color.Black);
 
@@ -124,8 +123,6 @@ namespace Chess_Game
 
             spriteBatch.Draw(loadGamePos.Contains(mousePos) ? Button_Selected : Button_Open, loadGamePos, Color.White);
             spriteBatch.DrawString(Font, "Load Last Game", new Vector2(loadGamePos.X + 20, loadGamePos.Y + 12), Color.Black);
-
-            spriteBatch.End();
         }
     }
 }

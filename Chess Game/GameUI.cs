@@ -96,7 +96,7 @@ namespace Chess_Game
             spriteBatch.Draw(AskDrawButtonPos.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, AskDrawButtonPos, Color.White);
             spriteBatch.DrawString(font, "Draw?", new Vector2(AskDrawButtonPos.X + 60 * xScale, AskDrawButtonPos.Y + 12 * yScale), Color.Black);
 
-            if (!Board.Instance.PromotingPiece)
+            if (!Board.Instance.PromotingPiece && !Board.Instance.CheckMate)
             {
                 spriteBatch.Draw(saveGame.Contains(Screen.mousePos) ? Screen.Button_Selected : Screen.Button_Open, saveGame, Color.White);
                 spriteBatch.DrawString(font, "Save game?", new Vector2(saveGame.X + 20, saveGame.Y + 12), Color.Black);
@@ -169,7 +169,7 @@ namespace Chess_Game
                     BlackWon = true;
                     GameScreen.Instance.EndOfGame();
                 }
-                if (saveGame.Contains(Screen.mousePos) && !Board.Instance.PromotingPiece)
+                if (saveGame.Contains(Screen.mousePos) && !Board.Instance.PromotingPiece && !Board.Instance.CheckMate)
                 {
                     SaveGame.Save();
                     Game1.Screen = new MainMenuScreen();

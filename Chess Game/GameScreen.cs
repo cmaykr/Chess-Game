@@ -54,9 +54,7 @@ namespace Chess_Game
         {
             base.Draw(spriteBatch);
 
-            spriteBatch.Begin();
             DrawBoard.BoardDraw(spriteBatch, (int)BoardPosition.X, (int)BoardPosition.Y, Pieces);
-            spriteBatch.End();
         }
 
 

@@ -22,9 +22,7 @@ namespace Chess_Game
         {
             base.Draw(spriteBatch);
 
-            spriteBatch.Begin();
             spriteBatch.DrawString(Font, "PLACEHOLDER", Game1.ScreenMiddle, Color.Black);
-            spriteBatch.End();
         }
     }
 }

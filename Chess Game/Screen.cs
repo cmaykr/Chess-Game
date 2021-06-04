@@ -18,6 +18,8 @@ namespace Chess_Game
         public static MouseState prev;
         public static Point mousePos;
 
+        KeyboardState key;
+
         /// <summary>
         /// Initialiserar alla variabler som används för alla rutor.
         /// Går att overrida för de enskilda rutorna. För att kunna kontrollera vad som ska initialiseras för varje ruta.
@@ -46,13 +48,18 @@ namespace Chess_Game
         public virtual void Update(GameTime gameTime)
         {
             curr = Mouse.GetState();
+            key = Keyboard.GetState();
             mousePos = new Point(curr.X, curr.Y);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (key.IsKeyDown(Keys.Back))
             {
                 Game1.Screen = new MainMenuScreen();
                 Game1.Screen.Initialize();
                 Game1.Screen.LoadContent();
+            }
+            if (Game1.Screen is MainMenuScreen && key.IsKeyDown(Keys.Escape))
+            {
+                Game1.Instance.Exit();
             }
         }
 
@@ -63,7 +70,8 @@ namespace Chess_Game
         /// <param name="spriteBatch"></param>
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-
+            string exitHelp = (Game1.Screen is MainMenuScreen) ? "Press ESC to Exit game" : "Press Backspace to Exit current screen.";
+            spriteBatch.DrawString(Font, exitHelp, new Vector2(Game1.ScreenMiddle.X + 150, Game1.ScreenMiddle.Y - 212), Color.Black);
         }
     }
 }

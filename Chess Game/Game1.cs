@@ -45,8 +45,9 @@ namespace Chess_Game
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            _spriteBatch.Begin();
             Screen.Draw(_spriteBatch);
-
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
     }

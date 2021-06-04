@@ -26,7 +26,6 @@ namespace Chess_Game
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-            spriteBatch.Begin();
             spriteBatch.DrawString(Font, "Leaderboard:", new Vector2(Game1.ScreenMiddle.X - 300, Game1.ScreenMiddle.Y - 220), Color.Black);
             // Ritar leaderboarden och räknar ut allt som behöver visas.
             for (int i = 0; i < leaderboard.MatchResults.Count; i++)
@@ -48,7 +47,6 @@ namespace Chess_Game
 
                 spriteBatch.DrawString(Font, $"{i + 1}: {result}", new Vector2(Game1.ScreenMiddle.X - 300, Game1.ScreenMiddle.Y - 200+ 20 * i), Color.Black);
             }
-            spriteBatch.End();
         }
     }
 }

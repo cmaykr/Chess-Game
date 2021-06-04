@@ -32,7 +32,6 @@ namespace Chess_Game
         /// <param name="mousePos"></param>
         public void MenuDraw(SpriteBatch spriteBatch, SpriteFont Font, Point mousePos)
         {
-            spriteBatch.Begin();
             spriteBatch.DrawString(Font, "David's Chess Game", new Vector2(Game1.ScreenMiddle.X - 100, Game1.ScreenMiddle.Y - 200), Color.Black);
 
             spriteBatch.Draw(PlayButtonPos.Contains(mousePos) ? Screen.Button_Selected : Screen.Button_Open, PlayButtonPos, Color.White);
@@ -43,7 +42,6 @@ namespace Chess_Game
 
             spriteBatch.Draw(LeaderboardButtonPos.Contains(mousePos) ? Screen.Button_Selected : Screen.Button_Open, LeaderboardButtonPos, Color.White);
             spriteBatch.DrawString(Font, "Leaderboard", new Vector2(LeaderboardButtonPos.X + 45, LeaderboardButtonPos.Y + 20), Color.Black);
-            spriteBatch.End();
         }
 
         /// <summary>
