@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework;
 using System;
 
 namespace Chess_Game
@@ -49,7 +48,9 @@ namespace Chess_Game
                     if (Pieces[x, y] != null && Pieces[x, y].CanMove(Pieces, x, y, xKing, yKing) && !Piece.Collision(Pieces, x, y, xKing, yKing) && Pieces[x, y].isBlack != Pieces[xKing, yKing].isBlack)
                     {
                         if (!(Pieces[x, y].type == PieceType.Pawn && x == xKing))
+                        {
                             return true;
+                        }
                     }
                 }
             }

@@ -1,9 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.IO;
 
 namespace Chess_Game
@@ -43,7 +39,7 @@ namespace Chess_Game
 
                 leaderboard.Save();
                 return leaderboard;
-            }    
+            }
         }
     }
 }

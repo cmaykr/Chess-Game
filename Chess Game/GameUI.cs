@@ -41,6 +41,9 @@ namespace Chess_Game
         /// </summary>
         public void GameUIDraw(SpriteBatch spriteBatch)
         {
+            if (Board.Instance.CheckMate)
+                Game1.Instance.GraphicsDevice.Clear(Color.IndianRed);
+
             string gameText;
             int xScale = (int)Board.Instance.WindowScale.X;
             int yScale = (int)Board.Instance.WindowScale.Y;
@@ -76,7 +79,7 @@ namespace Chess_Game
 
             spriteBatch.DrawString(font,
                 gameText,
-                new Vector2(NotationPos.X - 350 * xScale, NotationPos.Y - 100 * yScale),
+                new Vector2(NotationPos.X - 370 * xScale, NotationPos.Y - 100 * yScale),
                 Color.Black);
             spriteBatch.DrawString(font,
                 $"Blacks Time: {(int)(PlayerTwoTimer / 60):00}:{(int)(PlayerTwoTimer % 60):00}",
